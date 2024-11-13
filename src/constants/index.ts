@@ -3,3 +3,4 @@ export * from './driver.constant';
 export * from './order.constant';
 export * from './role.constant';
 export * from './transport.constant';
+export * from './wallet.constant';

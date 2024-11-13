@@ -1,7 +1,15 @@
 import { CoreEntity } from '@common/entities';
 import { TransportTypeEntity } from '@common/entities/transport-type.entity';
 import { DRIVER_STATUS_ENUM, LIMIT_NAME, LIMIT_PHONE } from '@constants';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { WalletHistoryEntity } from '@features/driver-wallet/entities';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  Relation,
+} from 'typeorm';
 
 @Entity('drivers')
 export class DriverEntity extends CoreEntity {
@@ -10,6 +18,9 @@ export class DriverEntity extends CoreEntity {
 
   @Column({ unique: true, length: LIMIT_NAME })
   email: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
 
   @Column({ type: 'char', length: LIMIT_PHONE, unique: true, nullable: true })
   phone: string;
@@ -36,4 +47,7 @@ export class DriverEntity extends CoreEntity {
   @OneToOne(() => TransportTypeEntity)
   @JoinColumn()
   transportType: TransportTypeEntity;
+
+  @OneToMany(() => WalletHistoryEntity, (walletHistory) => walletHistory.driver)
+  walletHistories: Relation<WalletHistoryEntity[]>;
 }

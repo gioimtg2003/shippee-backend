@@ -1,6 +1,6 @@
 import { TRANSPORT_TYPE } from '@constants';
 import { DriverEntity } from '@features/driver/entities/driver.entity';
-import { Column, Entity, OneToOne, Relation } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
 import { CoreEntity } from './core.entity';
 
 @Entity('transport_types')
@@ -15,5 +15,6 @@ export class TransportTypeEntity extends CoreEntity {
   description: string;
 
   @OneToOne(() => DriverEntity)
+  @JoinColumn()
   driver: Relation<DriverEntity>;
 }

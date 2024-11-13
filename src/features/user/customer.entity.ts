@@ -11,6 +11,9 @@ export class CustomerEntity extends CoreEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
+
   @Column({ type: 'char', length: LIMIT_PHONE, unique: true, nullable: true })
   phone: string;
 
@@ -33,6 +36,12 @@ export class CustomerEntity extends CoreEntity {
     nullable: true,
   })
   address: string;
+
+  @Column({ type: 'boolean', default: false })
+  isVerified: boolean;
+
+  @Column({ type: 'char', length: 6, nullable: true })
+  otp: string;
 
   @OneToMany(() => OrderEntity, (order) => order.customer)
   customers: Relation<OrderEntity>[];

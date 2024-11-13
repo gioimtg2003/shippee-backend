@@ -1,0 +1,10 @@
+export enum WALLET_STATUS_ENUM {
+  PENDING = 'PENDING',
+  REJECT = 'REJECT',
+  ACCEPT = 'ACCEPT',
+}
+
+export enum WALLET_ACTION_ENUM {
+  DEPOSIT = 'DEPOSIT',
+  WITHDRAW = 'WITHDRAW',
+}

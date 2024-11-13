@@ -1,5 +1,7 @@
 import { CODEntity, CoreEntity, LocationEntity } from '@common/entities';
 import {
+  LIMIT_NAME,
+  LIMIT_PHONE,
   NOTE_MAX_LENGTH,
   ORDER_STATUS_ENUM,
   TRANSPORT_TYPE_ENUM,
@@ -13,22 +15,22 @@ export class OrderEntity extends CoreEntity {
   @ManyToOne(() => CustomerEntity)
   customer: Relation<CustomerEntity>;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: LIMIT_NAME })
   cusName: string;
 
   @Column({ type: 'jsonb' })
   pickup: LocationEntity;
 
-  @Column({ type: 'char', length: 12 })
+  @Column({ type: 'char', length: LIMIT_PHONE })
   cusPhone: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: LIMIT_NAME })
   recipientName: string;
 
   @Column({ type: 'jsonb' })
   destination: LocationEntity;
 
-  @Column({ type: 'char', length: 12 })
+  @Column({ type: 'char', length: LIMIT_PHONE })
   recipientPhone: string;
 
   @Column({ type: 'enum', enum: TRANSPORT_TYPE_ENUM })

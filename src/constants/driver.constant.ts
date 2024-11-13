@@ -1,0 +1,5 @@
+export enum DRIVER_STATUS_ENUM {
+  OFFLINE = 'OFFLINE',
+  FREE = 'FREE',
+  DELIVERY = 'DELIVERY',
+}

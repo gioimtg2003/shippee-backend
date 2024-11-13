@@ -19,6 +19,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "migration:run": "npm run typeorm migration:run -- -d ./scripts/migration.ts",
     "format:migrations": "prettier --write \"migrations/*.ts\"",
     "migration:create": "npm run typeorm -- migration:create migrations/migration && npm run format:migrations",
     "migration:generate": "npm run typeorm -- -d ./scripts/migration.ts migration:generate migrations/migration && npm run format:migrations"

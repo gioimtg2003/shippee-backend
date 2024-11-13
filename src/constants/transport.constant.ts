@@ -8,3 +8,9 @@ export enum TRANSPORT_TYPE_ENUM {
   TRUCK_1T5 = 'TRUCK_1T5',
   TRUCK_2T = 'TRUCK_2T',
 }
+
+export const TRANSPORT_TYPE = {
+  LIMIT_NAME: 40,
+  LIMIT_ICON: 100,
+  LIMIT_DESCRIPTION: 255,
+};

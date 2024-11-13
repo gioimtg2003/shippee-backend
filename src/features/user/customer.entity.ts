@@ -1,16 +1,17 @@
 import { CoreEntity } from '@common/entities';
+import { LIMIT_NAME, LIMIT_PHONE } from '@constants';
 import { OrderEntity } from '@features/order/order.entity';
 import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 @Entity('customers')
 export class CustomerEntity extends CoreEntity {
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: LIMIT_NAME })
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column({ type: 'char', length: 12 })
+  @Column({ type: 'char', length: LIMIT_PHONE, unique: true, nullable: true })
   phone: string;
 
   @Column({

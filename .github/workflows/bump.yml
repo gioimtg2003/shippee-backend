@@ -21,7 +21,7 @@ jobs:
       - name: Deploy API documentation
         uses: bump-sh/github-action@v1
         with:
-          doc: shippee
+          doc: f55735d5-7822-4957-9d2e-eec6d87c6b68
           token: ${{ secrets.BUMP_TOKEN }}
           file: swagger.yaml
   api-diff:
@@ -34,7 +34,7 @@ jobs:
       - name: Comment pull request with API diff
         uses: bump-sh/github-action@v1
         with:
-          doc: shippee
+          doc: f55735d5-7822-4957-9d2e-eec6d87c6b68
           token: ${{ secrets.BUMP_TOKEN }}
           file: swagger.yaml
           command: diff

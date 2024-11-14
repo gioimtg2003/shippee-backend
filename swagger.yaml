@@ -1,0 +1,84 @@
+openapi: 3.0.0
+paths:
+  /user-auth/login:
+    post:
+      operationId: UserAuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerLoginInput'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSession'
+        '401':
+          description: Unauthorized
+      summary: User login
+      tags:
+        - user-auth
+  /user-auth/refresh-token:
+    get:
+      operationId: UserAuthController_refreshToken
+      parameters: []
+      responses:
+        '200':
+          description: Successful refresh token
+        '401':
+          description: Unauthorized
+      summary: Refresh token
+      tags:
+        - user-auth
+info:
+  title: Shipppee system API
+  description: The Shipppee system API description
+  version: 1.0.0
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    CustomerLoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          example: conggioi@gmail.com
+        password:
+          type: string
+          example: '********'
+      required:
+        - email
+        - password
+    UserSession:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - CUSTOMER
+            - DRIVER
+            - ADMIN
+            - SUPER_ADMIN
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - role
+        - accessToken
+        - refreshToken

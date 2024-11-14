@@ -16,6 +16,7 @@ interface IConfig {
   origin: CorsOptions['origin'];
   environment: Environment;
   enableApolloLandingPage: boolean;
+  enableSwagger: boolean;
 }
 
 type IConfigs = {
@@ -34,18 +35,21 @@ const configs: IConfigs = {
     origin: /.*/,
     environment: Environment.development,
     enableApolloLandingPage: false,
+    enableSwagger: false,
   },
 
   [Environment.production]: {
     origin: [Origins.domain],
     environment: Environment.production,
     enableApolloLandingPage: false,
+    enableSwagger: false,
   },
 
   [Environment.localhost]: {
     origin: /.*/,
     environment: Environment.localhost,
     enableApolloLandingPage: true,
+    enableSwagger: true,
   },
 };
 

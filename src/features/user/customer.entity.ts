@@ -44,5 +44,5 @@ export class CustomerEntity extends CoreEntity {
   otp: string;
 
   @OneToMany(() => OrderEntity, (order) => order.customer)
-  customers: Relation<OrderEntity>[];
+  orders: Relation<OrderEntity[]>;
 }

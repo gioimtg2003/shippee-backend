@@ -3,6 +3,9 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import yaml from 'js-yaml';
+import path from 'path';
 import { AppModule } from './app.module';
 
 const appConfig = buildConfig();
@@ -19,6 +22,15 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
+    const yamlString = yaml.dump(document);
+    const dirPath = path.join(__dirname, '..', 'swagger-docs');
+    const filePath = path.join(dirPath, 'swagger.yaml');
+
+    if (!existsSync(dirPath)) {
+      mkdirSync(dirPath, { recursive: true });
+    }
+    writeFileSync(filePath, yamlString);
+
     SwaggerModule.setup('api', app, document, {
       yamlDocumentUrl: '/doc/api-documentation',
     });

@@ -23,7 +23,7 @@ export class UserAuthController {
   constructor(private readonly userAuthService: UserAuthService) {}
 
   @Post('/login')
-  @ApiOperation({ summary: 'User login' })
+  @ApiOperation({ summary: 'Customer login' })
   @ApiResponse({
     status: 200,
     type: UserSession,

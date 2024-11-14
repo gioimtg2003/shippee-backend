@@ -19,8 +19,8 @@ paths:
                 $ref: '#/components/schemas/UserSession'
         '401':
           description: Unauthorized
-      summary: User login
-      tags:
+      summary: Customer login
+      tags: &ref_0
         - user-auth
   /user-auth/refresh-token:
     get:
@@ -32,8 +32,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags:
-        - user-auth
+      tags: *ref_0
 info:
   title: Shipppee system API
   description: The Shipppee system API description

@@ -22,7 +22,7 @@ jobs:
         uses: bump-sh/github-action@v1
         with:
           doc: shippee
-          token: ${{secrets.BUMP_ACCESS_TOKEN}}
+          token: ${{ secrets.BUMP_TOKEN }}
           file: swagger.yaml
   api-diff:
     if: ${{ github.event_name == 'pull_request' }}
@@ -35,7 +35,7 @@ jobs:
         uses: bump-sh/github-action@v1
         with:
           doc: shippee
-          token: ${{secrets.BUMP_ACCESS_TOKEN}}
+          token: ${{ secrets.BUMP_TOKEN }}
           file: swagger.yaml
           command: diff
         env:

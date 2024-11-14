@@ -23,7 +23,7 @@ jobs:
         with:
           doc: shippee
           token: ${{secrets.BUMP_ACCESS_TOKEN}}
-          file: doc/api-documentation.yml
+          file: swagger.yaml
   api-diff:
     if: ${{ github.event_name == 'pull_request' }}
     name: Check API diff on Bump.sh
@@ -36,7 +36,7 @@ jobs:
         with:
           doc: shippee
           token: ${{secrets.BUMP_ACCESS_TOKEN}}
-          file: doc/api-documentation.yml
+          file: swagger.yaml
           command: diff
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

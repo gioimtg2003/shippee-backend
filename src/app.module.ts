@@ -1,4 +1,5 @@
-import { buildConfig, Environment } from '@config';
+import { Environment } from '@config';
+import { AdminModule } from '@features/admin';
 import { AuthAdminModule } from '@features/auth-admin';
 import { CommonModule } from '@features/common';
 import { CryptoModule } from '@features/crypto';
@@ -11,8 +12,7 @@ import { UserAuthModule } from '@features/user-auth';
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-const config = buildConfig();
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -30,6 +30,7 @@ const config = buildConfig();
       },
     }),
     EventEmitterModule.forRoot(),
+    AdminModule,
     CommonModule,
     OrderStatusModule,
     CryptoModule,
@@ -41,6 +42,6 @@ const config = buildConfig();
     UserAuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}

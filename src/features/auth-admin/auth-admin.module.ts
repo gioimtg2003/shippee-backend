@@ -1,12 +1,13 @@
+import { AdminModule } from '@features/admin';
+import { CryptoModule } from '@features/crypto';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AdminEntity } from './admin.entity';
+import { JwtService } from '@nestjs/jwt';
 import { AuthAdminController } from './auth-admin.controller';
 import { AuthAdminService } from './auth-admin.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AdminEntity])],
+  imports: [AdminModule, CryptoModule],
   controllers: [AuthAdminController],
-  providers: [AuthAdminService],
+  providers: [AuthAdminService, JwtService],
 })
 export class AuthAdminModule {}

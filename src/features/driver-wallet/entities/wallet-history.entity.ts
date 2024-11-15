@@ -1,6 +1,6 @@
 import { CoreEntity } from '@common/entities';
 import { WALLET_ACTION_ENUM, WALLET_STATUS_ENUM } from '@constants';
-import { AdminEntity } from '@features/auth-admin/admin.entity';
+import { AdminEntity } from '@features/admin/entities';
 import { DriverEntity } from '@features/driver/entities/driver.entity';
 import { Column, Entity, ManyToOne, Relation } from 'typeorm';
 

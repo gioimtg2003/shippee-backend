@@ -1,6 +1,28 @@
 openapi: 3.0.0
 paths:
-  /user-auth/login:
+  /api/auth-admin/login:
+    post:
+      operationId: AuthAdminController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginInput'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDto'
+        '400':
+          description: Bad request
+      summary: Admin user login
+      tags:
+        - AuthAdmin
+  /api/user-auth/login:
     post:
       operationId: UserAuthController_login
       parameters: []
@@ -22,7 +44,7 @@ paths:
       summary: Customer login
       tags: &ref_0
         - user-auth
-  /user-auth/refresh-token:
+  /api/user-auth/refresh-token:
     get:
       operationId: UserAuthController_refreshToken
       parameters: []
@@ -42,6 +64,57 @@ tags: []
 servers: []
 components:
   schemas:
+    AdminLoginInput:
+      type: object
+      properties:
+        username:
+          type: string
+          example: admin
+        password:
+          type: string
+          example: '******'
+      required:
+        - username
+        - password
+    Data:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT token
+          example: >-
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.4S5s2
+      required:
+        - token
+    LoginResponseDto:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+          description: status code
+        success:
+          type: boolean
+          example: true
+          description: status
+        message:
+          type: string
+          example: success
+          description: message
+        timestamp:
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        data:
+          description: Response data
+          allOf:
+            - $ref: '#/components/schemas/Data'
+      required:
+        - code
+        - success
+        - message
+        - timestamp
+        - data
     CustomerLoginInput:
       type: object
       properties:

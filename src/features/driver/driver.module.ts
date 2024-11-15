@@ -8,5 +8,6 @@ import { DriverEntity } from './entities/driver.entity';
   imports: [TypeOrmModule.forFeature([DriverEntity])],
   controllers: [DriverController],
   providers: [DriverService],
+  exports: [DriverService],
 })
 export class DriverModule {}

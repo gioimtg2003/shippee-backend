@@ -13,8 +13,8 @@ import { Role } from '@constants';
 import { extractTokenFromHeader } from '@utils';
 
 @Injectable()
-export class CustomerGuard implements CanActivate {
-  readonly logger = new Logger(CustomerGuard.name);
+export class AdminAuthGuard implements CanActivate {
+  readonly logger = new Logger(AdminAuthGuard.name);
   constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -34,12 +34,10 @@ export class CustomerGuard implements CanActivate {
 
       const customer = payload;
 
-      if (customer.role !== Role.CUSTOMER) {
-        this.logger.error(
-          'Access denied. User does not have the Customer role.',
-        );
+      if (customer.role !== Role.ADMIN) {
+        this.logger.error('Access denied. User does not have the Admin role.');
         throw new ForbiddenException(
-          'Access denied. User does not have the Customer role.',
+          'Access denied. User does not have the Admin role.',
         );
       }
     } catch {

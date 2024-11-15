@@ -1,3 +1,4 @@
+import { EXPIRES_TOKEN_ADMIN_AUTH, Role } from '@constants';
 import { AdminService } from '@features/admin/admin.service';
 import { CryptoService } from '@features/crypto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
@@ -31,10 +32,10 @@ export class AuthAdminService {
     }
 
     const token = this.jwtService.sign(
-      { id: admin.id, username: admin.username },
+      { id: admin.id, username: admin.username, role: Role.ADMIN },
       {
         secret: process.env.JWT_SECRET,
-        expiresIn: '8h',
+        expiresIn: EXPIRES_TOKEN_ADMIN_AUTH,
       },
     );
 

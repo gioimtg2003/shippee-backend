@@ -4,6 +4,7 @@ import { AuthAdminModule } from '@features/auth-admin';
 import { CommonModule } from '@features/common';
 import { CryptoModule } from '@features/crypto';
 import { DriverModule } from '@features/driver';
+import { DriverManageModule } from '@features/driver-manage';
 import { DriverWalletModule } from '@features/driver-wallet';
 import { OrderModule } from '@features/order';
 import { OrderStatusModule } from '@features/order-status';
@@ -31,6 +32,7 @@ import { AppService } from './app.service';
     }),
     EventEmitterModule.forRoot(),
     AdminModule,
+    DriverManageModule,
     CommonModule,
     OrderStatusModule,
     CryptoModule,

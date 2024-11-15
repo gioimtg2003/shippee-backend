@@ -24,6 +24,7 @@ jobs:
           doc: f55735d5-7822-4957-9d2e-eec6d87c6b68
           token: ${{ secrets.BUMP_TOKEN }}
           file: swagger-docs/swagger.yaml
+
   api-diff:
     if: ${{ github.event_name == 'pull_request' }}
     name: Check API diff on Bump.sh

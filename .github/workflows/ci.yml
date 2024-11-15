@@ -1,0 +1,32 @@
+name: CI Pipeline
+
+on: [pull_request, workflow_call]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v4
+
+      - name: Use Node.js version from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run lint
+        run: pnpm lint
+
+      # - name: Run test
+      #   run: pnpm test
+
+      - name: Run Build
+        run: pnpm build
+
+      - name: Build Docker image
+        run: docker build -t my-app:latest .

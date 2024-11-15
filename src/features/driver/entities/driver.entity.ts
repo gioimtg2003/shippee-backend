@@ -15,7 +15,7 @@ export class DriverEntity extends CoreEntity {
   @Column({ type: 'varchar', length: LIMIT_NAME })
   name: string;
 
-  @Column({ unique: true, length: LIMIT_NAME })
+  @Column({ unique: true, length: LIMIT_NAME, nullable: true })
   email: string;
 
   @Column({ type: 'varchar', length: 255 })

@@ -1,7 +1,6 @@
 # syntax = docker/dockerfile:1
 ARG NODE_VERSION=20
 FROM node:${NODE_VERSION}-alpine3.18 AS base
-LABEL fly_launch_runtime="NestJS"
 RUN apk add --no-cache curl
 WORKDIR /app
 

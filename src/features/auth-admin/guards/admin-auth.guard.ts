@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { IUserSessionProps } from '@common/interfaces';
 import { Role } from '@constants';
 import { extractTokenFromHeader } from '@utils';
 
@@ -27,8 +26,8 @@ export class AdminAuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verify<IUserSessionProps>(token, {
-        secret: process.env.JWT_SECRET_KEY,
+      const payload = await this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
       });
       req.user = payload;
 

@@ -41,6 +41,14 @@ export class AdminService {
     return this.findByField({ username });
   }
 
+  getMeProfile(id: number) {
+    this.logger.log(`Finding admin user by ID: ${id}`);
+    return this.adminRepo.findOne({
+      where: { id },
+      select: ['id', 'name', 'username'],
+    });
+  }
+
   async create(createAdminDto: CreateAdminDto) {
     createAdminDto.password = await this.cryptoService.hash(
       createAdminDto.password,

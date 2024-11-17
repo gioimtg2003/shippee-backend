@@ -9,8 +9,8 @@ export class AppService implements OnModuleInit {
       await this.adminService.findByUserName(process.env.ADMIN_USERNAME);
     } catch {
       await this.adminService.create({
-        username: process.env.ADMIN_USERNAME,
-        password: process.env.ADMIN_PASSWORD,
+        username: process.env.ADMIN_USERNAME.trim(),
+        password: process.env.ADMIN_PASSWORD.trim(),
         name: process.env.ADMIN_NAME,
       });
     }

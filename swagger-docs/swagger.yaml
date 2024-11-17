@@ -1,5 +1,19 @@
 openapi: 3.0.0
 paths:
+  /api/admin/me:
+    get:
+      operationId: AdminController_meProfile
+      parameters: []
+      responses:
+        '200':
+          description: Successful get admin profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMeDTO'
+      summary: Get admin profile
+      tags:
+        - Admin
   /api/auth-admin/login:
     post:
       operationId: AuthAdminController_login
@@ -64,15 +78,34 @@ tags: []
 servers: []
 components:
   schemas:
+    ResponseMeDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Admin name
+          example: Nguyen Cong Gioi
+        username:
+          type: string
+          description: Admin username
+          example: admin
+        id:
+          type: number
+          description: Admin user ID
+          example: '12'
+      required:
+        - id
     AdminLoginInput:
       type: object
       properties:
         username:
           type: string
+          description: Admin username
           example: admin
         password:
           type: string
-          example: '******'
+          description: Admin password
+          example: '123456'
       required:
         - username
         - password
@@ -84,18 +117,8 @@ components:
           description: JWT token
           example: >-
             eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.4S5s2
-        id:
-          type: number
-          description: User ID
-          example: '12'
-        name:
-          type: string
-          description: User name
-          example: Nguyen Cong Gioi
       required:
         - token
-        - id
-        - name
     LoginResponseDto:
       type: object
       properties:

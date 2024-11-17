@@ -7,7 +7,7 @@ export class AdminEntity extends CoreEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'char', length: 20, unique: true })
+  @Column({ type: 'varchar', length: 20, unique: true })
   username: string;
 
   @Column({ type: 'varchar', length: 255 })

@@ -41,6 +41,10 @@ async function bootstrap() {
   logger.debug(`🔥 Application listening on http://localhost:${PORT}/api`);
   logger.debug(`🔥 Swagger running on http://localhost:${PORT}/api/doc`);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors({
+    origin: appConfig.origin,
+    credentials: true,
+  });
 
   await app.listen(PORT);
 }

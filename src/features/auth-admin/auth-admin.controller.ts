@@ -1,5 +1,7 @@
+import { REQUEST_LIMIT_RATE } from '@constants';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthAdminService } from './auth-admin.service';
 import { AdminLoginInput } from './dto';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -8,6 +10,9 @@ import { LoginResponseDto } from './dto/login-response.dto';
 export class AuthAdminController {
   constructor(private readonly authAdminService: AuthAdminService) {}
 
+  @Throttle({
+    default: REQUEST_LIMIT_RATE.login,
+  })
   @Post('login')
   @ApiOperation({ summary: 'Admin user login' })
   @ApiResponse({

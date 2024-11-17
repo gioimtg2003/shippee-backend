@@ -1,4 +1,5 @@
 import { Environment } from '@config';
+import { REQUEST_LIMIT_RATE } from '@constants';
 import { AdminModule } from '@features/admin';
 import { AuthAdminModule } from '@features/auth-admin';
 import { CommonModule } from '@features/common';
@@ -11,7 +12,9 @@ import { OrderStatusModule } from '@features/order-status';
 import { UserModule } from '@features/user';
 import { UserAuthModule } from '@features/user-auth';
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 
@@ -30,6 +33,7 @@ import { AppService } from './app.service';
         ca: process.env.DATABASE_CA_CERT,
       },
     }),
+    ThrottlerModule.forRoot([REQUEST_LIMIT_RATE['global']]),
     EventEmitterModule.forRoot(),
     AdminModule,
     DriverManageModule,
@@ -44,6 +48,12 @@ import { AppService } from './app.service';
     UserAuthModule,
   ],
   controllers: [],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}

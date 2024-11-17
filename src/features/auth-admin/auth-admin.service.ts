@@ -31,7 +31,7 @@ export class AuthAdminService {
       throw new BadRequestException('Invalid password');
     }
 
-    const { id, name, username } = admin;
+    const { id, username } = admin;
 
     const token = this.jwtService.sign(
       { id, username, role: Role.ADMIN },
@@ -41,6 +41,6 @@ export class AuthAdminService {
       },
     );
 
-    return { token, id, name };
+    return { token };
   }
 }

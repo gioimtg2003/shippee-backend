@@ -84,8 +84,18 @@ components:
           description: JWT token
           example: >-
             eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.4S5s2
+        id:
+          type: number
+          description: User ID
+          example: '12'
+        name:
+          type: string
+          description: User name
+          example: Nguyen Cong Gioi
       required:
         - token
+        - id
+        - name
     LoginResponseDto:
       type: object
       properties:

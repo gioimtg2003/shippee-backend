@@ -39,6 +39,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformationInterceptor());
 
   logger.debug(`🔥 Application listening on http://localhost:${PORT}/api`);
+  logger.debug(`🔥 Swagger running on http://localhost:${PORT}/api/doc`);
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT);

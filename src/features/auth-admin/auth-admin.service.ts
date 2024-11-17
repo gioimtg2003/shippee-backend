@@ -31,14 +31,16 @@ export class AuthAdminService {
       throw new BadRequestException('Invalid password');
     }
 
+    const { id, name, username } = admin;
+
     const token = this.jwtService.sign(
-      { id: admin.id, username: admin.username, role: Role.ADMIN },
+      { id, username, role: Role.ADMIN },
       {
         secret: process.env.JWT_SECRET,
         expiresIn: EXPIRES_TOKEN_ADMIN_AUTH,
       },
     );
 
-    return { token };
+    return { token, id, name };
   }
 }

@@ -16,9 +16,6 @@ RUN pnpm install --frozen-lockfile --prod
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-ARG SENTRY_AUTH_TOKEN
-ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-
 # Install pnpm
 ARG PNPM_VERSION=latest
 RUN npm install -g pnpm@$PNPM_VERSION

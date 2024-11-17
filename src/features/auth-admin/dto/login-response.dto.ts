@@ -10,6 +10,18 @@ class Data {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.4S5s2',
   })
   token: string;
+
+  @ApiProperty({
+    description: 'User ID',
+    example: '12',
+  })
+  id: number;
+
+  @ApiProperty({
+    description: 'User name',
+    example: 'Nguyen Cong Gioi',
+  })
+  name: string;
 }
 
 export class LoginResponseDto extends ResponseDTO<Data> {
@@ -18,8 +30,8 @@ export class LoginResponseDto extends ResponseDTO<Data> {
     type: Data,
   })
   data: Data;
-  constructor(token: string) {
+  constructor(token: string, id: number, name: string) {
     super();
-    this.data = { token };
+    this.data = { token, id, name };
   }
 }

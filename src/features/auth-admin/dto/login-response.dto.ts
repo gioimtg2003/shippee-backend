@@ -12,14 +12,10 @@ class Data {
   token: string;
 }
 
-export class LoginResponseDto extends ResponseDTO<Data> {
+export class LoginResponseDto extends ResponseDTO {
   @ApiProperty({
     description: 'Response data',
     type: Data,
   })
   data: Data;
-  constructor(token: string) {
-    super();
-    this.data = { token };
-  }
 }

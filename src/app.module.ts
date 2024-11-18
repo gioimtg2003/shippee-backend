@@ -2,13 +2,13 @@ import { Environment } from '@config';
 import { REQUEST_LIMIT_RATE } from '@constants';
 import { AdminModule } from '@features/admin';
 import { AuthAdminModule } from '@features/auth-admin';
-import { CommonModule } from '@features/common';
 import { CryptoModule } from '@features/crypto';
 import { DriverModule } from '@features/driver';
 import { DriverManageModule } from '@features/driver-manage';
 import { DriverWalletModule } from '@features/driver-wallet';
 import { OrderModule } from '@features/order';
 import { OrderStatusModule } from '@features/order-status';
+import { TransportTypeModule } from '@features/transport-type';
 import { UserModule } from '@features/user';
 import { UserAuthModule } from '@features/user-auth';
 import { Module } from '@nestjs/common';
@@ -37,7 +37,7 @@ import { AppService } from './app.service';
     EventEmitterModule.forRoot(),
     AdminModule,
     DriverManageModule,
-    CommonModule,
+    TransportTypeModule,
     OrderStatusModule,
     CryptoModule,
     AuthAdminModule,

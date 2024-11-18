@@ -35,6 +35,13 @@ export class DriverService {
     return found;
   }
 
+  findAll(
+    where: FindOptionsWhere<DriverEntity> = {},
+    relations: string[] = [],
+  ) {
+    return this.driverRepo.find({ where, relations });
+  }
+
   findById(id: number, relations: string[] = []) {
     return this.findByField({ id }, relations);
   }

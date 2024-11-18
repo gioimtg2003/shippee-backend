@@ -1,11 +1,12 @@
 import { REQUEST_LIMIT_RATE } from '@constants';
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthAdminService } from './auth-admin.service';
 import { AdminLoginInput } from './dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 
+@ApiTags('auth-admin')
 @Controller('auth-admin')
 export class AuthAdminController {
   constructor(private readonly authAdminService: AuthAdminService) {}

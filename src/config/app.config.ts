@@ -24,7 +24,7 @@ type IConfigs = {
 };
 
 export const Origins = {
-  domain: 'shippee.nguyenconggioi.me',
+  domain: 'app-shippee.nguyenconggioi.me',
 };
 
 /**

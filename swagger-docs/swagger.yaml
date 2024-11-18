@@ -14,6 +14,38 @@ paths:
       summary: Get admin profile
       tags:
         - Admin
+  /api/driver-manage/driver:
+    post:
+      operationId: DriverManageController_createDriver
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverInput'
+      responses:
+        '201':
+          description: Driver created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateDriverDTO'
+      summary: Create a driver
+      tags: &ref_0
+        - driver-manage
+    get:
+      operationId: DriverManageController_getAllDriver
+      parameters: []
+      responses:
+        '200':
+          description: Get all driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseGetAllDriverDTO'
+      summary: Get all driver
+      tags: *ref_0
   /api/auth-admin/login:
     post:
       operationId: AuthAdminController_login
@@ -35,7 +67,7 @@ paths:
           description: Bad request
       summary: Admin user login
       tags:
-        - AuthAdmin
+        - auth-admin
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -56,7 +88,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_0
+      tags: &ref_1
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -68,7 +100,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_0
+      tags: *ref_1
 info:
   title: Shipppee system API
   description: The Shipppee system API description
@@ -78,7 +110,7 @@ tags: []
 servers: []
 components:
   schemas:
-    ResponseMeDTO:
+    Data:
       type: object
       properties:
         name:
@@ -95,6 +127,130 @@ components:
           example: '12'
       required:
         - id
+    ResponseMeDTO:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+          description: status code
+        success:
+          type: boolean
+          example: true
+          description: status
+        message:
+          type: string
+          example: success
+          description: message
+        timestamp:
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        data:
+          example:
+            id: 1
+            name: Cong Gioi
+            username: conggioi
+          description: Data
+          allOf:
+            - $ref: '#/components/schemas/Data'
+      required:
+        - code
+        - success
+        - message
+        - timestamp
+        - data
+    CreateDriverInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Driver name
+          example: Cong Gioi
+        email:
+          type: string
+          description: Driver email
+          example: conggioi.pro264@gmail.com
+        password:
+          type: string
+          description: Driver password
+          example: '123456'
+        phone:
+          type: string
+          description: Driver phone number
+          example: '0123456789'
+        transportTypeId:
+          type: number
+          description: Transport type ID
+          example: '1'
+      required:
+        - name
+        - email
+        - password
+        - phone
+        - transportTypeId
+    ResponseCreateDriverDTO:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+          description: status code
+        success:
+          type: boolean
+          example: true
+          description: status
+        message:
+          type: string
+          example: success
+          description: message
+        timestamp:
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        data:
+          type: boolean
+          example: true
+      required:
+        - code
+        - success
+        - message
+        - timestamp
+        - data
+    ResponseGetAllDriverDTO:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+          description: status code
+        success:
+          type: boolean
+          example: true
+          description: status
+        message:
+          type: string
+          example: success
+          description: message
+        timestamp:
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        data:
+          example:
+            - name: Cong Gioi
+              phone: '0123456789'
+              email: abcxyz@gmail.com
+              createdAt: '2021-07-07T06:00:00.000Z'
+          type: array
+          items:
+            type: string
+      required:
+        - code
+        - success
+        - message
+        - timestamp
+        - data
     AdminLoginInput:
       type: object
       properties:
@@ -109,16 +265,6 @@ components:
       required:
         - username
         - password
-    Data:
-      type: object
-      properties:
-        token:
-          type: string
-          description: JWT token
-          example: >-
-            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.4S5s2
-      required:
-        - token
     LoginResponseDto:
       type: object
       properties:

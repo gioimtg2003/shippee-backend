@@ -1,6 +1,7 @@
-import { CoreEntity, TransportTypeEntity } from '@common/entities';
+import { CoreEntity } from '@common/entities';
 import { DRIVER_STATUS_ENUM, LIMIT_NAME, LIMIT_PHONE } from '@constants';
 import { WalletHistoryEntity } from '@features/driver-wallet/entities';
+import { TransportTypeEntity } from '@features/transport-type';
 import {
   Column,
   Entity,

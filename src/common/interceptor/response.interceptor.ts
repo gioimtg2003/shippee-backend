@@ -1,39 +1,72 @@
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import {
+  CallHandler,
+  ExecutionContext,
+  HttpException,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
-export interface Response {
-  data: any;
+export interface Response<T> {
+  code: number;
+  success: boolean;
+  message: string;
+  data: T;
+  timeStamp: string;
 }
 
+@Injectable()
 export class TransformationInterceptor<T>
-  implements NestInterceptor<T, Response>
+  implements NestInterceptor<T, Response<T>>
 {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response> {
+  ): Observable<Response<T>> {
     const response = context.switchToHttp().getResponse();
     const statusCode = response.statusCode;
 
-    console.log('Interceptor', statusCode);
-
     return next.handle().pipe(
       map((data) => {
-        const builderStatus = data?.status;
-        console.log(data);
-        let success = statusCode >= 200 && statusCode <= 207;
-        if (builderStatus !== undefined) {
-          success = builderStatus >= 200 && builderStatus <= 207;
-          response.status(builderStatus);
-        }
+        const success = statusCode >= 200 && statusCode <= 299;
 
         return {
           code: statusCode,
           success: success,
-          message: data?.message,
+          message: data?.message || 'Request was successful',
           data: data,
           timeStamp: new Date().toISOString(),
         };
+      }),
+      catchError((error) => {
+        console.log('Error at here: ', error?.message);
+        let errorMessage =
+          error?.response?.message[0] ||
+          error?.message ||
+          'Internal Server Error';
+
+        let status = error?.status || 500;
+        if (errorMessage.includes('duplicate key value')) {
+          errorMessage = 'Data already exists';
+          status = 400;
+        }
+
+        response.status(status);
+
+        return throwError(
+          () =>
+            new HttpException(
+              {
+                code: status,
+                success: false,
+                message: errorMessage,
+                data: null,
+                timeStamp: new Date().toISOString(),
+              },
+              status,
+            ),
+        );
       }),
     );
   }

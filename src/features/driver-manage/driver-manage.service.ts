@@ -11,4 +11,9 @@ export class DriverManageService {
     this.logger.log('Creating driver with data: ' + JSON.stringify(data));
     return this.driverService.create(data);
   }
+
+  async getAllDriver() {
+    this.logger.log('Getting all drivers');
+    return this.driverService.findAll();
+  }
 }

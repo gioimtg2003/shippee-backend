@@ -39,7 +39,18 @@ export class DriverService {
     where: FindOptionsWhere<DriverEntity> = {},
     relations: string[] = [],
   ) {
-    return this.driverRepo.find({ where, relations });
+    return this.driverRepo.find({
+      where,
+      relations,
+      select: [
+        'id',
+        'name',
+        'phone',
+        'email',
+        'isIdentityVerified',
+        'createdAt',
+      ],
+    });
   }
 
   findById(id: number, relations: string[] = []) {
@@ -52,16 +63,6 @@ export class DriverService {
 
   async create(data: CreateDriverInput): Promise<DriverEntity> {
     this.logger.log('Creating driver...');
-
-    const find = await this.findByPhone(data.phone);
-
-    if (find) {
-      this.logger.error('⚠️ Driver already exists');
-
-      throw new BadRequestException(
-        'A driver with this phone number already exists',
-      );
-    }
     data.password = await this.cryptoService.hash(data.password);
 
     const driver = this.driverRepo.create(data);

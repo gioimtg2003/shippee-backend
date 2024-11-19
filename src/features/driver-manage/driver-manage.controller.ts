@@ -30,7 +30,7 @@ export class DriverManageController {
     type: ResponseCreateDriverDTO,
   })
   @Post('driver')
-  @UseGuards(AdminAuthGuard)
+  //@UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createDriver(@Body() data: CreateDriverInput) {
     const driver = await this.driverManageService.createDriver(data);
@@ -52,6 +52,6 @@ export class DriverManageController {
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)
   async getAllDriver() {
-    return [];
+    return this.driverManageService.getAllDriver();
   }
 }

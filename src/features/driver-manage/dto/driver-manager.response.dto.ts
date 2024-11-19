@@ -18,10 +18,20 @@ export class ResponseGetAllDriverDTO extends ResponseDTO {
   @ApiProperty({
     example: [
       {
+        id: 1,
+        createdAt: '2024-11-19T15:24:48.465Z',
         name: 'Cong Gioi',
-        phone: '0123456789',
-        email: 'abcxyz@gmail.com',
-        createdAt: '2021-07-07T06:00:00.000Z',
+        email: 'conggioi.pro264@gmail.com',
+        phone: '0367039394  ',
+        isIdentityVerified: false,
+      },
+      {
+        id: 4,
+        createdAt: '2024-11-19T15:25:18.054Z',
+        name: 'Cong Gioi',
+        email: 'conggioi.pro64@gmail.com',
+        phone: '0367014394  ',
+        isIdentityVerified: false,
       },
     ],
   })

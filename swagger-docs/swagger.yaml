@@ -531,6 +531,8 @@ components:
             - DRIVER
             - ADMIN
             - SUPER_ADMIN
+        phone:
+          type: string
         accessToken:
           type: string
         refreshToken:
@@ -540,5 +542,6 @@ components:
         - name
         - email
         - role
+        - phone
         - accessToken
         - refreshToken

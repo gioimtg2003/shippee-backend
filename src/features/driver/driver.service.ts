@@ -56,7 +56,7 @@ export class DriverService {
     return this.findByField({ phone });
   }
 
-  async create(data: CreateDriverInput): Promise<DriverEntity> {
+  async create(data: CreateDriverInput): Promise<boolean> {
     this.logger.log('Creating driver...');
     data.password = await this.cryptoService.hash(data.password);
 
@@ -68,6 +68,6 @@ export class DriverService {
       throw new BadRequestException('Error creating driver');
     }
 
-    return saved;
+    return true;
   }
 }

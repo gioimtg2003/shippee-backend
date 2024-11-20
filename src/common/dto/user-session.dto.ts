@@ -18,6 +18,9 @@ export class UserSession {
   role: Role;
 
   @ApiProperty()
+  phone?: string;
+
+  @ApiProperty()
   accessToken?: string;
 
   @ApiProperty()

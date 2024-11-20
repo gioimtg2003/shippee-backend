@@ -1,10 +1,5 @@
 import { CryptoService } from '@features/crypto';
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateDriverInput } from './dto/create-driver.input';
@@ -29,7 +24,7 @@ export class DriverService {
 
     if (!found?.id) {
       this.logger.error('Driver not found');
-      throw new NotFoundException('Driver not found');
+      throw new BadRequestException('Driver not found');
     }
 
     return found;

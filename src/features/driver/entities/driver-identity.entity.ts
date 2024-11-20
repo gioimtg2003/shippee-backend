@@ -36,9 +36,6 @@ export class DriverIdentityEntity extends CoreEntity {
   imgDriverLicenseBack: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
-  imgDriverLicenseWithDriver: string;
-
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgVehicleRegistrationCertFront: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })

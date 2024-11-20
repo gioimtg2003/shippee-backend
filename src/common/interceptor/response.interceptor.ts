@@ -42,9 +42,7 @@ export class TransformationInterceptor<T>
       catchError((error) => {
         console.log('Error at here: ', error);
         let errorMessage =
-          error?.response?.message[0] ||
-          error?.message ||
-          'Internal Server Error';
+          error?.response?.message || error?.message || 'Internal Server Error';
 
         let status = error?.status || 400;
         if (errorMessage.includes('duplicate key value')) {

@@ -7,6 +7,7 @@ import {
   CreateDriverInfoInput,
   ResponseCreateDriverInfoDTO,
 } from '@features/driver/dto/create-driver-info.input';
+import { UpdateDriverInfoInput } from '@features/driver/dto/update-driver-info.input';
 import {
   Body,
   Controller,
@@ -15,6 +16,7 @@ import {
   HttpStatus,
   Logger,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -59,14 +61,29 @@ export class DriverManageController {
     return this.driverManageService.getAllDriver();
   }
 
-  @ApiOperation({ summary: 'Create a driver' })
+  @ApiOperation({ summary: 'Create a partner identification info' })
   @ApiResponse({
     status: 201,
-    description: 'Driver created',
+    description: 'Partner created',
     type: ResponseCreateDriverInfoDTO,
   })
   @Post('driver/info')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.CREATED)
   createInfo(@Body() data: CreateDriverInfoInput) {
     return this.driverManageService.createDriverInfo(data);
+  }
+
+  @ApiOperation({ summary: 'Create a partner identification info' })
+  @ApiResponse({
+    status: 200,
+    description: 'Partner created',
+    type: ResponseCreateDriverInfoDTO,
+  })
+  @Put('driver/info')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  updateInfo(@Body() data: UpdateDriverInfoInput) {
+    return this.driverManageService.updateDriverInfo(data);
   }
 }

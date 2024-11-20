@@ -58,12 +58,30 @@ paths:
               $ref: '#/components/schemas/CreateDriverInfoInput'
       responses:
         '201':
-          description: Driver created
+          description: Partner created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseCreateDriverInfoDTO'
-      summary: Create a driver
+      summary: Create a partner identification info
+      tags: *ref_0
+    put:
+      operationId: DriverManageController_updateInfo
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDriverInfoInput'
+      responses:
+        '200':
+          description: Partner created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateDriverInfoDTO'
+      summary: Create a partner identification info
       tags: *ref_0
   /api/auth-admin/login:
     post:
@@ -323,6 +341,30 @@ components:
           type: string
           description: Image identity card back
           example: 672ds-da9sdj-fas34-asd9
+        driverLicenseNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgDriverLicenseFront:
+          type: string
+          description: Image Driver License front
+          example: 672ds-da9sdj-fas34-asd9
+        imgDriverLicenseBack:
+          type: string
+          description: Image Driver License back
+          example: 672ds-da9sdj-fas34-asd9
+        licensePlates:
+          type: string
+          description: license plates
+          example: 76C193934
+        imgVehicleRegistrationCertFront:
+          type: string
+          description: Image Vehicle Registration Cert Front
+          example: 672ds-da9sdj-fas34-asd9
+        imgVehicleRegistrationCertBack:
+          type: string
+          description: Image Vehicle Registration Cert Back
+          example: 672ds-da9sdj-fas34-asd9
       required:
         - idDriver
         - province
@@ -363,6 +405,61 @@ components:
         - message
         - timestamp
         - data
+    UpdateDriverInfoInput:
+      type: object
+      properties:
+        idDriver:
+          type: number
+          description: Driver ID
+          example: 1
+        province:
+          type: string
+          description: Province
+          example: Quang Ngai
+        district:
+          type: string
+          description: District
+          example: Binh Son
+        ward:
+          type: string
+          description: Ward
+          example: Binh Hai
+        identityCardNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgIdentityCardFront:
+          type: string
+          description: Image identity card front
+          example: 672ds-da9sdj-fas34-asd9
+        imgIdentityCardBack:
+          type: string
+          description: Image identity card back
+          example: 672ds-da9sdj-fas34-asd9
+        driverLicenseNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgDriverLicenseFront:
+          type: string
+          description: Image Driver License front
+          example: 672ds-da9sdj-fas34-asd9
+        imgDriverLicenseBack:
+          type: string
+          description: Image Driver License back
+          example: 672ds-da9sdj-fas34-asd9
+        licensePlates:
+          type: string
+          description: license plates
+          example: 76C193934
+        imgVehicleRegistrationCertFront:
+          type: string
+          description: Image Vehicle Registration Cert Front
+          example: 672ds-da9sdj-fas34-asd9
+        imgVehicleRegistrationCertBack:
+          type: string
+          description: Image Vehicle Registration Cert Back
+          example: 672ds-da9sdj-fas34-asd9
     AdminLoginInput:
       type: object
       properties:

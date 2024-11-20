@@ -1,7 +1,7 @@
 import { CoreEntity } from '@common/entities';
 import { TRANSPORT_TYPE } from '@constants';
 import { DriverEntity } from '@features/driver/entities/driver.entity';
-import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
+import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 @Entity('transport_types')
 export class TransportTypeEntity extends CoreEntity {
@@ -14,7 +14,6 @@ export class TransportTypeEntity extends CoreEntity {
   @Column({ length: TRANSPORT_TYPE.LIMIT_DESCRIPTION })
   description: string;
 
-  @OneToOne(() => DriverEntity)
-  @JoinColumn()
-  driver: Relation<DriverEntity>;
+  @OneToMany(() => DriverEntity, (driver) => driver.transportType)
+  driver: Relation<DriverEntity[]>;
 }

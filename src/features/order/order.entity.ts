@@ -6,6 +6,7 @@ import {
   ORDER_STATUS_ENUM,
   TRANSPORT_TYPE_ENUM,
 } from '@constants';
+import { DriverEntity } from '@features/driver/entities';
 import { OrderStatusEntity } from '@features/order-status/order-status.entity';
 import { CustomerEntity } from '@features/user/customer.entity';
 import { Column, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
@@ -48,12 +49,15 @@ export class OrderEntity extends CoreEntity {
   @Column({ type: 'enum', enum: ORDER_STATUS_ENUM })
   currentStatus: ORDER_STATUS_ENUM;
 
-  @OneToMany(() => OrderStatusEntity, (orderStatus) => orderStatus.order)
-  statusOrderHistory: Relation<OrderStatusEntity>[];
-
   @Column({ type: 'tstzrange', nullable: true })
   deliveryWindow: string;
 
   @Column({ length: NOTE_MAX_LENGTH, nullable: true })
   note: string;
+
+  @OneToMany(() => OrderStatusEntity, (orderStatus) => orderStatus.order)
+  statusOrderHistory: Relation<OrderStatusEntity>[];
+
+  @ManyToOne(() => DriverEntity)
+  driver: Relation<DriverEntity>;
 }

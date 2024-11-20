@@ -25,6 +25,8 @@
     "migration:generate": "npm run typeorm -- -d ./scripts/migration.ts migration:generate migrations/migration && npm run format:migrations"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.696.0",
+    "@aws-sdk/s3-request-presigner": "^3.696.0",
     "@casl/ability": "^6.5.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
@@ -49,7 +51,8 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

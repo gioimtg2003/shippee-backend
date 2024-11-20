@@ -4,6 +4,10 @@ import {
   ResponseCreateDriverDTO,
 } from '@features/driver/dto';
 import {
+  CreateDriverInfoInput,
+  ResponseCreateDriverInfoDTO,
+} from '@features/driver/dto/create-driver-info.input';
+import {
   Body,
   Controller,
   Get,
@@ -30,7 +34,7 @@ export class DriverManageController {
     type: ResponseCreateDriverDTO,
   })
   @Post('driver')
-  //@UseGuards(AdminAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createDriver(@Body() data: CreateDriverInput) {
     const driver = await this.driverManageService.createDriver(data);
@@ -53,5 +57,16 @@ export class DriverManageController {
   @HttpCode(HttpStatus.OK)
   async getAllDriver() {
     return this.driverManageService.getAllDriver();
+  }
+
+  @ApiOperation({ summary: 'Create a driver' })
+  @ApiResponse({
+    status: 201,
+    description: 'Driver created',
+    type: ResponseCreateDriverInfoDTO,
+  })
+  @Post('driver/info')
+  createInfo(@Body() data: CreateDriverInfoInput) {
+    return this.driverManageService.createDriverInfo(data);
   }
 }

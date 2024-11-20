@@ -46,6 +46,25 @@ paths:
                 $ref: '#/components/schemas/ResponseGetAllDriverDTO'
       summary: Get all driver
       tags: *ref_0
+  /api/driver-manage/driver/info:
+    post:
+      operationId: DriverManageController_createInfo
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverInfoInput'
+      responses:
+        '201':
+          description: Driver created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateDriverInfoDTO'
+      summary: Create a driver
+      tags: *ref_0
   /api/auth-admin/login:
     post:
       operationId: AuthAdminController_login
@@ -68,6 +87,20 @@ paths:
       summary: Admin user login
       tags:
         - auth-admin
+  /api/image/signed-url:
+    get:
+      operationId: ImageController_signedUrl
+      parameters: []
+      responses:
+        '200':
+          description: Return signed URL
+          content:
+            application/json:
+              schema:
+                type: string
+      summary: Get signed URL
+      tags:
+        - image
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -253,6 +286,77 @@ components:
           type: array
           items:
             type: string
+      required:
+        - code
+        - success
+        - message
+        - timestamp
+        - data
+    CreateDriverInfoInput:
+      type: object
+      properties:
+        idDriver:
+          type: number
+          description: Driver ID
+          example: 1
+        province:
+          type: string
+          description: Province
+          example: Quang Ngai
+        district:
+          type: string
+          description: District
+          example: Binh Son
+        ward:
+          type: string
+          description: Ward
+          example: Binh Hai
+        identityCardNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgIdentityCardFront:
+          type: string
+          description: Image identity card front
+          example: 672ds-da9sdj-fas34-asd9
+        imgIdentityCardBack:
+          type: string
+          description: Image identity card back
+          example: 672ds-da9sdj-fas34-asd9
+      required:
+        - idDriver
+        - province
+        - district
+        - ward
+    ResponseCreateDriverInfoDTO:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+          description: status code
+        success:
+          type: boolean
+          example: true
+          description: status
+        message:
+          type: string
+          example: success
+          description: message
+        timestamp:
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        data:
+          example:
+            id: 1
+            idDriver: 1
+            province: Quang Ngai
+            district: Binh Son
+            ward: Binh Hai
+          description: Data
+          allOf:
+            - $ref: '#/components/schemas/CreateDriverInfoInput'
       required:
         - code
         - success

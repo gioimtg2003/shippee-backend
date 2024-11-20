@@ -1,6 +1,6 @@
-export const EXPIRES_ACCESS_TOKEN = 60 * 30;
-export const EXPIRES_REFRESH_TOKEN = 60 * 60 * 24;
-export const EXPIRES_TOKEN_ADMIN_AUTH = 60 * 60 * 8;
+export const EXPIRES_ACCESS_TOKEN = 1800;
+export const EXPIRES_REFRESH_TOKEN = 86400;
+export const EXPIRES_TOKEN_ADMIN_AUTH = 28800;
 
 export const LIMIT_NAME = 60;
 export const LIMIT_PHONE = 12;

@@ -7,6 +7,6 @@ import { TransportTypeService } from './transport-type.service';
 export class TransportTypeController {
   constructor(private readonly transportTypeService: TransportTypeService) {}
   find() {
-    return this.transportTypeService.find();
+    return {};
   }
 }

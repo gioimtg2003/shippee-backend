@@ -1,7 +1,9 @@
 import { CoreEntity } from '@common/entities';
 import { LIMIT_NAME, LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
-import { Column } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
+import { DriverEntity } from './driver.entity';
 
+@Entity('driver_identity')
 export class DriverIdentityEntity extends CoreEntity {
   @Column({ type: 'varchar', length: LIMIT_NAME })
   province: string;
@@ -12,36 +14,40 @@ export class DriverIdentityEntity extends CoreEntity {
   @Column({ type: 'varchar', length: LIMIT_NAME })
   ward: string;
 
-  @Column({ type: 'varchar', length: LIMIT_NUMBER_ID })
+  @Column({ type: 'varchar', length: LIMIT_NUMBER_ID, nullable: true })
   identityCardNumber: string;
 
-  @Column({ type: 'varchar', length: LIMIT_NUMBER_ID })
+  @Column({ type: 'varchar', length: LIMIT_NUMBER_ID, nullable: true })
   driverLicenseNumber: string;
 
-  @Column({ type: 'char', length: 15 })
+  @Column({ type: 'char', length: 15, nullable: true })
   licensePlates: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgIdentityCardFront: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgIdentityCardBack: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgDriverLicenseFront: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgDriverLicenseBack: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgDriverLicenseWithDriver: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgVehicleRegistrationCertFront: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgVehicleRegistrationCertBack: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgVehicle: string;
+
+  @OneToOne(() => DriverEntity, (driver) => driver.identity)
+  @JoinColumn()
+  driver: Relation<DriverEntity>;
 }

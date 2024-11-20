@@ -106,7 +106,7 @@ paths:
       tags:
         - auth-admin
   /api/image/signed-url:
-    get:
+    post:
       operationId: ImageController_signedUrl
       parameters: []
       responses:

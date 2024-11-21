@@ -3,7 +3,10 @@ import { DriverService } from '@features/driver/driver.service';
 import { CreateDriverInput } from '@features/driver/dto';
 import { CreateDriverInfoInput } from '@features/driver/dto/create-driver-info.input';
 import { UpdateDriverInfoInput } from '@features/driver/dto/update-driver-info.input';
+import { DRIVER_EVENTS, DriverCreateEvent } from '@features/driver/events';
+import { MailService } from '@features/mail/mail.service';
 import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class DriverManageService {
@@ -11,11 +14,28 @@ export class DriverManageService {
   constructor(
     private readonly driverService: DriverService,
     private readonly driverIdentityService: DriverIdentityService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly mailService: MailService,
   ) {}
 
   async createDriver(data: CreateDriverInput) {
     this.logger.log('Creating driver with data: ' + JSON.stringify(data));
-    return this.driverService.create(data);
+    const password = data.password;
+    const saved = await this.driverService.create(data);
+
+    if (saved) {
+      this.eventEmitter.emit(
+        DRIVER_EVENTS.CREATED,
+        new DriverCreateEvent({
+          password: password,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+        }),
+      );
+    }
+
+    return saved;
   }
 
   async getAllDriver() {
@@ -29,5 +49,26 @@ export class DriverManageService {
 
   async updateDriverInfo(data: UpdateDriverInfoInput) {
     return this.driverIdentityService.update(data);
+  }
+
+  @OnEvent(DRIVER_EVENTS.CREATED)
+  async handleDriverCreatedEvent({ driver }: DriverCreateEvent) {
+    this.logger.log(`Driver created: ${driver.name}`);
+
+    if (!driver.email) {
+      this.logger.log(`Driver ${driver.name} does not have email`);
+      return;
+    }
+
+    this.mailService.sendMail({
+      to: driver.email,
+      subject: 'Tạo tài khoản tài xế thành công',
+      template: './manage-create-driver',
+      context: {
+        name: driver.name,
+        phone: driver.phone,
+        password: driver.password,
+      },
+    });
   }
 }

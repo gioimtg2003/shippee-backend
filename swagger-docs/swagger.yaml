@@ -1,5 +1,14 @@
 openapi: 3.0.0
 paths:
+  /api/mail:
+    post:
+      operationId: MailController_sendMail
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Mail
   /api/admin/me:
     get:
       operationId: AdminController_meProfile

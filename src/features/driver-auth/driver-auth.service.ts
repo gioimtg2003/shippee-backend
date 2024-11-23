@@ -1,5 +1,6 @@
 import { UserSession } from '@common/dto';
-import { EXPIRES_ACCESS_TOKEN, EXPIRES_REFRESH_TOKEN, Role } from '@constants';
+import { RegisterJwtService } from '@common/services';
+import { Role } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { DriverService } from '@features/driver/driver.service';
 import { CreateDriverInput } from '@features/driver/dto';
@@ -8,13 +9,15 @@ import { JwtService } from '@nestjs/jwt';
 import { DriverLoginInput } from './dto';
 
 @Injectable()
-export class DriverAuthService {
+export class DriverAuthService extends RegisterJwtService {
   private readonly logger = new Logger(DriverAuthService.name);
   constructor(
     private readonly driverService: DriverService,
     private readonly cryptoService: CryptoService,
-    private readonly jwtService: JwtService,
-  ) {}
+    protected readonly jwtService: JwtService,
+  ) {
+    super(jwtService);
+  }
 
   async register(data: CreateDriverInput) {
     return this.driverService.create(data);
@@ -43,25 +46,26 @@ export class DriverAuthService {
       phone: driver.phone,
       email: driver.email,
       name: driver.name,
-      role: Role.CUSTOMER,
+      role: Role.DRIVER,
     };
 
-    const accessToken = this.jwtService.sign(driverSession, {
-      secret: process.env.JWT_SECRET,
-      expiresIn: EXPIRES_ACCESS_TOKEN,
-    });
+    return this.registerJwt(driverSession);
+  }
+  async refreshToken(user: UserSession) {
+    const driver = await this.driverService.findById(user.id);
 
-    const refreshToken = this.jwtService.sign(
-      {
-        ...driverSession,
-        aT: true,
-      },
-      {
-        secret: process.env.JWT_SECRET,
-        expiresIn: EXPIRES_REFRESH_TOKEN,
-      },
-    );
+    if (!driver) {
+      throw new BadRequestException('This email is not registered');
+    }
 
-    return { ...driverSession, accessToken, refreshToken };
+    const driverSession: UserSession = {
+      id: driver.id,
+      phone: driver.phone,
+      email: driver.email,
+      name: driver.name,
+      role: Role.DRIVER,
+    };
+
+    return this.registerJwt(driverSession);
   }
 }

@@ -342,38 +342,16 @@ components:
           type: string
           description: Identity card number
           example: '123456789'
-        imgIdentityCardFront:
-          type: string
-          description: Image identity card front
-          example: 672ds-da9sdj-fas34-asd9
-        imgIdentityCardBack:
-          type: string
-          description: Image identity card back
-          example: 672ds-da9sdj-fas34-asd9
-        driverLicenseNumber:
-          type: string
-          description: Identity card number
-          example: '123456789'
-        imgDriverLicenseFront:
-          type: string
-          description: Image Driver License front
-          example: 672ds-da9sdj-fas34-asd9
-        imgDriverLicenseBack:
-          type: string
-          description: Image Driver License back
-          example: 672ds-da9sdj-fas34-asd9
         licensePlates:
           type: string
           description: license plates
           example: 76C193934
-        imgVehicleRegistrationCertFront:
-          type: string
-          description: Image Vehicle Registration Cert Front
-          example: 672ds-da9sdj-fas34-asd9
-        imgVehicleRegistrationCertBack:
-          type: string
-          description: Image Vehicle Registration Cert Back
-          example: 672ds-da9sdj-fas34-asd9
+        images:
+          description: List of images
+          example: '[]'
+          type: array
+          items:
+            type: string
       required:
         - idDriver
         - province
@@ -437,38 +415,16 @@ components:
           type: string
           description: Identity card number
           example: '123456789'
-        imgIdentityCardFront:
-          type: string
-          description: Image identity card front
-          example: 672ds-da9sdj-fas34-asd9
-        imgIdentityCardBack:
-          type: string
-          description: Image identity card back
-          example: 672ds-da9sdj-fas34-asd9
-        driverLicenseNumber:
-          type: string
-          description: Identity card number
-          example: '123456789'
-        imgDriverLicenseFront:
-          type: string
-          description: Image Driver License front
-          example: 672ds-da9sdj-fas34-asd9
-        imgDriverLicenseBack:
-          type: string
-          description: Image Driver License back
-          example: 672ds-da9sdj-fas34-asd9
         licensePlates:
           type: string
           description: license plates
           example: 76C193934
-        imgVehicleRegistrationCertFront:
-          type: string
-          description: Image Vehicle Registration Cert Front
-          example: 672ds-da9sdj-fas34-asd9
-        imgVehicleRegistrationCertBack:
-          type: string
-          description: Image Vehicle Registration Cert Back
-          example: 672ds-da9sdj-fas34-asd9
+        images:
+          description: List of images
+          example: '[]'
+          type: array
+          items:
+            type: string
     AdminLoginInput:
       type: object
       properties:

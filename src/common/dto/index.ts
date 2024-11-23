@@ -1,3 +1,4 @@
+export * from './client-login-response.dto';
 export * from './geometry-point.dto';
 export * from './id-with-relations.dto';
 export * from './pagination.dto';

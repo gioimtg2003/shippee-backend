@@ -23,12 +23,12 @@ export class CustomerGuard implements CanActivate {
 
     if (!token) {
       this.logger.debug('No JWT token found');
-      throw new UnauthorizedException('Token not found!');
+      throw new UnauthorizedException('Access Token not found!');
     }
 
     try {
       const payload = await this.jwtService.verify<IUserSessionProps>(token, {
-        secret: process.env.JWT_SECRET_KEY,
+        secret: process.env.JWT_SECRET,
       });
       req.user = payload;
 

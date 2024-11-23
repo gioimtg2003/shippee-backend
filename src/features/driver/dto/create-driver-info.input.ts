@@ -1,7 +1,8 @@
 import { ResponseDTO } from '@common/dto';
-import { LIMIT_NAME, LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
+import { LIMIT_NAME, LIMIT_NUMBER_ID } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -62,60 +63,6 @@ export class CreateDriverInfoInput {
   identityCardNumber?: string;
 
   @ApiProperty({
-    description: 'Image identity card front',
-    example: '672ds-da9sdj-fas34-asd9', //uuid
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(LIMIT_URL_IMG)
-  @MinLength(5)
-  imgIdentityCardFront?: string;
-
-  @ApiProperty({
-    description: 'Image identity card back',
-    example: '672ds-da9sdj-fas34-asd9', //uuid
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(LIMIT_URL_IMG)
-  @MinLength(5)
-  imgIdentityCardBack?: string;
-
-  @ApiProperty({
-    description: 'Identity card number',
-    example: '123456789',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @Length(LIMIT_NUMBER_ID, LIMIT_NUMBER_ID)
-  driverLicenseNumber?: string;
-
-  @ApiProperty({
-    description: 'Image Driver License front',
-    example: '672ds-da9sdj-fas34-asd9', //uuid
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(LIMIT_URL_IMG)
-  @MinLength(5)
-  imgDriverLicenseFront?: string;
-
-  @ApiProperty({
-    description: 'Image Driver License back',
-    example: '672ds-da9sdj-fas34-asd9', //uuid
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(LIMIT_URL_IMG)
-  @MinLength(5)
-  imgDriverLicenseBack?: string;
-
-  @ApiProperty({
     description: 'license plates',
     example: '76C193934',
     required: false,
@@ -126,26 +73,14 @@ export class CreateDriverInfoInput {
   licensePlates?: string;
 
   @ApiProperty({
-    description: 'Image Vehicle Registration Cert Front',
-    example: '672ds-da9sdj-fas34-asd9', //uuid
+    description: 'List of images',
+    example: '[]', //uuid
     required: false,
   })
   @IsOptional()
-  @IsString()
-  @MaxLength(LIMIT_URL_IMG)
-  @MinLength(5)
-  imgVehicleRegistrationCertFront?: string;
-
-  @ApiProperty({
-    description: 'Image Vehicle Registration Cert Back',
-    example: '672ds-da9sdj-fas34-asd9', //uuid
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @MaxLength(LIMIT_URL_IMG)
-  @MinLength(5)
-  imgVehicleRegistrationCertBack?: string;
+  @IsArray()
+  @MaxLength(6)
+  images?: string[];
 }
 
 export class ResponseCreateDriverInfoDTO extends ResponseDTO {

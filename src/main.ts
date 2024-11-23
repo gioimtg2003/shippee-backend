@@ -1,3 +1,4 @@
+import { ClientLoginResponseDto, ResponseDTO } from '@common/dto';
 import { TransformationInterceptor } from '@common/interceptor';
 import { buildConfig } from '@config';
 import { Logger, ValidationPipe } from '@nestjs/common';
@@ -24,7 +25,9 @@ async function bootstrap() {
       .setBasePath('api')
       .build();
 
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+      extraModels: [ResponseDTO, ClientLoginResponseDto],
+    });
     const yamlString = yaml.dump(document);
     const dirPath = path.join(__dirname, '..', 'swagger-docs');
     const filePath = path.join(dirPath, 'swagger.yaml');

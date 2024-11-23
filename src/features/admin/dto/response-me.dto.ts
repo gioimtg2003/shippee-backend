@@ -4,14 +4,10 @@ import { UpdateAdminDto } from './update-admin.dto';
 
 class Data extends PickType(UpdateAdminDto, ['id', 'name', 'username']) {}
 
-export class ResponseMeDTO extends ResponseDTO {
+export class ResponseMeDTO extends ResponseDTO<Data> {
   @ApiProperty({
-    example: {
-      id: 1,
-      name: 'Cong Gioi',
-      username: 'conggioi',
-    },
     description: 'Data',
+    type: Data,
   })
-  data: Data;
+  declare data: Data;
 }

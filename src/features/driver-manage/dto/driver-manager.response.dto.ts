@@ -14,7 +14,7 @@ class DataDriverResponse extends IntersectionType(
   isIdentityVerified: boolean;
 }
 
-export class ResponseGetAllDriverDTO extends ResponseDTO {
+export class ResponseGetAllDriverDTO extends ResponseDTO<DataDriverResponse[]> {
   @ApiProperty({
     example: [
       {
@@ -34,6 +34,7 @@ export class ResponseGetAllDriverDTO extends ResponseDTO {
         isIdentityVerified: false,
       },
     ],
+    type: [DataDriverResponse],
   })
-  data: DataDriverResponse[];
+  declare data: DataDriverResponse[];
 }

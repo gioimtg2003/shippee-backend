@@ -1,9 +1,6 @@
-import { ClientLoginResponseDto, UserSession } from '@common/dto';
+import { ClientLoginResponseDto, ResponseDTO, UserSession } from '@common/dto';
 import { CurrentUser } from '@decorators';
-import {
-  CreateDriverInput,
-  ResponseCreateDriverDTO,
-} from '@features/driver/dto';
+import { CreateDriverInput } from '@features/driver/dto';
 import {
   Body,
   Controller,
@@ -13,10 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { DriverAuthService } from './driver-auth.service';
 import { DriverLoginInput } from './dto';
@@ -31,7 +30,19 @@ export class DriverAuthController {
   @ApiResponse({
     status: 201,
     description: 'Register Partner',
-    type: ResponseCreateDriverDTO,
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseDTO) },
+        {
+          properties: {
+            data: {
+              type: 'boolean',
+              example: true,
+            },
+          },
+        },
+      ],
+    },
   })
   @Post('register')
   @HttpCode(HttpStatus.OK)
@@ -41,9 +52,21 @@ export class DriverAuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Driver login' })
-  @ApiResponse({
-    status: 200,
-    type: ClientLoginResponseDto,
+  @ApiOkResponse({
+    description: 'Refresh Login success',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseDTO) },
+        {
+          properties: {
+            data: {
+              type: 'object',
+              $ref: getSchemaPath(ClientLoginResponseDto),
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @HttpCode(HttpStatus.OK)
@@ -52,12 +75,23 @@ export class DriverAuthController {
   }
 
   @ApiOperation({ summary: 'Refresh token for driver' })
-  @ApiResponse({
-    status: 200,
-    type: ClientLoginResponseDto,
-  })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @Post('refresh-token')
+  @ApiOkResponse({
+    description: 'Refresh token for driver',
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(ResponseDTO) },
+        {
+          properties: {
+            data: {
+              type: 'object',
+              $ref: getSchemaPath(ClientLoginResponseDto),
+            },
+          },
+        },
+      ],
+    },
+  })
   @UseGuards(DriverRefreshTokenGuard)
   @HttpCode(HttpStatus.OK)
   async refreshToken(@CurrentUser() user: UserSession) {

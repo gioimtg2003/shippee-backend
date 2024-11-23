@@ -4,6 +4,7 @@ import { AdminModule } from '@features/admin';
 import { AuthAdminModule } from '@features/auth-admin';
 import { CryptoModule } from '@features/crypto';
 import { DriverModule } from '@features/driver';
+import { DriverAuthModule } from '@features/driver-auth';
 import { DriverManageModule } from '@features/driver-manage';
 import { DriverWalletModule } from '@features/driver-wallet';
 import { ImageModule } from '@features/image/image.module';
@@ -72,6 +73,7 @@ import { AppService } from './app.service';
     OrderStatusModule,
     CryptoModule,
     AuthAdminModule,
+    DriverAuthModule,
     ImageModule,
     OrderModule,
     DriverWalletModule,

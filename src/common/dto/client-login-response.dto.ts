@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ResponseDTO } from './response.dto';
 
-class Data {
+export class ClientLoginResponseDto {
   @ApiProperty({
     description: 'Access token',
     example: '',
@@ -19,12 +18,4 @@ class Data {
     example: '',
   })
   expiresIn: number;
-}
-
-export class ClientLoginResponseDto extends ResponseDTO {
-  @ApiProperty({
-    description: 'Response data',
-    type: Data,
-  })
-  data: Data;
 }

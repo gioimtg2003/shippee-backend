@@ -1,8 +1,5 @@
 import { AdminAuthGuard } from '@features/auth-admin/guards';
-import {
-  CreateDriverInput,
-  ResponseCreateDriverDTO,
-} from '@features/driver/dto';
+import { CreateDriverInput } from '@features/driver/dto';
 import {
   CreateDriverInfoInput,
   ResponseCreateDriverInfoDTO,
@@ -20,8 +17,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiArrayResponse,
+  ApiSuccessResponse,
+} from 'src/decorators/response-swagger.decorator';
 import { DriverManageService } from './driver-manage.service';
-import { ResponseGetAllDriverDTO } from './dto';
 
 @ApiTags('driver-manage')
 @Controller('driver-manage')
@@ -30,13 +30,9 @@ export class DriverManageController {
   constructor(private readonly driverManageService: DriverManageService) {}
 
   @ApiOperation({ summary: 'Create a driver' })
-  @ApiResponse({
-    status: 201,
-    description: 'Driver created',
-    type: ResponseCreateDriverDTO,
-  })
+  @ApiSuccessResponse('Driver created')
   @Post('driver')
-  // @UseGuards(AdminAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createDriver(@Body() data: CreateDriverInput) {
     const driver = await this.driverManageService.createDriver(data);
@@ -49,11 +45,7 @@ export class DriverManageController {
   }
 
   @ApiOperation({ summary: 'Get all driver' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get all driver',
-    type: ResponseGetAllDriverDTO,
-  })
+  @ApiArrayResponse(CreateDriverInput)
   @Get('driver')
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -75,11 +67,7 @@ export class DriverManageController {
   }
 
   @ApiOperation({ summary: 'Create a partner identification info' })
-  @ApiResponse({
-    status: 200,
-    description: 'Partner created',
-    type: ResponseCreateDriverInfoDTO,
-  })
+  @ApiSuccessResponse('Update partner identification info')
   @Put('driver/info')
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)

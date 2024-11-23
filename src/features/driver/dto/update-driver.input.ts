@@ -15,10 +15,10 @@ export class UpdateDriverInput extends PartialType(CreateDriverInput) {
   id: number;
 }
 
-export class ResponseUpdateDriverDTO extends ResponseDTO {
+export class ResponseUpdateDriverDTO extends ResponseDTO<UpdateDriverInput> {
   @ApiProperty({
-    example: {},
+    type: UpdateDriverInput,
     description: 'Data response',
   })
-  data: UpdateDriverInput;
+  declare data: UpdateDriverInput;
 }

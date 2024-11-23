@@ -83,7 +83,7 @@ export class CreateDriverInfoInput {
   images?: string[];
 }
 
-export class ResponseCreateDriverInfoDTO extends ResponseDTO {
+export class ResponseCreateDriverInfoDTO extends ResponseDTO<CreateDriverInfoInput> {
   @ApiProperty({
     example: {
       id: 1,
@@ -93,6 +93,7 @@ export class ResponseCreateDriverInfoDTO extends ResponseDTO {
       ward: 'Binh Hai',
     },
     description: 'Data',
+    type: CreateDriverInfoInput,
   })
-  data: CreateDriverInfoInput;
+  declare data: CreateDriverInfoInput;
 }

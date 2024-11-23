@@ -34,12 +34,17 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateDriverInput'
       responses:
-        '201':
+        '200':
           description: Driver created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseCreateDriverDTO'
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
       summary: Create a driver
       tags: &ref_0
         - driver-manage
@@ -48,11 +53,17 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Get all driver
+          description: Success response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseGetAllDriverDTO'
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CreateDriverInput'
       summary: Get all driver
       tags: *ref_0
   /api/driver-manage/driver/info:
@@ -85,11 +96,16 @@ paths:
               $ref: '#/components/schemas/UpdateDriverInfoInput'
       responses:
         '200':
-          description: Partner created
+          description: Update partner identification info
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseCreateDriverInfoDTO'
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
       summary: Create a partner identification info
       tags: *ref_0
   /api/auth-admin/login:
@@ -114,6 +130,75 @@ paths:
       summary: Admin user login
       tags:
         - auth-admin
+  /api/driver-auth/register:
+    post:
+      operationId: DriverAuthController_register
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDriverInput'
+      responses:
+        '201':
+          description: Register Partner
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: Register Partner
+      tags: &ref_1
+        - Driver Auth
+  /api/driver-auth/login:
+    post:
+      operationId: DriverAuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverLoginInput'
+      responses:
+        '200':
+          description: Refresh Login success
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/ClientLoginResponseDto'
+        '401':
+          description: Unauthorized
+      summary: Driver login
+      tags: *ref_1
+  /api/driver-auth/refresh-token:
+    post:
+      operationId: DriverAuthController_refreshToken
+      parameters: []
+      responses:
+        '200':
+          description: Refresh token for driver
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/ClientLoginResponseDto'
+      summary: Refresh token for driver
+      tags: *ref_1
   /api/image/signed-url:
     post:
       operationId: ImageController_signedUrl
@@ -148,7 +233,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_1
+      tags: &ref_2
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -160,7 +245,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_1
+      tags: *ref_2
 info:
   title: Shipppee system API
   description: The Shipppee system API description
@@ -207,10 +292,6 @@ components:
           example: '2021-09-01T14:00:00.000Z'
           description: timestamp
         data:
-          example:
-            id: 1
-            name: Cong Gioi
-            username: conggioi
           description: Data
           allOf:
             - $ref: '#/components/schemas/Data'
@@ -249,76 +330,6 @@ components:
         - password
         - phone
         - transportTypeId
-    ResponseCreateDriverDTO:
-      type: object
-      properties:
-        code:
-          type: number
-          example: 200
-          description: status code
-        success:
-          type: boolean
-          example: true
-          description: status
-        message:
-          type: string
-          example: success
-          description: message
-        timestamp:
-          type: string
-          example: '2021-09-01T14:00:00.000Z'
-          description: timestamp
-        data:
-          type: boolean
-          example: true
-      required:
-        - code
-        - success
-        - message
-        - timestamp
-        - data
-    ResponseGetAllDriverDTO:
-      type: object
-      properties:
-        code:
-          type: number
-          example: 200
-          description: status code
-        success:
-          type: boolean
-          example: true
-          description: status
-        message:
-          type: string
-          example: success
-          description: message
-        timestamp:
-          type: string
-          example: '2021-09-01T14:00:00.000Z'
-          description: timestamp
-        data:
-          example:
-            - id: 1
-              createdAt: '2024-11-19T15:24:48.465Z'
-              name: Cong Gioi
-              email: conggioi.pro264@gmail.com
-              phone: '0367039394  '
-              isIdentityVerified: false
-            - id: 4
-              createdAt: '2024-11-19T15:25:18.054Z'
-              name: Cong Gioi
-              email: conggioi.pro64@gmail.com
-              phone: '0367014394  '
-              isIdentityVerified: false
-          type: array
-          items:
-            type: string
-      required:
-        - code
-        - success
-        - message
-        - timestamp
-        - data
     CreateDriverInfoInput:
       type: object
       properties:
@@ -460,6 +471,9 @@ components:
           description: timestamp
         data:
           description: Response data
+          example:
+            token: >-
+              eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluIiwiaWF0IjoxNTE2MjM5MDIyfQ.4S5s2
           allOf:
             - $ref: '#/components/schemas/Data'
       required:
@@ -468,6 +482,20 @@ components:
         - message
         - timestamp
         - data
+    DriverLoginInput:
+      type: object
+      properties:
+        password:
+          type: string
+          description: Driver password
+          example: '123456'
+        phone:
+          type: string
+          description: Driver phone number
+          example: '0123456789'
+      required:
+        - password
+        - phone
     CustomerLoginInput:
       type: object
       properties:
@@ -510,3 +538,46 @@ components:
         - phone
         - accessToken
         - refreshToken
+    ResponseDTO:
+      type: object
+      properties:
+        code:
+          type: number
+          example: 200
+          description: status code
+        success:
+          type: boolean
+          example: true
+          description: status
+        message:
+          type: string
+          example: success
+          description: message
+        timestamp:
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+      required:
+        - code
+        - success
+        - message
+        - timestamp
+    ClientLoginResponseDto:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Access token
+          example: ''
+        refreshToken:
+          type: string
+          description: Refresh token
+          example: ''
+        expiresIn:
+          type: number
+          description: Token expiration time
+          example: ''
+      required:
+        - accessToken
+        - refreshToken
+        - expiresIn

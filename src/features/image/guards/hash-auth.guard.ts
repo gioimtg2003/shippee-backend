@@ -2,9 +2,9 @@ import { CryptoService } from '@features/crypto';
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   Logger,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
@@ -22,7 +22,7 @@ export class HashAuthGuard implements CanActivate {
     const hash = request?.headers?.['x-shipppee-sha-256'];
     const requestTime = request?.headers?.['x-shipppee-timestamp'];
     if (!hash || !requestTime) {
-      throw new UnauthorizedException('Not authorized');
+      throw new ForbiddenException('Not authorized');
     }
 
     const { fileName } = request.body;
@@ -31,13 +31,13 @@ export class HashAuthGuard implements CanActivate {
     const timeWindow = 30 * 1000;
 
     if (currentTime - requestTime > timeWindow) {
-      throw new UnauthorizedException('Request is expired');
+      throw new ForbiddenException('Request has expired');
     }
 
     const dataToHash = `${fileName}${requestTime}${process.env.HASH_SECRET_KEY}`;
     const compare = this.cryptoService.compareHash256(dataToHash, hash);
     if (!compare) {
-      throw new UnauthorizedException('Not authorized');
+      throw new ForbiddenException('Not authorized');
     }
 
     this.logger.log('Hash auth passed successfully: ' + compare);

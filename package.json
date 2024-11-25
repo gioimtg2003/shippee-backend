@@ -21,6 +21,7 @@
     "typeorm": "ts-node ./node_modules/typeorm/cli",
     "migration:run": "npm run typeorm migration:run -- -d ./scripts/migration.ts",
     "format:migrations": "prettier --write \"migrations/*.ts\"",
+    "migration:revert": "npm run typeorm -- -d ./scripts/migration.ts migration:revert",
     "migration:create": "npm run typeorm -- migration:create migrations/migration && npm run format:migrations",
     "migration:generate": "npm run typeorm -- -d ./scripts/migration.ts migration:generate migrations/migration && npm run format:migrations"
   },

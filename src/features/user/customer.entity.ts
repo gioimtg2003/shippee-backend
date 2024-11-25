@@ -1,6 +1,6 @@
 import { CoreEntity } from '@common/entities';
 import { LIMIT_NAME, LIMIT_PHONE } from '@constants';
-import { OrderEntity } from '@features/order/order.entity';
+import { OrderEntity } from '@features/order/entities/order.entity';
 import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 @Entity('customers')

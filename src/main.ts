@@ -1,6 +1,7 @@
 import { ClientLoginResponseDto, ResponseDTO } from '@common/dto';
 import { TransformationInterceptor } from '@common/interceptor';
 import { buildConfig } from '@config';
+import { TransportTypeDTO } from '@features/transport-type/dto';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -26,7 +27,7 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {
-      extraModels: [ResponseDTO, ClientLoginResponseDto],
+      extraModels: [ResponseDTO, ClientLoginResponseDto, TransportTypeDTO],
     });
     const yamlString = yaml.dump(document);
     const dirPath = path.join(__dirname, '..', 'swagger-docs');

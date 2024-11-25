@@ -1,7 +1,7 @@
 import { CoreEntity } from '@common/entities';
 import { DRIVER_STATUS_ENUM, LIMIT_NAME, LIMIT_PHONE } from '@constants';
 import { WalletHistoryEntity } from '@features/driver-wallet/entities';
-import { OrderEntity } from '@features/order/order.entity';
+import { OrderEntity } from '@features/order/entities/order.entity';
 import { TransportTypeEntity } from '@features/transport-type/transport-type.entity';
 import {
   Column,

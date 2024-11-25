@@ -8,3 +8,8 @@ export const LIMIT_NUMBER_ID = 12;
 export const LIMIT_URL_IMG = 100;
 
 export const LIMIT_PASSWORD = 6;
+
+export enum PRICE_TYPE_ENUM {
+  FIXED = 'FIXED',
+  PERCENT = 'PERCENT',
+}

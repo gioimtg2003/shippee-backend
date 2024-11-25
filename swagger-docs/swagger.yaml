@@ -108,6 +108,26 @@ paths:
                         example: true
       summary: Create a partner identification info
       tags: *ref_0
+  /api/transport-type:
+    get:
+      operationId: TransportTypeController_find
+      parameters: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TransportTypeDTO'
+      summary: Get all transport types
+      tags:
+        - transport-type
   /api/auth-admin/login:
     post:
       operationId: AuthAdminController_login
@@ -581,3 +601,54 @@ components:
         - accessToken
         - refreshToken
         - expiresIn
+    TransportTypeDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Transport type ID
+          example: '1'
+        name:
+          type: string
+          description: Transport name
+          example: Xe máy
+        imageUrl:
+          type: string
+          description: Transport type image URL
+          example: https://media-shipppee.nguyenconggioi.me/moto_bike.png
+        description:
+          type: string
+          description: Transport type description
+          example: Hoạt động tất cả khung giờ, chở tối đa 100kg
+        code:
+          type: string
+          enum:
+            - BIKE
+            - VAN_500
+            - VAN_1T
+            - TRUCK_1T
+            - TRUCK_1T5
+            - TRUCK_2T
+          description: Transport type code
+          example: BIKE
+        loadWeight:
+          type: number
+          description: Transport type load weight
+          example: 100000
+        textWeight:
+          type: string
+          description: Transport type text weight
+          example: 100Kg
+        textSize:
+          type: string
+          description: Transport type text size
+          example: 1 x 1 x 1 m
+      required:
+        - id
+        - name
+        - imageUrl
+        - description
+        - code
+        - loadWeight
+        - textWeight
+        - textSize

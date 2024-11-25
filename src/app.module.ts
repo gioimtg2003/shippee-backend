@@ -11,6 +11,8 @@ import { ImageModule } from '@features/image/image.module';
 import { MailModule } from '@features/mail';
 import { OrderModule } from '@features/order';
 import { OrderStatusModule } from '@features/order-status';
+import { PriceCalculateModule } from '@features/price-calculate';
+import { SpecialRequireModule } from '@features/special-require';
 import { TransportTypeModule } from '@features/transport-type';
 import { UserModule } from '@features/user';
 import { UserAuthModule } from '@features/user-auth';
@@ -50,7 +52,7 @@ import { AppService } from './app.service';
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASSWORD,
         },
-        port: Number(process.env.EMAIL_PORT) || 465,
+        port: process.env.EMAIL_PORT || 465,
         secure: false,
         tls: {
           rejectUnauthorized: false,
@@ -69,6 +71,8 @@ import { AppService } from './app.service';
     EventEmitterModule.forRoot(),
     AdminModule,
     DriverManageModule,
+    SpecialRequireModule,
+    PriceCalculateModule,
     TransportTypeModule,
     OrderStatusModule,
     CryptoModule,

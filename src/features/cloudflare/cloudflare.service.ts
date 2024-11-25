@@ -33,13 +33,13 @@ export class CloudflareService {
     });
   }
 
-  async getSignedUrl(key: string) {
+  async getSignedUrl(key: string, contentType: string) {
     this.logger.log(`Getting signed url for key: ${key}`);
 
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
-      ContentType: 'image/png',
+      ContentType: contentType,
     });
 
     return getSignedUrl(this.s3Client, command, {

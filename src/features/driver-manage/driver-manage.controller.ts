@@ -1,9 +1,6 @@
 import { AdminAuthGuard } from '@features/auth-admin/guards';
 import { CreateDriverInput } from '@features/driver/dto';
-import {
-  CreateDriverInfoInput,
-  ResponseCreateDriverInfoDTO,
-} from '@features/driver/dto/create-driver-info.input';
+import { CreateDriverInfoInput } from '@features/driver/dto/create-driver-info.input';
 import { UpdateDriverInfoInput } from '@features/driver/dto/update-driver-info.input';
 import {
   Body,
@@ -16,9 +13,10 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   ApiArrayResponse,
+  ApiObjectResponse,
   ApiSuccessResponse,
 } from 'src/decorators/response-swagger.decorator';
 import { DriverManageService } from './driver-manage.service';
@@ -54,11 +52,7 @@ export class DriverManageController {
   }
 
   @ApiOperation({ summary: 'Create a partner identification info' })
-  @ApiResponse({
-    status: 201,
-    description: 'Partner created',
-    type: ResponseCreateDriverInfoDTO,
-  })
+  @ApiObjectResponse(CreateDriverInfoInput)
   @Post('driver/info')
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.CREATED)

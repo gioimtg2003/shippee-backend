@@ -1,11 +1,8 @@
-import { ResponseDTO } from '@common/dto';
-import { LIMIT_NAME, LIMIT_NUMBER_ID } from '@constants';
+import { LIMIT_NAME, LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   Length,
   Max,
@@ -55,45 +52,32 @@ export class CreateDriverInfoInput {
   @ApiProperty({
     description: 'Identity card number',
     example: '123456789',
-    required: false,
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @Length(LIMIT_NUMBER_ID, LIMIT_NUMBER_ID)
-  identityCardNumber?: string;
+  identityCardNumber: string;
 
   @ApiProperty({
-    description: 'license plates',
-    example: '76C193934',
-    required: false,
+    description: 'Image identity card front',
+    example: '672ds-da9sdj-fas34-asd9', //uuid
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  @MaxLength(15)
-  licensePlates?: string;
+  @MaxLength(LIMIT_URL_IMG)
+  @MinLength(5)
+  imgIdentityCardFront: string;
 
   @ApiProperty({
-    description: 'List of images',
-    example: '[]', //uuid
-    required: false,
+    description: 'Image identity card back',
+    example: '672ds-da9sdj-fas34-asd9', //uuid
+    required: true,
   })
-  @IsOptional()
-  @IsArray()
-  @MaxLength(6)
-  images?: string[];
-}
-
-export class ResponseCreateDriverInfoDTO extends ResponseDTO<CreateDriverInfoInput> {
-  @ApiProperty({
-    example: {
-      id: 1,
-      idDriver: 1,
-      province: 'Quang Ngai',
-      district: 'Binh Son',
-      ward: 'Binh Hai',
-    },
-    description: 'Data',
-    type: CreateDriverInfoInput,
-  })
-  declare data: CreateDriverInfoInput;
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(LIMIT_URL_IMG)
+  @MinLength(5)
+  imgIdentityCardBack: string;
 }

@@ -77,12 +77,17 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateDriverInfoInput'
       responses:
-        '201':
-          description: Partner created
+        '200':
+          description: Success response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseCreateDriverInfoDTO'
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/CreateDriverInfoInput'
       summary: Create a partner identification info
       tags: *ref_0
     put:
@@ -223,6 +228,12 @@ paths:
     post:
       operationId: ImageController_signedUrl
       parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUrlInput'
       responses:
         '200':
           description: Return signed URL
@@ -373,56 +384,22 @@ components:
           type: string
           description: Identity card number
           example: '123456789'
-        licensePlates:
+        imgIdentityCardFront:
           type: string
-          description: license plates
-          example: 76C193934
-        images:
-          description: List of images
-          example: '[]'
-          type: array
-          items:
-            type: string
+          description: Image identity card front
+          example: 672ds-da9sdj-fas34-asd9
+        imgIdentityCardBack:
+          type: string
+          description: Image identity card back
+          example: 672ds-da9sdj-fas34-asd9
       required:
         - idDriver
         - province
         - district
         - ward
-    ResponseCreateDriverInfoDTO:
-      type: object
-      properties:
-        code:
-          type: number
-          example: 200
-          description: status code
-        success:
-          type: boolean
-          example: true
-          description: status
-        message:
-          type: string
-          example: success
-          description: message
-        timestamp:
-          type: string
-          example: '2021-09-01T14:00:00.000Z'
-          description: timestamp
-        data:
-          example:
-            id: 1
-            idDriver: 1
-            province: Quang Ngai
-            district: Binh Son
-            ward: Binh Hai
-          description: Data
-          allOf:
-            - $ref: '#/components/schemas/CreateDriverInfoInput'
-      required:
-        - code
-        - success
-        - message
-        - timestamp
-        - data
+        - identityCardNumber
+        - imgIdentityCardFront
+        - imgIdentityCardBack
     UpdateDriverInfoInput:
       type: object
       properties:
@@ -446,16 +423,38 @@ components:
           type: string
           description: Identity card number
           example: '123456789'
+        imgIdentityCardFront:
+          type: string
+          description: Image identity card front
+          example: 672ds-da9sdj-fas34-asd9
+        imgIdentityCardBack:
+          type: string
+          description: Image identity card back
+          example: 672ds-da9sdj-fas34-asd9
+        driverLicenseNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgDriverLicenseFront:
+          type: string
+          description: Image Driver License front
+          example: 672ds-da9sdj-fas34-asd9
+        imgDriverLicenseBack:
+          type: string
+          description: Image Driver License back
+          example: 672ds-da9sdj-fas34-asd9
         licensePlates:
           type: string
           description: license plates
           example: 76C193934
-        images:
-          description: List of images
-          example: '[]'
-          type: array
-          items:
-            type: string
+        imgVehicleRegistrationCertFront:
+          type: string
+          description: Image Vehicle Registration Cert Front
+          example: 672ds-da9sdj-fas34-asd9
+        imgVehicleRegistrationCertBack:
+          type: string
+          description: Image Vehicle Registration Cert Back
+          example: 672ds-da9sdj-fas34-asd9
     AdminLoginInput:
       type: object
       properties:
@@ -516,6 +515,9 @@ components:
       required:
         - password
         - phone
+    SignUrlInput:
+      type: object
+      properties: {}
     CustomerLoginInput:
       type: object
       properties:

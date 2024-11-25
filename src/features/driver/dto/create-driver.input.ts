@@ -1,3 +1,4 @@
+import { ResponseDTO } from '@common/dto';
 import { LIMIT_NAME } from '@constants';
 import { IsPhoneNumber } from '@decorators';
 import { ApiProperty } from '@nestjs/swagger';
@@ -51,4 +52,11 @@ export class CreateDriverInput {
   @Min(1)
   @Max(99)
   transportTypeId: number;
+}
+
+export class ResponseCreateDriverDTO extends ResponseDTO<ResponseCreateDriverDTO> {
+  @ApiProperty({
+    example: true,
+  })
+  declare data: ResponseCreateDriverDTO;
 }

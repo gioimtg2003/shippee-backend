@@ -1,7 +1,8 @@
 import { REQUEST_LIMIT_RATE } from '@constants';
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { SignUrlInput } from './dto/sign-url.input';
 import { ImageService } from './image.service';
 
 @ApiTags('image')
@@ -19,7 +20,7 @@ export class ImageController {
   })
   @Post('signed-url')
   @Throttle({ default: REQUEST_LIMIT_RATE.signedUrl })
-  signedUrl() {
-    return this.imageService.getSignedUrl();
+  signedUrl(@Body() data: SignUrlInput) {
+    return this.imageService.getSignedUrl(data);
   }
 }

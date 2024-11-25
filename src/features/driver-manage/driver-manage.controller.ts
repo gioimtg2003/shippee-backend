@@ -47,7 +47,7 @@ export class DriverManageController {
   @ApiOperation({ summary: 'Get all driver' })
   @ApiArrayResponse(CreateDriverInput)
   @Get('driver')
-  //@UseGuards(AdminAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)
   async getAllDriver() {
     return this.driverManageService.getAllDriver();

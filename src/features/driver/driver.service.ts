@@ -44,6 +44,7 @@ export class DriverService {
         'email',
         'isIdentityVerified',
         'createdAt',
+        'transportType',
       ],
     });
   }
@@ -58,9 +59,15 @@ export class DriverService {
 
   async create(data: CreateDriverInput): Promise<boolean> {
     this.logger.log('Creating driver...');
+
     data.password = await this.cryptoService.hash(data.password);
 
-    const driver = this.driverRepo.create(data);
+    const driver = this.driverRepo.create({
+      ...data,
+      transportType: {
+        id: data.transportTypeId,
+      },
+    });
     const saved = await this.driverRepo.save(driver);
 
     if (!saved.id) {

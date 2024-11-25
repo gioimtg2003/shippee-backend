@@ -12,7 +12,7 @@ export const REQUEST_LIMIT_RATE: Record<limitType, ThrottlerOptions> = {
     limit: 10,
   },
   signedUrl: {
-    ttl: 30 * 1000,
+    ttl: 15 * 1000,
     limit: 2,
   },
 };

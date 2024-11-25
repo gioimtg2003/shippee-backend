@@ -54,6 +54,14 @@ export class CryptoService {
     return bcrypt.hash(text, this.SALT_ROUNDS);
   }
 
+  hash256(data: string): string {
+    return crypto.createHash('sha256').update(data).digest('hex');
+  }
+
+  compareHash256(data: string, hash: string): boolean {
+    return this.hash256(data) === hash;
+  }
+
   compareHash(raw: string, hash: string): Promise<boolean> {
     return bcrypt.compare(raw, hash);
   }

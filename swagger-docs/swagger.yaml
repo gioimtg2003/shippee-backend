@@ -226,8 +226,21 @@ paths:
       tags: *ref_1
   /api/image/signed-url:
     post:
+      description: >-
+        Get signed URL for uploading image. The URL will be expired in 30
+        seconds.
       operationId: ImageController_signedUrl
-      parameters: []
+      parameters:
+        - name: x-shipppee-timestamp
+          in: header
+          description: Request timestamp
+          schema:
+            type: string
+        - name: x-shipppee-sha-256
+          in: header
+          description: SHA-256 hash of the request
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -517,7 +530,18 @@ components:
         - phone
     SignUrlInput:
       type: object
-      properties: {}
+      properties:
+        fileName:
+          type: string
+          description: File name
+          example: image.jpg
+        contentType:
+          type: string
+          description: Content type
+          example: image/jpeg
+      required:
+        - fileName
+        - contentType
     CustomerLoginInput:
       type: object
       properties:

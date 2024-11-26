@@ -1,3 +1,4 @@
+import { HASH_FIELDS_KEY } from '@decorators';
 import { CryptoService } from '@features/crypto';
 import {
   CanActivate,
@@ -6,13 +7,17 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class HashAuthGuard implements CanActivate {
   private readonly logger = new Logger(HashAuthGuard.name);
 
-  constructor(private readonly cryptoService: CryptoService) {}
+  constructor(
+    private readonly cryptoService: CryptoService,
+    private reflector: Reflector,
+  ) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -24,9 +29,6 @@ export class HashAuthGuard implements CanActivate {
     if (!hash || !requestTime) {
       throw new ForbiddenException('Not authorized');
     }
-
-    const { fileName } = request.body;
-
     const currentTime = Date.now();
     const timeWindow = 30 * 1000;
 
@@ -34,7 +36,17 @@ export class HashAuthGuard implements CanActivate {
       throw new ForbiddenException('Request has expired');
     }
 
-    const dataToHash = `${fileName}${requestTime}${process.env.HASH_SECRET_KEY}`;
+    const hashFields =
+      this.reflector.get<string[]>(HASH_FIELDS_KEY, context.getHandler()) || [];
+
+    let dataToHash: string = '';
+
+    hashFields.forEach((field) => {
+      if (request.body[field]) {
+        dataToHash += request.body[field];
+      }
+    });
+    dataToHash += requestTime + process.env.HASH_SECRET_KEY;
     const compare = this.cryptoService.compareHash256(dataToHash, hash);
     if (!compare) {
       throw new ForbiddenException('Not authorized');

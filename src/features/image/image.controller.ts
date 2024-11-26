@@ -1,4 +1,6 @@
+import { HashAuthGuard } from '@common/guards';
 import { REQUEST_LIMIT_RATE } from '@constants';
+import { HashFields } from '@decorators';
 import {
   Body,
   Controller,
@@ -15,7 +17,6 @@ import {
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { SignUrlInput } from './dto/sign-url.input';
-import { HashAuthGuard } from './guards';
 import { ImageService } from './image.service';
 
 @ApiTags('image')
@@ -50,6 +51,7 @@ export class ImageController {
   @Post('signed-url')
   @Throttle({ default: REQUEST_LIMIT_RATE.signedUrl })
   @UseGuards(HashAuthGuard)
+  @HashFields('fileName')
   @HttpCode(HttpStatus.OK)
   signedUrl(@Body() data: SignUrlInput) {
     return this.imageService.getSignedUrl(data);

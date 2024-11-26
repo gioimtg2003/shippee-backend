@@ -23,7 +23,10 @@ export class DriverIdentityService {
       throw new BadRequestException('Driver not found');
     }
 
-    const driverInfo = this.driverIdentityRepo.create(data);
+    const driverInfo = this.driverIdentityRepo.create({
+      ...data,
+      driver: { id: data.idDriver },
+    });
     const saved = await this.driverIdentityRepo.save(driverInfo);
 
     if (!saved.id) {

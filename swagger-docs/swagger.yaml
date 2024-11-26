@@ -116,7 +116,19 @@ paths:
   /api/transport-type:
     get:
       operationId: TransportTypeController_find
-      parameters: []
+      parameters:
+        - name: x-shipppee-timestamp
+          in: header
+          description: Request timestamp
+          required: true
+          schema:
+            type: string
+        - name: x-shipppee-sha-256
+          in: header
+          description: SHA-256 hash of the request
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success response

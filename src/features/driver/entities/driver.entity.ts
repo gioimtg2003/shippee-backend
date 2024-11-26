@@ -15,7 +15,7 @@ import { DriverIdentityEntity } from './driver-identity.entity';
 
 @Entity('drivers')
 export class DriverEntity extends CoreEntity {
-  @Column({ type: 'varchar', length: LIMIT_NAME })
+  @Column({ type: 'varchar', length: LIMIT_NAME, nullable: true })
   name: string;
 
   @Column({ unique: true, length: LIMIT_NAME, nullable: true })
@@ -32,6 +32,9 @@ export class DriverEntity extends CoreEntity {
 
   @Column({ type: 'boolean', default: false })
   isIdentityVerified: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  isAiChecked: boolean; // AI check identity
 
   @Column({ type: 'boolean', default: false })
   isOnline: boolean;

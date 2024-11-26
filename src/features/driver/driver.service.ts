@@ -14,6 +14,13 @@ export class DriverService {
     private readonly cryptoService: CryptoService,
   ) {}
 
+  private exists<T>(where: FindOptionsWhere<T>) {
+    return this.driverRepo.findOne({
+      where,
+      select: ['id'],
+    });
+  }
+
   async findByField<T>(where: FindOptionsWhere<T>, relations: string[] = []) {
     this.logger.debug(`Finding driver by ${where}}`);
 
@@ -53,12 +60,18 @@ export class DriverService {
     return this.findByField({ id }, relations);
   }
 
-  findByPhone(phone: string) {
-    return this.findByField({ phone });
+  findByPhone(phone: string, relations: string[] = []) {
+    return this.findByField({ phone }, relations);
   }
 
-  async create(data: CreateDriverInput): Promise<boolean> {
+  async create(data: CreateDriverInput): Promise<DriverEntity> {
     this.logger.log('Creating driver...');
+    const existed = this.exists({ phone: data.phone, email: data.email });
+
+    if (existed) {
+      this.logger.error('⚠️ Driver already exists');
+      throw new BadRequestException('Driver already exists');
+    }
 
     data.password = await this.cryptoService.hash(data.password);
 
@@ -75,6 +88,6 @@ export class DriverService {
       throw new BadRequestException('Error creating driver');
     }
 
-    return true;
+    return driver;
   }
 }

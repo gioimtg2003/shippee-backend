@@ -1,6 +1,6 @@
 import { UserSession } from '@common/dto';
 import { RegisterJwtService } from '@common/services';
-import { Role } from '@constants';
+import { Role, TRANSPORT_TYPE_ENUM } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { DriverService } from '@features/driver/driver.service';
 import { CreateDriverInput } from '@features/driver/dto';
@@ -20,13 +20,19 @@ export class DriverAuthService extends RegisterJwtService {
   }
 
   async register(data: CreateDriverInput) {
-    return this.driverService.create(data);
+    this.logger.log(`Registering driver: ${data.phone}`);
+    const driver = await this.driverService.create(data);
+    if (driver) {
+      return this.generateJwtVerify({ ...driver, role: Role.DRIVER });
+    }
   }
 
   async login(data: DriverLoginInput) {
     this.logger.log(`Phone Login: ${data.phone}`);
 
-    const driver = await this.driverService.findByPhone(data.phone);
+    const driver = await this.driverService.findByPhone(data.phone, [
+      'transportType',
+    ]);
 
     if (!driver) {
       throw new BadRequestException('This email is not registered');
@@ -39,6 +45,16 @@ export class DriverAuthService extends RegisterJwtService {
 
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid password');
+    }
+
+    if (driver.transportType.code === TRANSPORT_TYPE_ENUM.BIKE) {
+      if (!driver.isAiChecked) {
+        return this.generateJwtVerify({ ...driver, role: Role.DRIVER });
+      }
+    } else {
+      if (!driver.isIdentityVerified) {
+        return this.generateJwtVerify({ ...driver, role: Role.DRIVER });
+      }
     }
 
     const driverSession: UserSession = {
@@ -67,5 +83,15 @@ export class DriverAuthService extends RegisterJwtService {
     };
 
     return this.registerJwt(driverSession);
+  }
+
+  private async generateJwtVerify(data: UserSession) {
+    const jwtVerify = await this.registerJwtVerify({
+      ...data,
+      role: Role.DRIVER,
+    });
+    return {
+      jwtVerify,
+    };
   }
 }

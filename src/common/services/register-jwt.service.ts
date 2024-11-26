@@ -29,4 +29,11 @@ export class RegisterJwtService {
       expiresIn: Math.floor(Date.now() + EXPIRES_ACCESS_TOKEN * 1000 - 10000),
     };
   }
+
+  async registerJwtVerify(data: UserSession) {
+    return this.jwtService.sign(data, {
+      secret: process.env.JWT_SECRET_VERIFY,
+      expiresIn: EXPIRES_ACCESS_TOKEN,
+    });
+  }
 }

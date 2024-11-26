@@ -178,8 +178,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateDriverInput'
       responses:
-        '201':
-          description: Register Partner
+        '200':
+          description: Driver register success but not verify
           content:
             application/json:
               schema:
@@ -187,8 +187,8 @@ paths:
                   - $ref: '#/components/schemas/ResponseDTO'
                   - properties:
                       data:
-                        type: boolean
-                        example: true
+                        type: object
+                        $ref: '#/components/schemas/DriverLoginNotVerifyResponseDto'
       summary: Register Partner
       tags: &ref_1
         - Driver Auth
@@ -204,7 +204,7 @@ paths:
               $ref: '#/components/schemas/DriverLoginInput'
       responses:
         '200':
-          description: Refresh Login success
+          description: Success response
           content:
             application/json:
               schema:
@@ -224,7 +224,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Refresh token for driver
+          description: Success response
           content:
             application/json:
               schema:
@@ -663,3 +663,12 @@ components:
         - loadWeight
         - textWeight
         - textSize
+    DriverLoginNotVerifyResponseDto:
+      type: object
+      properties:
+        jwtVerify:
+          type: string
+          description: Access token
+          example: ''
+      required:
+        - jwtVerify

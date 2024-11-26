@@ -6,6 +6,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsOptional,
+  IsString,
   Max,
   MaxLength,
   Min,
@@ -16,7 +17,8 @@ export class CreateDriverInput {
     description: 'Driver name',
     example: 'Cong Gioi',
   })
-  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
   @MaxLength(LIMIT_NAME)
   name: string;
 

@@ -19,3 +19,11 @@ export class ClientLoginResponseDto {
   })
   expiresIn: number;
 }
+
+export class DriverLoginNotVerifyResponseDto {
+  @ApiProperty({
+    description: 'Access token',
+    example: '',
+  })
+  jwtVerify: string;
+}

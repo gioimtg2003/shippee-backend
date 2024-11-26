@@ -1,4 +1,8 @@
-import { ClientLoginResponseDto, ResponseDTO } from '@common/dto';
+import {
+  ClientLoginResponseDto,
+  DriverLoginNotVerifyResponseDto,
+  ResponseDTO,
+} from '@common/dto';
 import { TransformationInterceptor } from '@common/interceptor';
 import { buildConfig } from '@config';
 import { TransportTypeDTO } from '@features/transport-type/dto';
@@ -27,7 +31,12 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config, {
-      extraModels: [ResponseDTO, ClientLoginResponseDto, TransportTypeDTO],
+      extraModels: [
+        ResponseDTO,
+        ClientLoginResponseDto,
+        TransportTypeDTO,
+        DriverLoginNotVerifyResponseDto,
+      ],
     });
     const yamlString = yaml.dump(document);
     const dirPath = path.join(__dirname, '..', 'swagger-docs');

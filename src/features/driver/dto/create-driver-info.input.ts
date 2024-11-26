@@ -1,8 +1,9 @@
-import { LIMIT_NAME, LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
+import { LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Length,
   Max,
@@ -23,38 +24,11 @@ export class CreateDriverInfoInput {
   idDriver: number;
 
   @ApiProperty({
-    description: 'Province',
-    example: 'Quang Ngai',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(LIMIT_NAME)
-  province: string;
-
-  @ApiProperty({
-    description: 'District',
-    example: 'Binh Son',
-  })
-  @IsString()
-  @MaxLength(LIMIT_NAME)
-  @MinLength(1)
-  district: string;
-
-  @ApiProperty({
-    description: 'Ward',
-    example: 'Binh Hai',
-  })
-  @IsString()
-  @MaxLength(LIMIT_NAME)
-  @MinLength(1)
-  ward: string;
-
-  @ApiProperty({
     description: 'Identity card number',
     example: '123456789',
     required: true,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @Length(LIMIT_NUMBER_ID, LIMIT_NUMBER_ID)
   identityCardNumber: string;

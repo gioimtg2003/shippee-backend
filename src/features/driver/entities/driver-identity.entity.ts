@@ -1,42 +1,33 @@
 import { CoreEntity } from '@common/entities';
-import { LIMIT_NAME, LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
+import { LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
 import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
 import { DriverEntity } from './driver.entity';
 
 @Entity('driver_identity')
 export class DriverIdentityEntity extends CoreEntity {
-  @Column({ type: 'varchar', length: LIMIT_NAME })
-  province: string;
-
-  @Column({ type: 'varchar', length: LIMIT_NAME })
-  district: string;
-
-  @Column({ type: 'varchar', length: LIMIT_NAME })
-  ward: string;
-
   @Column({ type: 'varchar', length: LIMIT_NUMBER_ID, nullable: true })
-  identityCardNumber: string;
+  identityCardNumber?: string;
 
   @Column({ type: 'char', length: 15, nullable: true })
   licensePlates: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
   imgIdentityCardFront: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
   imgIdentityCardBack: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
-  imgDriverLicenseFront: string;
+  imgDriverLicenseFront?: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
-  imgDriverLicenseBack: string;
+  imgDriverLicenseBack?: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
-  imgVehicleRegistrationCertFront: string;
+  imgVehicleRegistrationCertFront?: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
-  imgVehicleRegistrationCertBack: string;
+  imgVehicleRegistrationCertBack?: string;
 
   @OneToOne(() => DriverEntity, (driver) => driver.identity)
   @JoinColumn()

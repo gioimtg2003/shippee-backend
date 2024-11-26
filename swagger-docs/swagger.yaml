@@ -393,18 +393,6 @@ components:
           type: number
           description: Driver ID
           example: 1
-        province:
-          type: string
-          description: Province
-          example: Quang Ngai
-        district:
-          type: string
-          description: District
-          example: Binh Son
-        ward:
-          type: string
-          description: Ward
-          example: Binh Hai
         identityCardNumber:
           type: string
           description: Identity card number
@@ -419,9 +407,6 @@ components:
           example: 672ds-da9sdj-fas34-asd9
       required:
         - idDriver
-        - province
-        - district
-        - ward
         - identityCardNumber
         - imgIdentityCardFront
         - imgIdentityCardBack
@@ -432,18 +417,6 @@ components:
           type: number
           description: Driver ID
           example: 1
-        province:
-          type: string
-          description: Province
-          example: Quang Ngai
-        district:
-          type: string
-          description: District
-          example: Binh Son
-        ward:
-          type: string
-          description: Ward
-          example: Binh Hai
         identityCardNumber:
           type: string
           description: Identity card number

@@ -66,6 +66,6 @@ export class DriverManageController {
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)
   updateInfo(@Body() data: UpdateDriverInfoInput) {
-    return this.driverManageService.updateDriverInfo(data);
+    return this.driverManageService.updateDriverInfo(data, 1);
   }
 }

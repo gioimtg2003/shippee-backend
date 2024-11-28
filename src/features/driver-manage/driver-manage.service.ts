@@ -47,8 +47,8 @@ export class DriverManageService {
     return this.driverIdentityService.create(data);
   }
 
-  async updateDriverInfo(data: UpdateDriverInfoInput) {
-    return this.driverIdentityService.update(data);
+  async updateDriverInfo(data: UpdateDriverInfoInput, idDriver: number) {
+    return this.driverIdentityService.update(data, idDriver);
   }
 
   @OnEvent(DRIVER_EVENTS.CREATED)

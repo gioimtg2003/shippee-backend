@@ -9,7 +9,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 import { IUserSessionProps } from '@common/interfaces';
-import { JWT, Role } from '@constants';
+import { JWT, JWT_TYPE_ENUM, Role } from '@constants';
 import { JWT_SECRET_TYPE } from '@decorators';
 import { Reflector } from '@nestjs/core';
 import { extractTokenFromHeader } from '@utils';
@@ -33,10 +33,10 @@ export class CustomerGuard implements CanActivate {
 
     try {
       const jwtSecretType =
-        this.reflector.get<JWT_SECRET_TYPE>(
+        this.reflector.get<JWT_TYPE_ENUM>(
           JWT_SECRET_TYPE,
           context.getHandler(),
-        ) || 'access';
+        ) || JWT_TYPE_ENUM.ACCESS;
 
       const payload = await this.jwtService.verify<IUserSessionProps>(token, {
         secret: JWT[jwtSecretType],

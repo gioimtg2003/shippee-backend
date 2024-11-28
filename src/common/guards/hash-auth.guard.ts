@@ -46,6 +46,7 @@ export class HashAuthGuard implements CanActivate {
         dataToHash += request.body[field];
       }
     });
+
     dataToHash += requestTime + process.env.HASH_SECRET_KEY;
     const compare = this.cryptoService.compareHash256(dataToHash, hash);
     if (!compare) {

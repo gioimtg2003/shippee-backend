@@ -18,6 +18,6 @@ export class ImageService {
       contentType,
     );
 
-    return { url, key: uuid };
+    return { url, key: fileNameWithUuid };
   }
 }

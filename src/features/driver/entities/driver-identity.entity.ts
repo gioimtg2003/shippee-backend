@@ -11,10 +11,10 @@ export class DriverIdentityEntity extends CoreEntity {
   @Column({ type: 'char', length: 15, nullable: true })
   licensePlates: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgIdentityCardFront: string;
 
-  @Column({ type: 'varchar', length: LIMIT_URL_IMG })
+  @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgIdentityCardBack: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })

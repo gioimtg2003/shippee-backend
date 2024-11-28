@@ -1,5 +1,5 @@
-import { JWT_SECRET_TYPE } from '@decorators';
 import { ThrottlerOptions } from '@nestjs/throttler';
+import { JWT_TYPE_ENUM } from './common.constant';
 type limitType = 'global' | 'login' | 'signedUrl' | 'register';
 
 export const REQUEST_LIMIT_RATE: Record<limitType, ThrottlerOptions> = {
@@ -22,8 +22,8 @@ export const REQUEST_LIMIT_RATE: Record<limitType, ThrottlerOptions> = {
   },
 };
 
-export const JWT: Record<JWT_SECRET_TYPE, string> = {
-  access: process.env.JWT_SECRET,
-  refresh: process.env.JWT_SECRET_REFRESH_TOKEN,
-  verify: process.env.JWT_SECRET_VERIFY,
+export const JWT: { [key in JWT_TYPE_ENUM]: string } = {
+  [JWT_TYPE_ENUM.ACCESS]: process.env.JWT_SECRET,
+  [JWT_TYPE_ENUM.REFRESH]: process.env.JWT_SECRET_REFRESH_TOKEN,
+  [JWT_TYPE_ENUM.VERIFY]: process.env.JWT_SECRET_VERIFY_EMAIL,
 };

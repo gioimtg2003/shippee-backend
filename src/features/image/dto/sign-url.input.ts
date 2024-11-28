@@ -21,3 +21,18 @@ export class SignUrlInput {
   @IsImageType()
   contentType: string;
 }
+
+export class ResponseSignUrl {
+  @ApiProperty({
+    description: 'Signed URL',
+    example:
+      'https://ship.abc9asd.r2.cloudflarestorage.com/hihi.png?X-Amz-Algorithm=AWS4-H MAC-SHA256&X-Amz-Content-Sha256=d64ccf0d4b1449153d78215ffff23asd0de1fd2b357e153026c9a3fada96&X-Amz-Credential=sda32423',
+  })
+  url: string;
+
+  @ApiProperty({
+    description: 'Key',
+    example: '1234-1234-1234-1234.png',
+  })
+  key: string;
+}

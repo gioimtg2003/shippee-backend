@@ -13,3 +13,9 @@ export enum PRICE_TYPE_ENUM {
   FIXED = 'FIXED',
   PERCENT = 'PERCENT',
 }
+
+export enum JWT_TYPE_ENUM {
+  ACCESS = 'ACCESS',
+  REFRESH = 'REFRESH',
+  VERIFY = 'VERIFY',
+}

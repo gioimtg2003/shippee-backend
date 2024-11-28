@@ -25,7 +25,7 @@ export class DriverIdentityService {
 
     const driverInfo = this.driverIdentityRepo.create({
       ...data,
-      driver: { id: data.idDriver },
+      driver: { id: driver.id },
     });
     const saved = await this.driverIdentityRepo.save(driverInfo);
 
@@ -38,18 +38,35 @@ export class DriverIdentityService {
     return saved;
   }
 
-  async update(data: UpdateDriverInfoInput) {
+  async update(data: UpdateDriverInfoInput, idDriver: number) {
+    const driver = await this.driverService.findById(idDriver);
+    if (!driver) {
+      this.logger.error(`⚠️ Driver not found with id: ${idDriver}`);
+
+      throw new BadRequestException('Driver not found');
+    }
     const driverInfo = await this.driverIdentityRepo.findOne({
       where: {
         driver: {
-          id: data.idDriver,
+          id: driver.id,
         },
       },
     });
+    console.log(driverInfo);
 
     if (!driverInfo) {
-      this.logger.error(`⚠️ Driver info not found with id: ${data.idDriver}`);
-      throw new BadRequestException('Driver info not found');
+      // Create new driver info if not found
+      const created = this.driverIdentityRepo.create({
+        ...data,
+        driver: { id: driver.id },
+      });
+      const saved = await this.driverIdentityRepo.save(created);
+
+      if (!saved.id) {
+        this.logger.error('⚠️ Failed to create driver info');
+        throw new BadRequestException('Failed to create driver info');
+      }
+      return saved;
     }
 
     const updated = await this.driverIdentityRepo.save({

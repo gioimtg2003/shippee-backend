@@ -1,5 +1,5 @@
 import { LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsOptional,
   IsString,
@@ -7,9 +7,40 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { CreateDriverInfoInput } from './create-driver-info.input';
 
-export class UpdateDriverInfoInput extends PartialType(CreateDriverInfoInput) {
+export class UpdateDriverInfoInput {
+  @ApiProperty({
+    description: 'Identity card number',
+    example: '123456789',
+    required: true,
+  })
+  @IsOptional()
+  @IsString()
+  @Length(LIMIT_NUMBER_ID, LIMIT_NUMBER_ID)
+  identityCardNumber: string;
+
+  @ApiProperty({
+    description: 'Image identity card front',
+    example: '672ds-da9sdj-fas34-asd9', //uuid
+    required: true,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(LIMIT_URL_IMG)
+  @MinLength(5)
+  imgIdentityCardFront: string;
+
+  @ApiProperty({
+    description: 'Image identity card back',
+    example: '672ds-da9sdj-fas34-asd9', //uuid
+    required: true,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(LIMIT_URL_IMG)
+  @MinLength(5)
+  imgIdentityCardBack: string;
+
   @ApiProperty({
     description: 'Identity card number',
     example: '123456789',

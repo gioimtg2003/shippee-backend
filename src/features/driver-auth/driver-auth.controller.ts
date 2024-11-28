@@ -3,7 +3,7 @@ import {
   DriverLoginNotVerifyResponseDto,
   UserSession,
 } from '@common/dto';
-import { REQUEST_LIMIT_RATE } from '@constants';
+import { JWT_TYPE_ENUM, REQUEST_LIMIT_RATE } from '@constants';
 import { ApiObjectResponse, CurrentUser, JwtSecretType } from '@decorators';
 import { CreateDriverInput } from '@features/driver/dto';
 import {
@@ -58,7 +58,7 @@ export class DriverAuthController {
   @Post('refresh-token')
   @ApiObjectResponse(ClientLoginResponseDto)
   @UseGuards(DriverAuthGuard)
-  @JwtSecretType('refresh')
+  @JwtSecretType(JWT_TYPE_ENUM.REFRESH)
   @HttpCode(HttpStatus.OK)
   async refreshToken(@CurrentUser() user: UserSession) {
     return this.driverAuthService.refreshToken(user);

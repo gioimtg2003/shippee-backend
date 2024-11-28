@@ -67,6 +67,7 @@ export class DriverAuthService extends RegisterJwtService {
 
     return this.registerJwt(driverSession);
   }
+
   async refreshToken(user: UserSession) {
     const driver = await this.driverService.findById(user.id);
 
@@ -87,7 +88,10 @@ export class DriverAuthService extends RegisterJwtService {
 
   private async generateJwtVerify(data: UserSession) {
     const jwtVerify = await this.registerJwtVerify({
-      ...data,
+      id: data.id,
+      phone: data.phone,
+      email: data.email,
+      name: data.name,
       role: Role.DRIVER,
     });
     return {

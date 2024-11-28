@@ -66,8 +66,7 @@ export class DriverService {
 
   async create(data: CreateDriverInput): Promise<DriverEntity> {
     this.logger.log('Creating driver...');
-    const existed = this.exists({ phone: data.phone, email: data.email });
-
+    const existed = await this.exists({ phone: data.phone, email: data.email });
     if (existed) {
       this.logger.error('⚠️ Driver already exists');
       throw new BadRequestException('Driver already exists');

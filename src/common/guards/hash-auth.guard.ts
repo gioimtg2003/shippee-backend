@@ -26,6 +26,7 @@ export class HashAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const hash = request?.headers?.['x-shipppee-sha-256'];
     const requestTime = request?.headers?.['x-shipppee-timestamp'];
+
     if (!hash || !requestTime) {
       throw new ForbiddenException('Not authorized');
     }
@@ -48,6 +49,7 @@ export class HashAuthGuard implements CanActivate {
     });
 
     dataToHash += requestTime + process.env.HASH_SECRET_KEY;
+    console.log(dataToHash);
     const compare = this.cryptoService.compareHash256(dataToHash, hash);
     if (!compare) {
       throw new ForbiddenException('Not authorized');

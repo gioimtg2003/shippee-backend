@@ -14,11 +14,15 @@ export class DriverService {
     private readonly cryptoService: CryptoService,
   ) {}
 
-  private exists<T>(where: FindOptionsWhere<T>) {
+  private exists(where: FindOptionsWhere<DriverEntity> = {}) {
     return this.driverRepo.findOne({
       where,
       select: ['id'],
     });
+  }
+
+  count(where: FindOptionsWhere<DriverEntity> = {}) {
+    return this.driverRepo.count({ where });
   }
 
   async findByField<T>(where: FindOptionsWhere<T>, relations: string[] = []) {

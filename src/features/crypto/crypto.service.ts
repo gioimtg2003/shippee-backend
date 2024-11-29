@@ -59,7 +59,9 @@ export class CryptoService {
   }
 
   compareHash256(data: string, hash: string): boolean {
-    return this.hash256(data) === hash;
+    const sha256 = this.hash256(data);
+    console.log(`sha256: ${sha256}, hash: ${hash}`);
+    return sha256 === hash;
   }
 
   compareHash(raw: string, hash: string): Promise<boolean> {

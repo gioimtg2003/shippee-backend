@@ -9,17 +9,20 @@ import {
   HttpCode,
   HttpStatus,
   Logger,
+  Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   ApiArrayResponse,
   ApiObjectResponse,
   ApiSuccessResponse,
 } from 'src/decorators/response-swagger.decorator';
 import { DriverManageService } from './driver-manage.service';
+import { CountDriverDto } from './dto/count-driver.dto';
 
 @ApiTags('driver-manage')
 @Controller('driver-manage')
@@ -51,6 +54,29 @@ export class DriverManageController {
     return this.driverManageService.getAllDriver();
   }
 
+  @ApiOperation({ summary: 'Get details driver' })
+  @ApiObjectResponse(CreateDriverInput)
+  @Get('driver/:id')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getDriver(
+    @Query('relations') relations: string,
+    @Param('id') id: number,
+  ) {
+    if (!relations) {
+      return this.driverManageService.getDriverById(id);
+    }
+
+    relations = relations.trim();
+
+    if (relations === '') {
+      return this.driverManageService.getDriverById(id);
+    }
+
+    const relationsArray = relations.split(',');
+    return this.driverManageService.getDriverById(id, relationsArray);
+  }
+
   @ApiOperation({ summary: 'Create a partner identification info' })
   @ApiObjectResponse(CreateDriverInfoInput)
   @Post('driver/info')
@@ -67,5 +93,18 @@ export class DriverManageController {
   @HttpCode(HttpStatus.OK)
   updateInfo(@Body() data: UpdateDriverInfoInput) {
     return this.driverManageService.updateDriverInfo(data, 1);
+  }
+
+  @ApiOperation({ summary: 'Count driver' })
+  @ApiOkResponse({
+    type: Number,
+    example: 10,
+    description: 'Number of drivers with the given filter',
+  })
+  @Post('driver/count')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  countDriver(@Body() filter: CountDriverDto) {
+    return this.driverManageService.countDriver(filter);
   }
 }

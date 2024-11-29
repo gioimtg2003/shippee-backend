@@ -7,6 +7,7 @@ import { DRIVER_EVENTS, DriverCreateEvent } from '@features/driver/events';
 import { MailService } from '@features/mail/mail.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { CountDriverDto } from './dto/count-driver.dto';
 
 @Injectable()
 export class DriverManageService {
@@ -41,6 +42,19 @@ export class DriverManageService {
   async getAllDriver() {
     this.logger.log('Getting all drivers');
     return this.driverService.findAll();
+  }
+
+  countDriver(filter: CountDriverDto) {
+    return this.driverService.count(filter);
+  }
+
+  async getDriverById(id: number, relations: string[] = []) {
+    return this.driverService.findByField(
+      {
+        id,
+      },
+      relations,
+    );
   }
 
   async createDriverInfo(data: CreateDriverInfoInput) {

@@ -66,6 +66,34 @@ paths:
                           $ref: '#/components/schemas/CreateDriverInput'
       summary: Get all driver
       tags: *ref_0
+  /api/driver-manage/driver/{id}:
+    get:
+      operationId: DriverManageController_getDriver
+      parameters:
+        - name: relations
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/CreateDriverInput'
+      summary: Get details driver
+      tags: *ref_0
   /api/driver-manage/driver/info:
     post:
       operationId: DriverManageController_createInfo
@@ -112,6 +140,25 @@ paths:
                         type: boolean
                         example: true
       summary: Create a partner identification info
+      tags: *ref_0
+  /api/driver-manage/driver/count:
+    post:
+      operationId: DriverManageController_countDriver
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CountDriverDto'
+      responses:
+        '200':
+          description: Number of drivers with the given filter
+          content:
+            application/json:
+              schema:
+                type: number
+      summary: Count driver
       tags: *ref_0
   /api/driver/identity:
     post:
@@ -464,6 +511,17 @@ components:
         - identityCardNumber
         - imgIdentityCardFront
         - imgIdentityCardBack
+    CountDriverDto:
+      type: object
+      properties:
+        isIdentityVerified:
+          type: boolean
+        isAiChecked:
+          type: boolean
+          default: false
+      required:
+        - isIdentityVerified
+        - isAiChecked
     AdminLoginInput:
       type: object
       properties:

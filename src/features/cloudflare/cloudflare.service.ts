@@ -45,13 +45,10 @@ export class CloudflareService {
   }
 
   async getBucket(key: string, bucket: BUCKET) {
-    this.logger.log(`Getting bucket for key: ${key}`);
-
     const command = new GetObjectCommand({
       Bucket: bucket,
       Key: key,
     });
-
     return getSignedUrl(this.s3Client, command, {
       expiresIn: EXPIRE_GET_BUCKET,
     });

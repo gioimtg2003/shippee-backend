@@ -1,0 +1,4 @@
+export enum REDIS_MODULE_CONNECTION {
+  DEFAULT = 'DEFAULT',
+  CACHE = 'CACHE',
+}

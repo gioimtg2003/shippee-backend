@@ -13,6 +13,7 @@ import { OrderModule } from '@features/order';
 import { OrderStatusModule } from '@features/order-status';
 import { PaymentModule } from '@features/payment';
 import { PriceCalculateModule } from '@features/price-calculate';
+import { RedisModule } from '@features/redis';
 import { SpecialRequireModule } from '@features/special-require';
 import { TransportTypeModule } from '@features/transport-type';
 import { UserModule } from '@features/user';
@@ -67,9 +68,10 @@ import { AppService } from './app.service';
         },
       },
     }),
-    MailModule,
     ThrottlerModule.forRoot([REQUEST_LIMIT_RATE['global']]),
     EventEmitterModule.forRoot(),
+    RedisModule,
+    MailModule,
     AdminModule,
     DriverManageModule,
     SpecialRequireModule,

@@ -4,6 +4,7 @@ import { CreateDriverInput } from '@features/driver/dto';
 import { CreateDriverInfoInput } from '@features/driver/dto/create-driver-info.input';
 import { UpdateDriverInfoInput } from '@features/driver/dto/update-driver-info.input';
 import { DRIVER_EVENTS, DriverCreateEvent } from '@features/driver/events';
+import { ImageService } from '@features/image/image.service';
 import { MailService } from '@features/mail/mail.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -17,6 +18,7 @@ export class DriverManageService {
     private readonly driverIdentityService: DriverIdentityService,
     private readonly eventEmitter: EventEmitter2,
     private readonly mailService: MailService,
+    private readonly imageService: ImageService,
   ) {}
 
   async createDriver(data: CreateDriverInput) {
@@ -49,7 +51,7 @@ export class DriverManageService {
   }
 
   async getDriverById(id: number, relations: string[] = []) {
-    return this.driverService.findByField(
+    const driver = await this.driverService.findByField(
       {
         id,
       },
@@ -67,6 +69,28 @@ export class DriverManageService {
         'transportType',
       ],
     );
+
+    if (driver.identity) {
+      const imageFields = [
+        'imgIdentityCardFront',
+        'imgIdentityCardBack',
+        'imgDriverLicenseFront',
+        'imgDriverLicenseBack',
+        'imgVehicleRegistrationCertFront',
+      ];
+
+      await Promise.all(
+        imageFields.map(async (field) => {
+          if (driver.identity[field]) {
+            driver.identity[field] = await this.imageService.getUrlImgDocument(
+              driver.identity[field],
+            );
+          }
+        }),
+      );
+    }
+
+    return driver;
   }
 
   async createDriverInfo(data: CreateDriverInfoInput) {

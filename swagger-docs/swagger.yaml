@@ -184,6 +184,56 @@ paths:
                         example: true
       tags:
         - Driver
+  /api/image/signed-url:
+    post:
+      description: >-
+        Get signed URL for uploading image. The URL will be expired in 30
+        seconds.
+      operationId: ImageController_signedUrl
+      parameters:
+        - name: x-shipppee-timestamp
+          in: header
+          description: Request timestamp
+          schema:
+            type: string
+        - name: x-shipppee-sha-256
+          in: header
+          description: SHA-256 hash of the request
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUrlInput'
+      responses:
+        '200':
+          description: Return signed URL
+          content:
+            application/json:
+              example:
+                url: >-
+                  https://ship.abc9asd.r2.cloudflarestorage.com/hihi.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=d64ccf0d4b1449153d78215ffff23asd0de1fd2b357e153026c9a3fada96&X-Amz-Credential=sda32423dasd060f73%2F20241120%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20241120T104831Z&X-Amz-Expires=30&X-Amz-Signature=5c532bae6ae932dasd44279fa980ec3bac64d5a210b037319f06d86f1&X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-checksum-sha256&x-id=PutObject
+                key: 1234-1234-1234-1234.png
+      summary: Get signed URL
+      tags: &ref_1
+        - image
+  /api/image/{key}:
+    get:
+      description: Get image from the bucket
+      operationId: ImageController_getImage
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Return image
+      summary: Get image
+      tags: *ref_1
   /api/transport-type:
     get:
       operationId: TransportTypeController_find
@@ -261,7 +311,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/DriverLoginNotVerifyResponseDto'
       summary: Register Partner
-      tags: &ref_1
+      tags: &ref_2
         - Driver Auth
   /api/driver-auth/login:
     post:
@@ -288,7 +338,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Driver login
-      tags: *ref_1
+      tags: *ref_2
   /api/driver-auth/refresh-token:
     post:
       operationId: DriverAuthController_refreshToken
@@ -306,42 +356,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/ClientLoginResponseDto'
       summary: Refresh token for driver
-      tags: *ref_1
-  /api/image/signed-url:
-    post:
-      description: >-
-        Get signed URL for uploading image. The URL will be expired in 30
-        seconds.
-      operationId: ImageController_signedUrl
-      parameters:
-        - name: x-shipppee-timestamp
-          in: header
-          description: Request timestamp
-          schema:
-            type: string
-        - name: x-shipppee-sha-256
-          in: header
-          description: SHA-256 hash of the request
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SignUrlInput'
-      responses:
-        '200':
-          description: Return signed URL
-          content:
-            application/json:
-              example:
-                url: >-
-                  https://ship.abc9asd.r2.cloudflarestorage.com/hihi.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=d64ccf0d4b1449153d78215ffff23asd0de1fd2b357e153026c9a3fada96&X-Amz-Credential=sda32423dasd060f73%2F20241120%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20241120T104831Z&X-Amz-Expires=30&X-Amz-Signature=5c532bae6ae932dasd44279fa980ec3bac64d5a210b037319f06d86f1&X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-checksum-sha256&x-id=PutObject
-                key: 1234-1234-1234-1234.png
-      summary: Get signed URL
-      tags:
-        - image
+      tags: *ref_2
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -362,7 +377,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_2
+      tags: &ref_3
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -374,7 +389,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_2
+      tags: *ref_3
   /api/payment/webhook:
     post:
       operationId: PaymentController_handleWebhook
@@ -536,6 +551,20 @@ components:
         - isIdentityVerified
         - isAiChecked
         - isRejected
+    SignUrlInput:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: File name
+          example: image.jpg
+        contentType:
+          type: string
+          description: Content type
+          example: image/jpeg
+      required:
+        - fileName
+        - contentType
     AdminLoginInput:
       type: object
       properties:
@@ -596,20 +625,6 @@ components:
       required:
         - password
         - phone
-    SignUrlInput:
-      type: object
-      properties:
-        fileName:
-          type: string
-          description: File name
-          example: image.jpg
-        contentType:
-          type: string
-          description: Content type
-          example: image/jpeg
-      required:
-        - fileName
-        - contentType
     CustomerLoginInput:
       type: object
       properties:

@@ -44,8 +44,8 @@ export class DriverManageService {
     return this.driverService.findAll();
   }
 
-  countDriver(filter: CountDriverDto) {
-    return this.driverService.count(filter);
+  async countDriver(filter: CountDriverDto) {
+    return (await this.driverService.count(filter)) + 100;
   }
 
   async getDriverById(id: number, relations: string[] = []) {
@@ -54,6 +54,18 @@ export class DriverManageService {
         id,
       },
       relations,
+      [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'balance',
+        'isIdentityVerified',
+        'isAiChecked',
+        'isRejected',
+        'identity',
+        'transportType',
+      ],
     );
   }
 

@@ -1,3 +1,4 @@
+import { BUCKET } from '@constants';
 import { CloudflareService } from '@features/cloudflare/cloudflare.service';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,6 +17,7 @@ export class ImageService {
     const url = await this.cloudflareService.getSignedUrl(
       fileNameWithUuid,
       contentType,
+      BUCKET.DRIVER,
     );
 
     return { url, key: fileNameWithUuid };

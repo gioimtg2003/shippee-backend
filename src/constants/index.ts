@@ -1,6 +1,7 @@
 export * from './common.constant';
 export * from './config.constant';
 export * from './driver.constant';
+export * from './image.constant';
 export * from './order.constant';
 export * from './role.constant';
 export * from './special-require.constant';

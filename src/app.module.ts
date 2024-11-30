@@ -11,6 +11,7 @@ import { ImageModule } from '@features/image/image.module';
 import { MailModule } from '@features/mail';
 import { OrderModule } from '@features/order';
 import { OrderStatusModule } from '@features/order-status';
+import { PaymentModule } from '@features/payment';
 import { PriceCalculateModule } from '@features/price-calculate';
 import { SpecialRequireModule } from '@features/special-require';
 import { TransportTypeModule } from '@features/transport-type';
@@ -84,6 +85,7 @@ import { AppService } from './app.service';
     DriverModule,
     UserModule,
     UserAuthModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [

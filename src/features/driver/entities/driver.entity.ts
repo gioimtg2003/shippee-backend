@@ -37,6 +37,9 @@ export class DriverEntity extends CoreEntity {
   isAiChecked: boolean; // AI check identity
 
   @Column({ type: 'boolean', default: false })
+  isRejected: boolean; // AI check identity
+
+  @Column({ type: 'boolean', default: false })
   isOnline: boolean;
 
   @Column({

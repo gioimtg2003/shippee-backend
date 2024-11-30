@@ -44,12 +44,10 @@ export class DriverAuthGuard implements CanActivate {
           JWT_SECRET_TYPE,
           context.getHandler(),
         ) || JWT_TYPE_ENUM.ACCESS;
-      console.log(JWT);
-      console.log(jwtSecretType);
+
       const payload = await this.jwtService.verify<IUserSessionProps>(token, {
         secret: JWT[jwtSecretType],
       });
-      console.log(payload);
 
       req.user = payload;
 

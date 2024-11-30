@@ -375,6 +375,16 @@ paths:
           description: Unauthorized
       summary: Refresh token
       tags: *ref_2
+  /api/payment/webhook:
+    post:
+      operationId: PaymentController_handleWebhook
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      summary: Handle payment webhook
+      tags:
+        - Payment
 info:
   title: Shipppee system API
   description: The Shipppee system API description
@@ -519,9 +529,13 @@ components:
         isAiChecked:
           type: boolean
           default: false
+        isRejected:
+          type: boolean
+          default: false
       required:
         - isIdentityVerified
         - isAiChecked
+        - isRejected
     AdminLoginInput:
       type: object
       properties:

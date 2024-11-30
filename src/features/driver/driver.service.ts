@@ -1,7 +1,11 @@
 import { CryptoService } from '@features/crypto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import {
+  FindOptionsSelectByString,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { CreateDriverInput } from './dto/create-driver.input';
 import { DriverEntity } from './entities';
 
@@ -25,12 +29,25 @@ export class DriverService {
     return this.driverRepo.count({ where });
   }
 
-  async findByField<T>(where: FindOptionsWhere<T>, relations: string[] = []) {
+  async findByField<T>(
+    where: FindOptionsWhere<T>,
+    relations: string[] = [],
+    select: FindOptionsSelectByString<DriverEntity> = [
+      'id',
+      'name',
+      'phone',
+      'email',
+      'isAiChecked',
+      'isIdentityVerified',
+      'isRejected',
+    ],
+  ) {
     this.logger.debug(`Finding driver by ${where}}`);
 
     const found = await this.driverRepo.findOne({
       where,
       relations,
+      select,
     });
 
     if (!found?.id) {

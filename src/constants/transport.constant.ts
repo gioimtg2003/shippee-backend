@@ -14,3 +14,8 @@ export const TRANSPORT_TYPE = {
   LIMIT_ICON: 100,
   LIMIT_DESCRIPTION: 255,
 };
+
+export const CACHE_TRANSPORT_TYPE = {
+  CACHE_KEY: 'CACHE_TRANSPORT_TYPE',
+  TTL: 86400, // 1 day
+};

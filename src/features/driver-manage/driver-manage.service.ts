@@ -77,6 +77,7 @@ export class DriverManageService {
         'imgDriverLicenseFront',
         'imgDriverLicenseBack',
         'imgVehicleRegistrationCertFront',
+        'imgVehicleRegistrationCertBack',
       ];
 
       await Promise.all(

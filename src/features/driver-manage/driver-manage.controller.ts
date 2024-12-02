@@ -121,4 +121,13 @@ export class DriverManageController {
   countDriver(@Body() filter: CountDriverDto) {
     return this.driverManageService.countDriver(filter);
   }
+
+  @ApiOperation({ summary: 'Verify driver' })
+  @ApiSuccessResponse('Driver verified')
+  @Post('driver/verify')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  verifyDriver(@Body('idDriver', new ValidationPipe()) data: number) {
+    return this.driverManageService.verifyDriver(data);
+  }
 }

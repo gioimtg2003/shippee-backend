@@ -76,7 +76,6 @@ export class DriverService {
         end: endOfDay.toISOString(),
       });
     }
-    this.logger.log('Finding all drivers : ' + JSON.stringify(options));
     if (options.status) {
       if (options.status !== 'all') {
         query.andWhere('drivers.isIdentityVerified = :isIdentityVerified', {
@@ -84,8 +83,6 @@ export class DriverService {
         });
       }
     }
-
-    this.logger.log('query : ' + JSON.stringify(query.getQuery()));
 
     query.select([
       'drivers.id',

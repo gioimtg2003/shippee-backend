@@ -125,6 +125,50 @@ export class DriverManageService {
     return this.driverIdentityService.update(data, idDriver);
   }
 
+  async verifyDriver(id: number) {
+    const driver = await this.driverService.findByField(
+      { id },
+      ['identity'],
+      ['identity'],
+    );
+
+    if (!driver) {
+      throw new BadRequestException('Driver not found');
+    }
+
+    if (!driver.identity) {
+      throw new BadRequestException('Driver identity not found');
+    }
+
+    if (driver.isIdentityVerified) {
+      throw new BadRequestException('Driver already verified');
+    }
+    const imageFields = [
+      'imgIdentityCardFront',
+      'imgIdentityCardBack',
+      'imgDriverLicenseFront',
+      'imgDriverLicenseBack',
+      'imgVehicleRegistrationCertFront',
+      'imgVehicleRegistrationCertBack',
+    ];
+
+    imageFields.forEach((field) => {
+      if (!driver.identity[field]) {
+        throw new BadRequestException('Missing image');
+      }
+    });
+
+    const updated = await this.driverService.update(driver.id, {
+      isIdentityVerified: true,
+    });
+
+    if (!updated) {
+      throw new BadRequestException('Error verifying driver');
+    }
+
+    return true;
+  }
+
   @OnEvent(DRIVER_EVENTS.CREATED)
   async handleDriverCreatedEvent({ driver }: DriverCreateEvent) {
     this.logger.log(`Driver created: ${driver.name}`);

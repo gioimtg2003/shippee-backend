@@ -1,3 +1,4 @@
+import { TRANSPORT_TYPE_ENUM } from '@constants';
 import { DriverIdentityService } from '@features/driver/driver-identity.service';
 import { DriverService } from '@features/driver/driver.service';
 import { CreateDriverInput } from '@features/driver/dto';
@@ -10,6 +11,7 @@ import { MailService } from '@features/mail/mail.service';
 import { TransportTypeService } from '@features/transport-type/transport-type.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { isValueInFields } from '@utils';
 import { FilterDriverOptionsDto } from './dto';
 import { CountDriverDto } from './dto/count-driver.dto';
 
@@ -128,8 +130,21 @@ export class DriverManageService {
   async verifyDriver(id: number) {
     const driver = await this.driverService.findByField(
       { id },
-      ['identity'],
-      ['identity'],
+      ['identity', 'transportType'],
+      {
+        id: true,
+        identity: {
+          imgDriverLicenseFront: true,
+          imgDriverLicenseBack: true,
+          imgIdentityCardFront: true,
+          imgIdentityCardBack: true,
+          imgVehicleRegistrationCertFront: true,
+          imgVehicleRegistrationCertBack: true,
+        },
+        transportType: {
+          code: true,
+        },
+      },
     );
 
     if (!driver) {
@@ -143,23 +158,28 @@ export class DriverManageService {
     if (driver.isIdentityVerified) {
       throw new BadRequestException('Driver already verified');
     }
-    const imageFields = [
-      'imgIdentityCardFront',
-      'imgIdentityCardBack',
-      'imgDriverLicenseFront',
+    const checkUpload = isValueInFields(
+      driver.identity,
       'imgDriverLicenseBack',
+      'imgDriverLicenseFront',
+      'imgIdentityCardBack',
+      'imgIdentityCardFront',
       'imgVehicleRegistrationCertFront',
       'imgVehicleRegistrationCertBack',
-    ];
+    );
 
-    imageFields.forEach((field) => {
-      if (!driver.identity[field]) {
-        throw new BadRequestException('Missing image');
-      }
-    });
-
-    const updated = await this.driverService.update(driver.id, {
+    if (!checkUpload) {
+      throw new BadRequestException('Driver has not uploaded identity');
+    }
+    const updateFields = {
       isIdentityVerified: true,
+    };
+
+    if (driver.transportType.code === TRANSPORT_TYPE_ENUM.BIKE) {
+      Object.assign(updateFields, { isAiChecked: true });
+    }
+    const updated = await this.driverService.update(driver.id, {
+      ...updateFields,
     });
 
     if (!updated) {

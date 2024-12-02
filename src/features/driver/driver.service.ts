@@ -5,6 +5,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getEndOfDay } from '@utils';
 import {
+  FindOptionsSelect,
   FindOptionsSelectByString,
   FindOptionsWhere,
   Repository,
@@ -35,7 +36,9 @@ export class DriverService {
   async findByField<T>(
     where: FindOptionsWhere<T>,
     relations: string[] = [],
-    select: FindOptionsSelectByString<DriverEntity> = [
+    select:
+      | FindOptionsSelectByString<DriverEntity>
+      | FindOptionsSelect<DriverEntity> = [
       'id',
       'name',
       'phone',
@@ -52,11 +55,6 @@ export class DriverService {
       relations,
       select,
     });
-
-    if (!found?.id) {
-      this.logger.error('Driver not found');
-      throw new BadRequestException('Driver not found');
-    }
 
     return found;
   }
@@ -108,6 +106,7 @@ export class DriverService {
       'password',
       'isIdentityVerified',
       'identity',
+      'isAiChecked',
     ]);
   }
 

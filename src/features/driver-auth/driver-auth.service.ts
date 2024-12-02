@@ -6,6 +6,7 @@ import { DriverService } from '@features/driver/driver.service';
 import { CreateDriverInput } from '@features/driver/dto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { isValueInFields } from '@utils';
 import { DriverLoginInput } from './dto';
 
 @Injectable()
@@ -32,10 +33,11 @@ export class DriverAuthService extends RegisterJwtService {
 
     const driver = await this.driverService.findByPhone(data.phone, [
       'transportType',
+      'identity',
     ]);
 
     if (!driver) {
-      throw new BadRequestException('This email is not registered');
+      throw new BadRequestException('Tài khoản không tồn tại');
     }
 
     const isPasswordValid = await this.cryptoService.compareHash(
@@ -44,11 +46,29 @@ export class DriverAuthService extends RegisterJwtService {
     );
 
     if (!isPasswordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new BadRequestException('Mật khẩu không đúng');
+    }
+
+    if (driver.identity && !driver.isIdentityVerified && !driver.isAiChecked) {
+      const checkUpload = isValueInFields(
+        driver.identity,
+        'imgDriverLicenseBack',
+        'imgDriverLicenseFront',
+        'imgIdentityCardBack',
+        'imgIdentityCardFront',
+        'imgVehicleRegistrationCertFront',
+        'imgVehicleRegistrationCertBack',
+      );
+
+      if (checkUpload) {
+        this.logger.log('Driver has uploaded identity');
+        throw new BadRequestException('Vui lòng chờ xác minh thông tin');
+      }
     }
 
     if (driver.transportType.code === TRANSPORT_TYPE_ENUM.BIKE) {
       if (!driver.isAiChecked) {
+        this.logger.log('Driver has not been checked by AI');
         return this.generateJwtVerify({ ...driver, role: Role.DRIVER });
       }
     } else {
@@ -72,7 +92,7 @@ export class DriverAuthService extends RegisterJwtService {
     const driver = await this.driverService.findById(user.id);
 
     if (!driver) {
-      throw new BadRequestException('This email is not registered');
+      throw new BadRequestException('Tài khoản không tồn tại');
     }
 
     const driverSession: UserSession = {

@@ -214,8 +214,25 @@ paths:
                       data:
                         type: boolean
                         example: true
-      tags:
+      tags: &ref_1
         - Driver
+  /api/driver/me:
+    get:
+      operationId: DriverController_meProfile
+      parameters: []
+      responses:
+        '200':
+          description: Driver info
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/CreateDriverInput'
+      tags: *ref_1
   /api/image/signed-url:
     post:
       description: >-
@@ -249,7 +266,7 @@ paths:
                   https://ship.abc9asd.r2.cloudflarestorage.com/hihi.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=d64ccf0d4b1449153d78215ffff23asd0de1fd2b357e153026c9a3fada96&X-Amz-Credential=sda32423dasd060f73%2F20241120%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20241120T104831Z&X-Amz-Expires=30&X-Amz-Signature=5c532bae6ae932dasd44279fa980ec3bac64d5a210b037319f06d86f1&X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-checksum-sha256&x-id=PutObject
                 key: 1234-1234-1234-1234.png
       summary: Get signed URL
-      tags: &ref_1
+      tags: &ref_2
         - image
   /api/image/{key}:
     get:
@@ -265,7 +282,7 @@ paths:
         '200':
           description: Return image
       summary: Get image
-      tags: *ref_1
+      tags: *ref_2
   /api/transport-type:
     get:
       operationId: TransportTypeController_find
@@ -343,7 +360,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/DriverLoginNotVerifyResponseDto'
       summary: Register Partner
-      tags: &ref_2
+      tags: &ref_3
         - Driver Auth
   /api/driver-auth/login:
     post:
@@ -370,7 +387,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Driver login
-      tags: *ref_2
+      tags: *ref_3
   /api/driver-auth/refresh-token:
     post:
       operationId: DriverAuthController_refreshToken
@@ -388,7 +405,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/ClientLoginResponseDto'
       summary: Refresh token for driver
-      tags: *ref_2
+      tags: *ref_3
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -409,7 +426,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_3
+      tags: &ref_4
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -421,7 +438,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_3
+      tags: *ref_4
   /api/payment/webhook:
     post:
       operationId: PaymentController_handleWebhook

@@ -102,7 +102,13 @@ export class DriverService {
   }
 
   findByPhone(phone: string, relations: string[] = []) {
-    return this.findByField({ phone }, relations);
+    return this.findByField({ phone }, relations, [
+      'id',
+      'phone',
+      'password',
+      'isIdentityVerified',
+      'identity',
+    ]);
   }
 
   async create(data: CreateDriverInput): Promise<DriverEntity> {

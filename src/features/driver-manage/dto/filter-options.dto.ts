@@ -7,7 +7,7 @@ export class FilterDriverOptionsDto {
 
   @IsOptional()
   @IsString()
-  verifyAt?: string;
+  status?: 'all' | 'waiting' | 'verified';
 
   @IsOptional()
   @IsString()

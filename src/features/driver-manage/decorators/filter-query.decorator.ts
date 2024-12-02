@@ -7,7 +7,7 @@ export const FilterQuery = createParamDecorator(
     const req = context.switchToHttp().getRequest();
     result.name = req.query?.name;
     result.createdAt = req.query?.createdAt;
-    result.verifyAt = req.query?.verifyAt;
+    result.status = req.query?.status;
 
     return result;
   },

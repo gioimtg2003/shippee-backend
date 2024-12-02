@@ -2,6 +2,7 @@ import { AdminAuthGuard } from '@features/auth-admin/guards';
 import { CreateDriverInput } from '@features/driver/dto';
 import { CreateDriverInfoInput } from '@features/driver/dto/create-driver-info.input';
 import { UpdateDriverInfoInput } from '@features/driver/dto/update-driver-info.input';
+import { UpdateDriverInput } from '@features/driver/dto/update-driver.input';
 import {
   Body,
   Controller,
@@ -14,6 +15,8 @@ import {
   Put,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
@@ -21,7 +24,9 @@ import {
   ApiObjectResponse,
   ApiSuccessResponse,
 } from 'src/decorators/response-swagger.decorator';
+import { FilterQuery } from './decorators';
 import { DriverManageService } from './driver-manage.service';
+import { FilterDriverOptionsDto } from './dto';
 import { CountDriverDto } from './dto/count-driver.dto';
 
 @ApiTags('driver-manage')
@@ -50,12 +55,21 @@ export class DriverManageController {
   @Get('driver')
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getAllDriver() {
-    return this.driverManageService.getAllDriver();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getAllDriver(@FilterQuery() filter: FilterDriverOptionsDto) {
+    return this.driverManageService.getAllDriver(filter);
+  }
+
+  @ApiOperation({ summary: 'Update a driver' })
+  @ApiSuccessResponse('Driver updated')
+  @Put('driver')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateDriver(@Body() data: UpdateDriverInput) {
+    return this.driverManageService.updateDriver(data);
   }
 
   @ApiOperation({ summary: 'Get details driver' })
-  @ApiObjectResponse(CreateDriverInput)
   @Get('driver/:id')
   @UseGuards(AdminAuthGuard)
   @HttpCode(HttpStatus.OK)

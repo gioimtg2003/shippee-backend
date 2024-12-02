@@ -24,7 +24,12 @@ export class DriverEntity extends CoreEntity {
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column({ type: 'char', length: LIMIT_PHONE, unique: true, nullable: true })
+  @Column({
+    type: 'varchar',
+    length: LIMIT_PHONE,
+    unique: true,
+    nullable: true,
+  })
   phone: string;
 
   @Column({ type: 'integer', default: 0 })

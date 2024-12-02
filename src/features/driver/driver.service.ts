@@ -1,6 +1,9 @@
+import { applyQueryFilter } from '@common/query-builder';
 import { CryptoService } from '@features/crypto';
+import { FilterDriverOptionsDto } from '@features/driver-manage/dto';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { getEndOfDay } from '@utils';
 import {
   FindOptionsSelectByString,
   FindOptionsWhere,
@@ -58,23 +61,32 @@ export class DriverService {
     return found;
   }
 
-  findAll(
-    where: FindOptionsWhere<DriverEntity> = {},
-    relations: string[] = [],
-  ) {
-    return this.driverRepo.find({
-      where,
-      relations,
-      select: [
-        'id',
-        'name',
-        'phone',
-        'email',
-        'isIdentityVerified',
-        'createdAt',
-        'transportType',
-      ],
-    });
+  findAll(options: FilterDriverOptionsDto = {}) {
+    const query = this.driverRepo.createQueryBuilder('drivers');
+
+    if (options.name) {
+      query.andWhere('drivers.name LIKE :name', { name: `%${options.name}%` });
+    }
+
+    if (options.createdAt) {
+      const endOfDay = getEndOfDay(options.createdAt);
+
+      query.andWhere('drivers.createdAt BETWEEN :start AND :end', {
+        start: options.createdAt,
+        end: endOfDay.toISOString(),
+      });
+    }
+
+    query.select([
+      'drivers.id',
+      'drivers.name',
+      'drivers.phone',
+      'drivers.email',
+      'drivers.createdAt',
+    ]);
+    applyQueryFilter(query, options);
+
+    return query.getMany();
   }
 
   findById(id: number, relations: string[] = []) {
@@ -109,5 +121,28 @@ export class DriverService {
     }
 
     return driver;
+  }
+
+  async update(id: number, data: Partial<DriverEntity>) {
+    this.logger.log(`Updating driver with id: ${id}`);
+    const found = await this.findById(id);
+
+    if (!found) {
+      this.logger.error('⚠️ Driver not found');
+      throw new BadRequestException('Driver not found');
+    }
+
+    Object.assign(found, data);
+
+    const updated = await this.driverRepo.save({
+      ...found,
+    });
+
+    if (!updated.id) {
+      this.logger.error('⚠️ Error updating driver');
+      throw new BadRequestException('Error updating driver');
+    }
+
+    return updated;
   }
 }

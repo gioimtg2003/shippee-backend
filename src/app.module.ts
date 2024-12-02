@@ -41,7 +41,7 @@ import { AppService } from './app.service';
       autoLoadEntities: true,
       synchronize: false,
       logging: process.env.NODE_ENV !== Environment.production,
-
+      useUTC: true,
       ssl: {
         rejectUnauthorized: true,
         ca: process.env.DATABASE_CA_CERT,

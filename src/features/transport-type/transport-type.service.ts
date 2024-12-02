@@ -43,4 +43,10 @@ export class TransportTypeService {
 
     return transportTypes;
   }
+
+  findById(id: number) {
+    return this.transportType.findOne({
+      where: { id },
+    });
+  }
 }

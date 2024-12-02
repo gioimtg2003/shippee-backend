@@ -66,6 +66,29 @@ paths:
                           $ref: '#/components/schemas/CreateDriverInput'
       summary: Get all driver
       tags: *ref_0
+    put:
+      operationId: DriverManageController_updateDriver
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDriverInput'
+      responses:
+        '200':
+          description: Driver updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: Update a driver
+      tags: *ref_0
   /api/driver-manage/driver/{id}:
     get:
       operationId: DriverManageController_getDriver
@@ -82,16 +105,7 @@ paths:
             type: number
       responses:
         '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ResponseDTO'
-                  - properties:
-                      data:
-                        type: object
-                        $ref: '#/components/schemas/CreateDriverInput'
+          description: ''
       summary: Get details driver
       tags: *ref_0
   /api/driver-manage/driver/info:
@@ -484,6 +498,35 @@ components:
         - password
         - phone
         - transportTypeId
+    UpdateDriverInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Driver name
+          example: Cong Gioi
+        email:
+          type: string
+          description: Driver email
+          example: conggioi.pro264@gmail.com
+        password:
+          type: string
+          description: Driver password
+          example: '123456'
+        phone:
+          type: string
+          description: Driver phone number
+          example: '0123456789'
+        transportTypeId:
+          type: number
+          description: Transport type ID
+          example: '1'
+        id:
+          type: number
+          description: Driver ID
+          example: '12'
+      required:
+        - id
     CreateDriverInfoInput:
       type: object
       properties:

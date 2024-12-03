@@ -15,7 +15,7 @@ export class TransactionEntity {
   accountNumber: string;
 
   @Column({ nullable: true })
-  subAccount: string | null;
+  subAccount?: string;
 
   @Column()
   code: string;

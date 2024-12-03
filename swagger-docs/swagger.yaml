@@ -433,6 +433,31 @@ paths:
                         $ref: '#/components/schemas/ClientLoginResponseDto'
       summary: Refresh token for driver
       tags: *ref_3
+  /api/driver-wallet:
+    post:
+      operationId: DriverWalletController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/TransactionResponseDto'
+      summary: Create a new transaction
+      tags:
+        - Driver Wallet
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -470,6 +495,12 @@ paths:
     post:
       operationId: PaymentController_handleWebhook
       parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookDto'
       responses:
         '201':
           description: ''
@@ -730,6 +761,23 @@ components:
       required:
         - password
         - phone
+    TransactionInput:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 10000
+          description: Amount to deposit
+        action:
+          type: string
+          example: deposit
+          description: Action to perform
+          enum:
+            - DEPOSIT
+            - WITHDRAW
+      required:
+        - amount
+        - action
     CustomerLoginInput:
       type: object
       properties:
@@ -772,6 +820,9 @@ components:
         - phone
         - accessToken
         - refreshToken
+    WebhookDto:
+      type: object
+      properties: {}
     ResponseDTO:
       type: object
       properties:

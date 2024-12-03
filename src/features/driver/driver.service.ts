@@ -95,8 +95,14 @@ export class DriverService {
     return query.getMany();
   }
 
-  findById(id: number, relations: string[] = []) {
-    return this.findByField({ id }, relations);
+  findById(
+    id: number,
+    relations: string[] = [],
+    select?:
+      | FindOptionsSelectByString<DriverEntity>
+      | FindOptionsSelect<DriverEntity>,
+  ) {
+    return this.findByField({ id }, relations, select);
   }
 
   findByPhone(phone: string, relations: string[] = []) {

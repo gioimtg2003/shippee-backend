@@ -2,7 +2,7 @@ import { CoreEntity } from '@common/entities';
 import { WALLET_ACTION_ENUM, WALLET_STATUS_ENUM } from '@constants';
 import { AdminEntity } from '@features/admin/entities';
 import { DriverEntity } from '@features/driver/entities/driver.entity';
-import { Column, Entity, ManyToOne, Relation } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, Relation } from 'typeorm';
 
 @Entity('wallet_histories')
 export class WalletHistoryEntity extends CoreEntity {
@@ -16,8 +16,12 @@ export class WalletHistoryEntity extends CoreEntity {
   @Column({ type: 'enum', enum: WALLET_ACTION_ENUM })
   action: WALLET_ACTION_ENUM;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   screenHot: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Index({ unique: true })
+  code: string;
 
   @Column()
   amount: number;

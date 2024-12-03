@@ -108,6 +108,28 @@ paths:
           description: ''
       summary: Get details driver
       tags: *ref_0
+    delete:
+      operationId: DriverManageController_deleteDriver
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Driver deleted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: Delete driver
+      tags: *ref_0
   /api/driver-manage/driver/info:
     post:
       operationId: DriverManageController_createInfo
@@ -391,7 +413,12 @@ paths:
   /api/driver-auth/refresh-token:
     post:
       operationId: DriverAuthController_refreshToken
-      parameters: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer token
+          schema:
+            type: string
       responses:
         '200':
           description: Success response

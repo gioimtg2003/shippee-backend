@@ -15,6 +15,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiHeader,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -57,6 +58,7 @@ export class DriverAuthController {
   @ApiOperation({ summary: 'Refresh token for driver' })
   @Post('refresh-token')
   @ApiObjectResponse(ClientLoginResponseDto)
+  @ApiHeader({ name: 'Authorization', description: 'Bearer token' })
   @UseGuards(DriverAuthGuard)
   @JwtSecretType(JWT_TYPE_ENUM.REFRESH)
   @HttpCode(HttpStatus.OK)

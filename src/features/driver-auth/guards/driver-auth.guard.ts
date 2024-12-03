@@ -12,7 +12,7 @@ import { IUserSessionProps } from '@common/interfaces';
 import { JWT_TYPE_ENUM, Role } from '@constants';
 import { JWT_SECRET_TYPE } from '@decorators';
 import { Reflector } from '@nestjs/core';
-import { extractTokenFromHeader } from '@utils';
+import { extractTokenFromBody, extractTokenFromHeader } from '@utils';
 
 @Injectable()
 export class DriverAuthGuard implements CanActivate {
@@ -29,9 +29,19 @@ export class DriverAuthGuard implements CanActivate {
       [JWT_TYPE_ENUM.REFRESH]: process.env.JWT_SECRET_REFRESH_TOKEN,
       [JWT_TYPE_ENUM.VERIFY]: process.env.JWT_SECRET_VERIFY,
     };
+    const jwtSecretType =
+      this.reflector.get<JWT_TYPE_ENUM>(
+        JWT_SECRET_TYPE,
+        context.getHandler(),
+      ) || JWT_TYPE_ENUM.ACCESS;
 
     const req = context.switchToHttp().getRequest();
-    const token = extractTokenFromHeader(req);
+    let token = '';
+    if (jwtSecretType === JWT_TYPE_ENUM.VERIFY) {
+      token = extractTokenFromBody(req);
+    } else {
+      token = extractTokenFromHeader(req);
+    }
 
     if (!token) {
       this.logger.debug('No JWT token found');
@@ -39,16 +49,9 @@ export class DriverAuthGuard implements CanActivate {
     }
 
     try {
-      const jwtSecretType =
-        this.reflector.get<JWT_TYPE_ENUM>(
-          JWT_SECRET_TYPE,
-          context.getHandler(),
-        ) || JWT_TYPE_ENUM.ACCESS;
-
       const payload = await this.jwtService.verify<IUserSessionProps>(token, {
         secret: JWT[jwtSecretType],
       });
-
       req.user = payload;
 
       const customer = payload;
@@ -61,7 +64,8 @@ export class DriverAuthGuard implements CanActivate {
           'Access denied. User does not have the Shipper role.',
         );
       }
-    } catch {
+    } catch (e) {
+      this.logger.error(e);
       throw new UnauthorizedException('Invalid token');
     }
 

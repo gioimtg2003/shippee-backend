@@ -155,7 +155,7 @@ export class DriverManageService {
       throw new BadRequestException('Driver identity not found');
     }
 
-    if (driver.isIdentityVerified) {
+    if (driver.isIdentityVerified || driver.isAiChecked) {
       throw new BadRequestException('Driver already verified');
     }
     const checkUpload = isValueInFields(
@@ -186,6 +186,11 @@ export class DriverManageService {
       throw new BadRequestException('Error verifying driver');
     }
 
+    return true;
+  }
+
+  async softDeleteDriver(id: number) {
+    await this.driverService.softDelete(id);
     return true;
   }
 

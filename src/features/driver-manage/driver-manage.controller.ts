@@ -6,6 +6,7 @@ import { UpdateDriverInput } from '@features/driver/dto/update-driver.input';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -129,5 +130,14 @@ export class DriverManageController {
   @HttpCode(HttpStatus.OK)
   verifyDriver(@Body('idDriver', new ValidationPipe()) data: number) {
     return this.driverManageService.verifyDriver(data);
+  }
+
+  @ApiOperation({ summary: 'Delete driver' })
+  @ApiSuccessResponse('Driver deleted')
+  @Delete('driver/:id')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  deleteDriver(@Param('id') data: number) {
+    return this.driverManageService.softDeleteDriver(data);
   }
 }

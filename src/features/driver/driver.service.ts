@@ -158,4 +158,16 @@ export class DriverService {
 
     return updated;
   }
+
+  async softDelete(id: number) {
+    this.logger.log(`Soft deleting driver with id: ${id}`);
+    const found = await this.findById(id);
+
+    if (!found) {
+      this.logger.error('⚠️ Driver not found');
+      throw new BadRequestException('Driver not found');
+    }
+
+    this.driverRepo.softDelete(id);
+  }
 }

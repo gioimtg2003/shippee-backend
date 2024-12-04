@@ -3,6 +3,7 @@ import { DriverAuthGuard } from '@features/driver-auth/guards';
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -31,5 +32,13 @@ export class DriverWalletController {
     return {
       img: generateUrlQrCode({ amount, code }),
     };
+  }
+
+  @ApiOperation({ summary: 'Get wallet histories' })
+  @Get()
+  @UseGuards(DriverAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async findByCode(@CurrentUser() user: any) {
+    return this.driverWalletService.findByIdDriver(user.id);
   }
 }

@@ -456,8 +456,16 @@ paths:
                         type: object
                         $ref: '#/components/schemas/TransactionResponseDto'
       summary: Create a new transaction
-      tags:
+      tags: &ref_4
         - Driver Wallet
+    get:
+      operationId: DriverWalletController_findByCode
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Get wallet histories
+      tags: *ref_4
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -478,7 +486,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_4
+      tags: &ref_5
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -490,7 +498,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_4
+      tags: *ref_5
   /api/payment/webhook:
     post:
       operationId: PaymentController_handleWebhook

@@ -1,3 +1,6 @@
+import { IUserSessionProps } from '@common/interfaces';
+import { JWT_TYPE_ENUM, Role } from '@constants';
+import { JWT_SECRET_TYPE } from '@decorators';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,12 +9,8 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-
-import { IUserSessionProps } from '@common/interfaces';
-import { JWT_TYPE_ENUM, Role } from '@constants';
-import { JWT_SECRET_TYPE } from '@decorators';
 import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { extractTokenFromBody, extractTokenFromHeader } from '@utils';
 
 @Injectable()
@@ -37,10 +36,10 @@ export class DriverAuthGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest();
     let token = '';
-    if (jwtSecretType === JWT_TYPE_ENUM.VERIFY) {
-      token = extractTokenFromBody(req);
-    } else {
+    if (jwtSecretType === JWT_TYPE_ENUM.ACCESS) {
       token = extractTokenFromHeader(req);
+    } else {
+      token = extractTokenFromBody(req);
     }
 
     if (!token) {

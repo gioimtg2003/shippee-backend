@@ -42,6 +42,14 @@ export class DriverWalletService {
     return this.repo.findOne({ where: { code } });
   }
 
+  async findByIdDriver(id: number) {
+    this.logger.log(`Finding wallet history by driver ${id}`);
+    return this.repo.find({
+      where: { driver: { id } },
+      select: ['id', 'amount', 'status', 'action', 'createdAt', 'amount'],
+    });
+  }
+
   private async makeUniqueCode(driverId?: number): Promise<string> {
     while (true) {
       const where = { code: generateRandomCode(8) };

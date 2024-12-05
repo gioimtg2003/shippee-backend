@@ -2,8 +2,12 @@ import { BUCKET, EXPIRE_GET_BUCKET } from '@constants';
 import { CloudflareService } from '@features/cloudflare/cloudflare.service';
 import { RedisCacheService } from '@features/redis';
 import { CacheValueEvent, RedisEvents } from '@features/redis/events';
+import { IVision } from '@interfaces';
+import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import FormData from 'form-data';
+import { firstValueFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { SignUrlInput } from './dto/sign-url.input';
 
@@ -14,6 +18,7 @@ export class ImageService {
     private readonly cloudflareService: CloudflareService,
     private readonly eventEmitter: EventEmitter2,
     private readonly cacheService: RedisCacheService,
+    private readonly httpService: HttpService,
   ) {}
 
   async getSignedUrlUploadDocument(data: SignUrlInput) {
@@ -61,5 +66,44 @@ export class ImageService {
     const uuid = uuidv4();
 
     return `${uuid}.${suffix}`;
+  }
+
+  readImage(bucket: BUCKET, key: any) {
+    return this.cloudflareService.readObject(bucket, key);
+  }
+
+  async extraMetadataFromImage(bucket: BUCKET, key: any) {
+    const file = await this.cloudflareService.readObject(bucket, key);
+    this.logger.log(`Reading file: ${key} from bucket: ${bucket} ...`);
+
+    const formData = new FormData();
+    formData.append('file', file.Body, {
+      filename: key,
+      contentType: file.ContentType,
+    });
+
+    const { data } = await firstValueFrom(
+      this.httpService.post<IVision>(process.env.API_COMPUTE_VISION, formData, {
+        headers: {
+          ...formData.getHeaders(),
+        },
+      }),
+    );
+    let text = '';
+
+    data.readResult.blocks.forEach((block) => {
+      block.lines.forEach((line) => {
+        line.words.forEach((word) => {
+          if (word.confidence > 0.8) {
+            text += `${word.text} `;
+          }
+        });
+        text += '\n';
+      });
+    });
+
+    this.logger.log(`Extracted text from document ${key}`);
+
+    return text;
   }
 }

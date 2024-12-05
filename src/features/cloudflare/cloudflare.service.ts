@@ -53,4 +53,13 @@ export class CloudflareService {
       expiresIn: EXPIRE_GET_BUCKET,
     });
   }
+
+  async readObject(bucket: BUCKET, key: string) {
+    const command = new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+
+    return this.s3Client.send(command);
+  }
 }

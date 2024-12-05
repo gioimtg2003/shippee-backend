@@ -19,3 +19,9 @@ export const CACHE_TRANSPORT_TYPE = {
   CACHE_KEY: 'CACHE_TRANSPORT_TYPE',
   TTL: 86400, // 1 day
 };
+
+export const DRIVER_LICENSE_CLASS = {
+  A1: 'A1',
+  A2: 'A2',
+  A3: 'A3',
+};

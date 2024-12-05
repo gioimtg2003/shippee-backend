@@ -15,6 +15,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { DriverIdentityService } from './driver-identity.service';
 import { DriverService } from './driver.service';
 import { CreateDriverInput } from './dto';
@@ -48,5 +49,13 @@ export class DriverController {
   @HttpCode(HttpStatus.OK)
   meProfile(@CurrentUser() user: any) {
     return user;
+  }
+
+  @Post('verify')
+  @ApiOperation({ summary: 'Testing Verify driver' })
+  @ApiSuccessResponse('Verify driver successfully')
+  @HttpCode(HttpStatus.OK)
+  async verifyDriver() {
+    return this.driverIdentityService.handleDriverVerifyEvent({ id: 1 });
   }
 }

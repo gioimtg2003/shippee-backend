@@ -161,6 +161,7 @@ export class DriverService {
       this.logger.error('⚠️ Error updating driver');
       throw new BadRequestException('Error updating driver');
     }
+    this.logger.log(`Driver updated: ${updated.id}`);
 
     return updated;
   }

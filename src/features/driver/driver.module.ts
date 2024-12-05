@@ -1,4 +1,6 @@
+import { CloudflareModule } from '@features/cloudflare';
 import { CryptoModule } from '@features/crypto';
+import { ImageModule } from '@features/image';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +14,9 @@ import { DriverEntity, DriverIdentityEntity } from './entities';
     TypeOrmModule.forFeature([DriverEntity, DriverIdentityEntity]),
     CryptoModule,
     JwtModule,
+    CloudflareModule,
+    ImageModule,
+    CryptoModule,
   ],
   controllers: [DriverController],
   providers: [DriverService, DriverIdentityService],

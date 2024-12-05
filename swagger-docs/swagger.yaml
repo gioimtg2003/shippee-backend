@@ -255,6 +255,24 @@ paths:
                         type: object
                         $ref: '#/components/schemas/CreateDriverInput'
       tags: *ref_1
+  /api/driver/verify:
+    post:
+      operationId: DriverController_verifyDriver
+      parameters: []
+      responses:
+        '200':
+          description: Verify driver successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: Testing Verify driver
+      tags: *ref_1
   /api/image/signed-url:
     post:
       description: >-

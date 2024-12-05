@@ -7,3 +7,7 @@ export enum BUCKET {
   SHIPPEE = 'shippee',
   ORDER = 'order',
 }
+
+export const MINE_TYPE = {
+  jpg: 'image/jpeg',
+};

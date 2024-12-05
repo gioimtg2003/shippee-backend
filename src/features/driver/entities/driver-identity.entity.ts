@@ -1,15 +1,15 @@
 import { CoreEntity } from '@common/entities';
-import { LIMIT_NUMBER_ID, LIMIT_URL_IMG } from '@constants';
+import { LIMIT_URL_IMG } from '@constants';
 import { Column, Entity, JoinColumn, OneToOne, Relation } from 'typeorm';
 import { DriverEntity } from './driver.entity';
 
 @Entity('driver_identity')
 export class DriverIdentityEntity extends CoreEntity {
-  @Column({ type: 'varchar', length: LIMIT_NUMBER_ID, nullable: true })
+  @Column({ type: 'text', nullable: true })
   identityCardNumber?: string;
 
-  @Column({ type: 'char', length: 15, nullable: true })
-  licensePlates: string;
+  @Column({ type: 'text', nullable: true })
+  licensePlates?: string;
 
   @Column({ type: 'varchar', length: LIMIT_URL_IMG, nullable: true })
   imgIdentityCardFront: string;

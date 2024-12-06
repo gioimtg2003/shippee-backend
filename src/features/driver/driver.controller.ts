@@ -49,8 +49,7 @@ export class DriverController {
   @UseGuards(DriverAuthGuard)
   @HttpCode(HttpStatus.OK)
   meProfile(@CurrentUser() user: DriverSession) {
-    const { id, email, name, phone } = user;
-    return { id, email, name, phone };
+    return user;
   }
 
   @Post('verify')

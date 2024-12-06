@@ -478,12 +478,26 @@ paths:
       tags: &ref_4
         - Driver Wallet
     get:
-      operationId: DriverWalletController_findByCode
+      operationId: DriverWalletController_getWalletDriver
       parameters: []
       responses:
         '200':
           description: ''
       summary: Get wallet histories
+      tags: *ref_4
+  /api/driver-wallet/{code}:
+    get:
+      operationId: DriverWalletController_getTransactionByCode
+      parameters:
+        - name: code
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      summary: Get transaction by code
       tags: *ref_4
   /api/user-auth/login:
     post:

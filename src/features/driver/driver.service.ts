@@ -112,6 +112,7 @@ export class DriverService {
       'password',
       'isIdentityVerified',
       'identity',
+      'balance',
       'isAiChecked',
     ]);
   }

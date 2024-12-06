@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -38,7 +39,18 @@ export class DriverWalletController {
   @Get()
   @UseGuards(DriverAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async findByCode(@CurrentUser() user: any) {
+  async getWalletDriver(@CurrentUser() user: any) {
     return this.driverWalletService.findByIdDriver(user.id);
+  }
+
+  @ApiOperation({ summary: 'Get transaction by code' })
+  @Get(':code')
+  @UseGuards(DriverAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getTransactionByCode(
+    @CurrentUser() user: any,
+    @Param('code') code: string,
+  ) {
+    return this.driverWalletService.findByCodeWithDriver(code, user.id);
   }
 }

@@ -77,12 +77,15 @@ export class DriverAuthService extends RegisterJwtService {
       }
     }
 
-    const driverSession: UserSession = {
+    const driverSession: DriverSession = {
       id: driver.id,
       phone: driver.phone,
       email: driver.email,
       name: driver.name,
       role: Role.DRIVER,
+      balance: driver.balance,
+      isAiChecked: driver.isAiChecked,
+      isIdentityVerified: driver.isIdentityVerified,
     };
 
     return this.registerJwt(driverSession);
@@ -100,6 +103,7 @@ export class DriverAuthService extends RegisterJwtService {
       phone: driver.phone,
       email: driver.email,
       name: driver.name,
+      balance: driver.balance,
       isAiChecked: driver.isAiChecked,
       isIdentityVerified: driver.isIdentityVerified,
       role: Role.DRIVER,

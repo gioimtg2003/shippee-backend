@@ -27,7 +27,9 @@ export class PaymentService {
     const splitCode = saved.code.split('OD')[1];
 
     if (splitCode) {
-      const transaction = await this.driverWalletService.findByCode(splitCode);
+      const transaction = await this.driverWalletService.findOneByField({
+        code: splitCode,
+      });
 
       if (
         transaction &&

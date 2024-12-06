@@ -44,6 +44,9 @@ export class DriverSession {
   @ApiProperty()
   email: string;
 
+  @ApiProperty()
+  balance: number;
+
   @ApiProperty({ enum: Role })
   role: Role;
 

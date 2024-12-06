@@ -4,7 +4,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { generateRandomCode } from '@utils';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { TransactionInput } from './dto';
 import { WalletHistoryEntity } from './entities';
 import { UpdateWalletEvent, WALLET_EVENTS } from './events';
@@ -37,16 +37,34 @@ export class DriverWalletService {
     return this.repo.save(created);
   }
 
-  async findByCode(code: string) {
+  async findByCodeWithDriver(code: string, id: number) {
     this.logger.log(`Finding wallet history by code ${code}`);
-    return this.repo.findOne({ where: { code } });
+    return this.findOneByField({ code, driver: { id } });
+  }
+
+  async findOneByField(
+    where: FindOptionsWhere<WalletHistoryEntity>,
+    relations: string[] = [],
+  ) {
+    return this.repo.findOne({
+      where,
+      relations,
+    });
   }
 
   async findByIdDriver(id: number) {
     this.logger.log(`Finding wallet history by driver ${id}`);
     return this.repo.find({
       where: { driver: { id } },
-      select: ['id', 'amount', 'status', 'action', 'createdAt', 'amount'],
+      select: [
+        'id',
+        'amount',
+        'code',
+        'status',
+        'action',
+        'createdAt',
+        'amount',
+      ],
     });
   }
 

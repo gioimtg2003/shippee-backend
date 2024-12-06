@@ -1,6 +1,8 @@
+import { GoogleAIModule } from '@common/modules/google-ai.module';
 import { CloudflareModule } from '@features/cloudflare';
 import { CryptoModule } from '@features/crypto';
 import { ImageModule } from '@features/image';
+import { MailModule } from '@features/mail';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,6 +19,8 @@ import { DriverEntity, DriverIdentityEntity } from './entities';
     CloudflareModule,
     ImageModule,
     CryptoModule,
+    GoogleAIModule,
+    MailModule,
   ],
   controllers: [DriverController],
   providers: [DriverService, DriverIdentityService],

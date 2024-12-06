@@ -1,4 +1,3 @@
-import { UserSession } from '@common/dto';
 import { EXPIRES_ACCESS_TOKEN, EXPIRES_REFRESH_TOKEN } from '@constants';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -7,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 export class RegisterJwtService {
   constructor(protected readonly jwtService: JwtService) {}
 
-  async registerJwt(data: UserSession) {
+  async registerJwt<T>(data: Partial<T>) {
     const accessToken = this.jwtService.sign(data, {
       secret: process.env.JWT_SECRET,
       expiresIn: EXPIRES_ACCESS_TOKEN,
@@ -30,7 +29,7 @@ export class RegisterJwtService {
     };
   }
 
-  async registerJwtVerify(data: UserSession) {
+  async registerJwtVerify<T>(data: Partial<T>) {
     return this.jwtService.sign(data, {
       secret: process.env.JWT_SECRET_VERIFY,
       expiresIn: EXPIRES_ACCESS_TOKEN,

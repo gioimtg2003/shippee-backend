@@ -1,4 +1,4 @@
-import { IUserSessionProps } from '@common/interfaces';
+import { IDriverSessionProps } from '@common/interfaces';
 import { JWT_TYPE_ENUM, Role } from '@constants';
 import { JWT_SECRET_TYPE } from '@decorators';
 import {
@@ -48,7 +48,7 @@ export class DriverAuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verify<IUserSessionProps>(token, {
+      const payload = await this.jwtService.verify<IDriverSessionProps>(token, {
         secret: JWT[jwtSecretType],
       });
       req.user = payload;

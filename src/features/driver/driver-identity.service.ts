@@ -1,7 +1,8 @@
+import { GoogleAIService } from '@common/services';
 import { BUCKET } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { ImageService } from '@features/image';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { MailService } from '@features/mail/mail.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,6 +26,8 @@ export class DriverIdentityService {
     private readonly eventEmitter: EventEmitter2,
     private readonly imageService: ImageService,
     private readonly cryptoService: CryptoService,
+    private readonly googleAIService: GoogleAIService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(data: CreateDriverInfoInput) {
@@ -122,6 +125,7 @@ export class DriverIdentityService {
         id: true,
         driver: {
           id: true,
+          email: true,
         },
         imgDriverLicenseBack: true,
         imgDriverLicenseFront: true,
@@ -161,21 +165,31 @@ export class DriverIdentityService {
       return;
     }
 
-    const { name, identityCardNumber, age } = metadata;
+    const { name, age } = metadata;
     if (Number(age) < 18) {
       this.logger.error('Driver is underage');
+      this.mailService.sendMail({
+        to: found.driver.email,
+        subject: 'Thông báo từ Shippee',
+        template: './under-age',
+        context: {
+          name,
+          contactEmail: 'support@nguyenconggioi.me',
+        },
+      });
+
       return;
     }
 
-    await this.driverIdentityRepo.save({
-      ...found,
-      identityCardNumber: this.cryptoService.encrypt(identityCardNumber),
-    });
+    // await this.driverIdentityRepo.save({
+    //   ...found,
+    //   identityCardNumber: this.cryptoService.encrypt(identityCardNumber),
+    // });
 
-    await this.driverService.update(found.driver.id, {
-      isAiChecked: true,
-      name,
-    });
+    // await this.driverService.update(found.driver.id, {
+    //   isAiChecked: true,
+    //   name,
+    // });
 
     return true;
   }
@@ -190,14 +204,13 @@ export class DriverIdentityService {
       },
     };
 
-    const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
-    const model = googleAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
     const currentDate = dayjs().format('YYYY-MM-DD');
     const prompt = generatePromptIdentityCard(currentDate);
 
-    const result = await model.generateContent([prompt, image]);
-    const response = result.response.text().trim();
+    const response = await this.googleAIService.getGenerativeModelResponse([
+      prompt,
+      image,
+    ]);
 
     if (response === 'Null' || response === 'null') {
       return false;
@@ -208,5 +221,28 @@ export class DriverIdentityService {
     const [name, identityCardNumber, age] = response.split('\n');
 
     return { name, identityCardNumber, age };
+  }
+
+  private async extractDriverLicenseInfo(key: string) {
+    this.logger.log(`Extract Driver License Info: ${key}`);
+    const buffer = await this.imageService.readImage(BUCKET.DRIVER, key);
+    const image = {
+      inlineData: {
+        data: await buffer.Body.transformToString('base64'),
+        mimeType: buffer.ContentType,
+      },
+    };
+
+    const response = await this.googleAIService.getGenerativeModelResponse([
+      image,
+    ]);
+
+    if (response === 'Null' || response === 'null') {
+      return false;
+    }
+
+    this.logger.log(`Extracted Driver License Info: ${response}`);
+
+    return response;
   }
 }

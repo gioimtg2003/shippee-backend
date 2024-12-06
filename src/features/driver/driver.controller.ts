@@ -1,3 +1,4 @@
+import { DriverSession } from '@common/dto';
 import { JWT_TYPE_ENUM } from '@constants';
 import {
   ApiObjectResponse,
@@ -47,8 +48,9 @@ export class DriverController {
   @ApiObjectResponse(CreateDriverInput, 'Driver info')
   @UseGuards(DriverAuthGuard)
   @HttpCode(HttpStatus.OK)
-  meProfile(@CurrentUser() user: any) {
-    return user;
+  meProfile(@CurrentUser() user: DriverSession) {
+    const { id, email, name, phone } = user;
+    return { id, email, name, phone };
   }
 
   @Post('verify')

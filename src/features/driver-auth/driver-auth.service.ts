@@ -1,4 +1,4 @@
-import { UserSession } from '@common/dto';
+import { DriverSession, UserSession } from '@common/dto';
 import { RegisterJwtService } from '@common/services';
 import { Role, TRANSPORT_TYPE_ENUM } from '@constants';
 import { CryptoService } from '@features/crypto';
@@ -95,15 +95,17 @@ export class DriverAuthService extends RegisterJwtService {
       throw new BadRequestException('Tài khoản không tồn tại');
     }
 
-    const driverSession: UserSession = {
+    const driverSession: DriverSession = {
       id: driver.id,
       phone: driver.phone,
       email: driver.email,
       name: driver.name,
+      isAiChecked: driver.isAiChecked,
+      isIdentityVerified: driver.isIdentityVerified,
       role: Role.DRIVER,
     };
 
-    return this.registerJwt(driverSession);
+    return this.registerJwt<DriverSession>(driverSession);
   }
 
   private async generateJwtVerify(data: UserSession) {

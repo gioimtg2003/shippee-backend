@@ -8,3 +8,13 @@ export interface IUserSessionProps {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IDriverSessionProps {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+  phone: string;
+  isAiChecked: boolean;
+  isIdentityVerified: boolean;
+}

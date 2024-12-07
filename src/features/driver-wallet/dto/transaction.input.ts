@@ -9,8 +9,8 @@ export class TransactionInput {
   })
   @IsNotEmpty()
   @IsNumber()
-  @Max(1000000, { message: 'Maximum amount is 1000000' })
-  @Min(10000, { message: 'Minimum amount is 10000' })
+  @Max(500000, { message: 'Maximum amount is 500.000đ' })
+  @Min(10000, { message: 'Minimum amount is 10.000đ' })
   amount: number;
 
   @ApiProperty({

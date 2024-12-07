@@ -65,6 +65,7 @@ export class DriverWalletService {
         'createdAt',
         'amount',
       ],
+      order: { createdAt: 'DESC' },
     });
   }
 

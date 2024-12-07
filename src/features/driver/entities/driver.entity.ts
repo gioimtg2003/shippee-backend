@@ -1,5 +1,10 @@
 import { CoreEntity } from '@common/entities';
-import { DRIVER_STATUS_ENUM, LIMIT_NAME, LIMIT_PHONE } from '@constants';
+import {
+  ACCEPTANCE_RATE_MAX,
+  DRIVER_STATUS_ENUM,
+  LIMIT_NAME,
+  LIMIT_PHONE,
+} from '@constants';
 import { WalletHistoryEntity } from '@features/driver-wallet/entities';
 import { OrderEntity } from '@features/order/entities/order.entity';
 import { TransportTypeEntity } from '@features/transport-type/transport-type.entity';
@@ -12,6 +17,7 @@ import {
   Relation,
 } from 'typeorm';
 import { DriverIdentityEntity } from './driver-identity.entity';
+import { OrderAssignmentEntity } from './order-assignment.entity';
 
 @Entity('drivers')
 export class DriverEntity extends CoreEntity {
@@ -54,6 +60,9 @@ export class DriverEntity extends CoreEntity {
   })
   state: DRIVER_STATUS_ENUM;
 
+  @Column({ type: 'integer', default: ACCEPTANCE_RATE_MAX })
+  acceptanceRate: number;
+
   @Column({ default: null, nullable: true })
   idOrder: number;
 
@@ -68,4 +77,10 @@ export class DriverEntity extends CoreEntity {
 
   @OneToMany(() => OrderEntity, (order) => order.driver)
   orders: Relation<OrderEntity[]>;
+
+  @OneToMany(
+    () => OrderAssignmentEntity,
+    (orderAssignment) => orderAssignment.driver,
+  )
+  assignments: OrderAssignmentEntity[];
 }

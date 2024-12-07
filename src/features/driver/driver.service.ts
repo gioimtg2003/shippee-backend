@@ -43,6 +43,7 @@ export class DriverService {
       'name',
       'phone',
       'email',
+      'balance',
       'isAiChecked',
       'isIdentityVerified',
       'isRejected',
@@ -165,6 +166,17 @@ export class DriverService {
     this.logger.log(`Driver updated: ${updated.id}`);
 
     return updated;
+  }
+
+  async meProfile(idDriver: number) {
+    const driver = await this.findById(idDriver);
+
+    if (!driver) {
+      this.logger.error(`⚠️ Driver not found with id: ${idDriver}`);
+      throw new BadRequestException('Driver not found');
+    }
+
+    return driver;
   }
 
   async softDelete(id: number) {

@@ -7,6 +7,7 @@ import {
   TRANSPORT_TYPE_ENUM,
 } from '@constants';
 import { DriverEntity } from '@features/driver/entities';
+import { OrderAssignmentEntity } from '@features/driver/entities/order-assignment.entity';
 import { OrderStatusEntity } from '@features/order-status/order-status.entity';
 import { SpecialRequireItemEntity } from '@features/special-require/special-require-item.entity';
 import { CustomerEntity } from '@features/user/customer.entity';
@@ -83,4 +84,10 @@ export class OrderEntity extends CoreEntity {
 
   @ManyToOne(() => DriverEntity)
   driver?: Relation<DriverEntity>;
+
+  @OneToMany(
+    () => OrderAssignmentEntity,
+    (orderAssignment) => orderAssignment.order,
+  )
+  assignments: OrderAssignmentEntity[];
 }

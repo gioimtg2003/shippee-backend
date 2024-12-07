@@ -165,7 +165,7 @@ export class DriverIdentityService {
       return;
     }
 
-    const { name, age } = metadata;
+    const { name, age, identityCardNumber } = metadata;
     if (Number(age) < 18) {
       this.logger.error('Driver is underage');
       this.mailService.sendMail({
@@ -181,15 +181,15 @@ export class DriverIdentityService {
       return;
     }
 
-    // await this.driverIdentityRepo.save({
-    //   ...found,
-    //   identityCardNumber: this.cryptoService.encrypt(identityCardNumber),
-    // });
+    await this.driverIdentityRepo.save({
+      ...found,
+      identityCardNumber: this.cryptoService.encrypt(identityCardNumber),
+    });
 
-    // await this.driverService.update(found.driver.id, {
-    //   isAiChecked: true,
-    //   name,
-    // });
+    await this.driverService.update(found.driver.id, {
+      isAiChecked: true,
+      name,
+    });
 
     return true;
   }

@@ -18,3 +18,5 @@ export enum ORDER_ASSIGNMENT_STATUS_ENUM {
   CANCELED = 'CANCELED',
   EXPIRE = 'EXPIRE',
 }
+
+export const MAX_DISTANCE = 3000; // 3 km

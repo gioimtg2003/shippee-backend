@@ -65,6 +65,8 @@ export class DriverSession {
   @ApiProperty()
   lng?: number;
 
+  idOrder?: number;
+
   constructor(props: IDriverSessionProps) {
     this.id = props.id;
     this.name = props.name;

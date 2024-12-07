@@ -1,4 +1,4 @@
-export interface IRedisRecord {
+export interface IRedisRecord<T = string> {
   key: string;
-  value: string;
+  value: T;
 }

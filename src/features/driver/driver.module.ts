@@ -3,6 +3,7 @@ import { CloudflareModule } from '@features/cloudflare';
 import { CryptoModule } from '@features/crypto';
 import { ImageModule } from '@features/image';
 import { MailModule } from '@features/mail';
+import { RedisModule } from '@features/redis';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -21,6 +22,7 @@ import { DriverEntity, DriverIdentityEntity } from './entities';
     CryptoModule,
     GoogleAIModule,
     MailModule,
+    RedisModule,
   ],
   controllers: [DriverController],
   providers: [DriverService, DriverIdentityService],

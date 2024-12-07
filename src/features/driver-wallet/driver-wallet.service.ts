@@ -1,7 +1,9 @@
 import { WALLET_STATUS_ENUM } from '@constants';
 import { DriverService } from '@features/driver/driver.service';
+import { RedisEvents } from '@features/redis/events';
+import { UpdateCacheValueEvent } from '@features/redis/events/update-value.event';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { generateRandomCode } from '@utils';
 import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
@@ -17,6 +19,7 @@ export class DriverWalletService {
     private readonly repo: Repository<WalletHistoryEntity>,
     private readonly driverService: DriverService,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async create(id: number, data: TransactionInput) {
@@ -130,6 +133,13 @@ export class DriverWalletService {
       }
 
       await queryRunner.commitTransaction();
+
+      this.eventEmitter.emit(
+        RedisEvents.UPDATE_VALUE,
+        new UpdateCacheValueEvent(`driver:${driver.id}`, {
+          balance: driver.balance,
+        }),
+      );
       this.logger.log(`Wallet history status updated for transaction ${id}`);
     } catch (error) {
       await queryRunner.rollbackTransaction();

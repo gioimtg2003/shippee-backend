@@ -1,7 +1,12 @@
+import { DriverSession } from '@common/dto';
 import { applyQueryFilter } from '@common/query-builder';
+import { EXPIRE_CACHE_DRIVER, Role } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { FilterDriverOptionsDto } from '@features/driver-manage/dto';
+import { RedisCacheService } from '@features/redis';
+import { CacheValueEvent, RedisEvents } from '@features/redis/events';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getEndOfDay } from '@utils';
 import {
@@ -20,6 +25,8 @@ export class DriverService {
     @InjectRepository(DriverEntity)
     private readonly driverRepo: Repository<DriverEntity>,
     private readonly cryptoService: CryptoService,
+    private readonly redisService: RedisCacheService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private exists(where: FindOptionsWhere<DriverEntity> = {}) {
@@ -169,14 +176,43 @@ export class DriverService {
   }
 
   async meProfile(idDriver: number) {
-    const driver = await this.findById(idDriver);
+    this.logger.log(`Getting profile of driver with id: ${idDriver}`);
+    const cache = await this.redisService.get(`driver:${idDriver}`);
 
-    if (!driver) {
+    if (cache) {
+      const driver: DriverSession = JSON.parse(cache);
+      return driver;
+    }
+    const found = await this.findById(idDriver);
+
+    if (!found) {
       this.logger.error(`⚠️ Driver not found with id: ${idDriver}`);
       throw new BadRequestException('Driver not found');
     }
 
-    return driver;
+    const driver: DriverSession = {
+      id: found.id,
+      phone: found.phone,
+      email: found.email,
+      name: found.name,
+      role: Role.DRIVER,
+      isAiChecked: found.isAiChecked,
+      isIdentityVerified: found.isIdentityVerified,
+      balance: found.balance,
+    };
+
+    this.eventEmitter.emit(
+      RedisEvents.CACHE_VALUE,
+      new CacheValueEvent(
+        {
+          key: `driver:${found.id}`,
+          value: JSON.stringify(driver),
+        },
+        EXPIRE_CACHE_DRIVER,
+      ),
+    );
+
+    return found;
   }
 
   async softDelete(id: number) {

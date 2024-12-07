@@ -44,9 +44,6 @@ export class DriverSession {
   @ApiProperty()
   email: string;
 
-  @ApiProperty()
-  balance: number;
-
   @ApiProperty({ enum: Role })
   role: Role;
 
@@ -54,10 +51,19 @@ export class DriverSession {
   phone: string;
 
   @ApiProperty()
-  isAiChecked: boolean;
+  balance?: number;
 
   @ApiProperty()
-  isIdentityVerified: boolean;
+  isAiChecked?: boolean;
+
+  @ApiProperty()
+  isIdentityVerified?: boolean;
+
+  @ApiProperty()
+  lat?: number;
+
+  @ApiProperty()
+  lng?: number;
 
   constructor(props: IDriverSessionProps) {
     this.id = props.id;

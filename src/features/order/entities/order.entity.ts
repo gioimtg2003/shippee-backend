@@ -92,5 +92,5 @@ export class OrderEntity extends CoreEntity {
     () => OrderAssignmentEntity,
     (orderAssignment) => orderAssignment.order,
   )
-  assignments: OrderAssignmentEntity[];
+  assignments: Relation<OrderAssignmentEntity[]>;
 }

@@ -16,8 +16,8 @@ import {
   OneToOne,
   Relation,
 } from 'typeorm';
+import { OrderAssignmentEntity } from '../../order/entities/order-assignment.entity';
 import { DriverIdentityEntity } from './driver-identity.entity';
-import { OrderAssignmentEntity } from './order-assignment.entity';
 
 @Entity('drivers')
 export class DriverEntity extends CoreEntity {
@@ -49,9 +49,6 @@ export class DriverEntity extends CoreEntity {
 
   @Column({ type: 'boolean', default: false })
   isRejected: boolean; // AI check identity
-
-  @Column({ type: 'boolean', default: false })
-  isOnline: boolean;
 
   @Column({
     type: 'enum',

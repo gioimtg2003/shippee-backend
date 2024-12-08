@@ -3,6 +3,10 @@ import { CloudflareModule } from '@features/cloudflare';
 import { CryptoModule } from '@features/crypto';
 import { ImageModule } from '@features/image';
 import { MailModule } from '@features/mail';
+import { OrderAssignmentEntity } from '@features/order/entities/order-assignment.entity';
+import { OrderEntity } from '@features/order/entities/order.entity';
+import { OrderAssignmentService } from '@features/order/order-assignment.service';
+import { OrderService } from '@features/order/order.service';
 import { RedisModule } from '@features/redis';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
@@ -14,7 +18,12 @@ import { DriverEntity, DriverIdentityEntity } from './entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([DriverEntity, DriverIdentityEntity]),
+    TypeOrmModule.forFeature([
+      DriverEntity,
+      DriverIdentityEntity,
+      OrderEntity,
+      OrderAssignmentEntity,
+    ]),
     CryptoModule,
     JwtModule,
     CloudflareModule,
@@ -25,7 +34,12 @@ import { DriverEntity, DriverIdentityEntity } from './entities';
     RedisModule,
   ],
   controllers: [DriverController],
-  providers: [DriverService, DriverIdentityService],
+  providers: [
+    DriverService,
+    DriverIdentityService,
+    OrderService,
+    OrderAssignmentService,
+  ],
   exports: [DriverService, DriverIdentityService],
 })
 export class DriverModule {}

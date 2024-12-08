@@ -140,6 +140,7 @@ export class DriverWalletService {
           balance: driver.balance,
         }),
       );
+
       this.logger.log(`Wallet history status updated for transaction ${id}`);
     } catch (error) {
       await queryRunner.rollbackTransaction();

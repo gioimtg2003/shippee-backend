@@ -13,10 +13,11 @@ export enum ORDER_STATUS_ENUM {
 }
 
 export enum ORDER_ASSIGNMENT_STATUS_ENUM {
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  CANCELED = 'CANCELED',
+  ASSIGNED = 'ASSIGNED',
+  REJECTED = 'REJECTED',
   EXPIRE = 'EXPIRE',
 }
 
 export const MAX_DISTANCE = 3000; // 3 km
+export const IS_PENDING_ORDER_KEY = 'is_pending_order';
+export const EXPIRE_CACHE_PENDING_ORDER = 60 * 60 * 24; // 1 day

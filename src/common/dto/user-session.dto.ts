@@ -1,5 +1,5 @@
 import { IDriverSessionProps, IUserSessionProps } from '@common/interfaces';
-import { Role } from '@constants';
+import { DRIVER_STATUS_ENUM, Role } from '@constants';
 import { CustomerEntity } from '@features/user/customer.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { FindOptionsSelect } from 'typeorm';
@@ -64,6 +64,9 @@ export class DriverSession {
 
   @ApiProperty()
   lng?: number;
+
+  @ApiProperty()
+  state?: DRIVER_STATUS_ENUM;
 
   idOrder?: number;
 

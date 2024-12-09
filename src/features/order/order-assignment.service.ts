@@ -13,7 +13,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CalculateDistance } from '@utils';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { OrderAssignmentEntity } from './entities/order-assignment.entity';
 import { OrderEntity } from './entities/order.entity';
 import { ORDER_EVENT_ENUM, OrderAssignEvent } from './events';
@@ -50,13 +50,14 @@ export class OrderAssignmentService {
 
   countByDriverId(
     idDriver: number,
-    options: FindOptionsWhere<OrderAssignmentEntity> = {},
+    options: FindManyOptions<OrderAssignmentEntity> = {},
   ) {
     return this.repoOrderAssign.count({
       where: {
         driver: { id: idDriver },
-        ...options,
+        ...options.where,
       },
+      ...options,
     });
   }
 
@@ -145,7 +146,7 @@ export class OrderAssignmentService {
           );
 
           const countOrderAssigned = await this.countByDriverId(driver.id, {
-            status: ORDER_ASSIGNMENT_STATUS_ENUM.ASSIGNED,
+            where: { status: ORDER_ASSIGNMENT_STATUS_ENUM.ASSIGNED },
           });
 
           if (countOrderAssigned <= 2) {

@@ -2,6 +2,7 @@ import { Environment } from '@config';
 import { REQUEST_LIMIT_RATE } from '@constants';
 import { AdminModule } from '@features/admin';
 import { AuthAdminModule } from '@features/auth-admin';
+import { CronJobModule } from '@features/cron-job';
 import { CryptoModule } from '@features/crypto';
 import { DriverModule } from '@features/driver';
 import { DriverAuthModule } from '@features/driver-auth';
@@ -24,6 +25,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
@@ -70,7 +72,9 @@ import { AppService } from './app.service';
     }),
     ThrottlerModule.forRoot([REQUEST_LIMIT_RATE['global']]),
     EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     RedisModule,
+    CronJobModule,
     MailModule,
     AdminModule,
     DriverManageModule,

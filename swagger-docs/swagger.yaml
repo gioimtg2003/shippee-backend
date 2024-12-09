@@ -1,5 +1,114 @@
 openapi: 3.0.0
 paths:
+  /api/driver/identity:
+    post:
+      operationId: DriverController_updateIdentity
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDriverInfoInput'
+      responses:
+        '200':
+          description: Update driver identity successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      tags: &ref_0
+        - Driver
+  /api/driver/me:
+    get:
+      operationId: DriverController_meProfile
+      parameters: []
+      responses:
+        '200':
+          description: Driver info
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/DriverSession'
+      tags: *ref_0
+  /api/driver/verify:
+    post:
+      operationId: DriverController_verifyDriver
+      parameters: []
+      responses:
+        '200':
+          description: Verify driver successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: Testing Verify driver
+      tags: *ref_0
+  /api/image/signed-url:
+    post:
+      description: >-
+        Get signed URL for uploading image. The URL will be expired in 30
+        seconds.
+      operationId: ImageController_signedUrl
+      parameters:
+        - name: x-shipppee-timestamp
+          in: header
+          description: Request timestamp
+          schema:
+            type: string
+        - name: x-shipppee-sha-256
+          in: header
+          description: SHA-256 hash of the request
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUrlInput'
+      responses:
+        '200':
+          description: Return signed URL
+          content:
+            application/json:
+              example:
+                url: >-
+                  https://ship.abc9asd.r2.cloudflarestorage.com/hihi.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=d64ccf0d4b1449153d78215ffff23asd0de1fd2b357e153026c9a3fada96&X-Amz-Credential=sda32423dasd060f73%2F20241120%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20241120T104831Z&X-Amz-Expires=30&X-Amz-Signature=5c532bae6ae932dasd44279fa980ec3bac64d5a210b037319f06d86f1&X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-checksum-sha256&x-id=PutObject
+                key: 1234-1234-1234-1234.png
+      summary: Get signed URL
+      tags: &ref_1
+        - image
+  /api/image/{key}:
+    get:
+      description: Get image from the bucket
+      operationId: ImageController_getImage
+      parameters:
+        - name: key
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Return image
+      summary: Get image
+      tags: *ref_1
   /api/mail:
     post:
       operationId: MailController_sendMail
@@ -47,7 +156,7 @@ paths:
                         type: boolean
                         example: true
       summary: Create a driver
-      tags: &ref_0
+      tags: &ref_2
         - driver-manage
     get:
       operationId: DriverManageController_getAllDriver
@@ -66,7 +175,7 @@ paths:
                         items:
                           $ref: '#/components/schemas/CreateDriverInput'
       summary: Get all driver
-      tags: *ref_0
+      tags: *ref_2
     put:
       operationId: DriverManageController_updateDriver
       parameters: []
@@ -89,7 +198,7 @@ paths:
                         type: boolean
                         example: true
       summary: Update a driver
-      tags: *ref_0
+      tags: *ref_2
   /api/driver-manage/driver/{id}:
     get:
       operationId: DriverManageController_getDriver
@@ -108,7 +217,7 @@ paths:
         '200':
           description: ''
       summary: Get details driver
-      tags: *ref_0
+      tags: *ref_2
     delete:
       operationId: DriverManageController_deleteDriver
       parameters:
@@ -130,7 +239,7 @@ paths:
                         type: boolean
                         example: true
       summary: Delete driver
-      tags: *ref_0
+      tags: *ref_2
   /api/driver-manage/driver/info:
     post:
       operationId: DriverManageController_createInfo
@@ -154,7 +263,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/CreateDriverInfoInput'
       summary: Create a partner identification info
-      tags: *ref_0
+      tags: *ref_2
     put:
       operationId: DriverManageController_updateInfo
       parameters: []
@@ -177,7 +286,7 @@ paths:
                         type: boolean
                         example: true
       summary: Create a partner identification info
-      tags: *ref_0
+      tags: *ref_2
   /api/driver-manage/driver/count:
     post:
       operationId: DriverManageController_countDriver
@@ -196,7 +305,7 @@ paths:
               schema:
                 type: number
       summary: Count driver
-      tags: *ref_0
+      tags: *ref_2
   /api/driver-manage/driver/verify:
     post:
       operationId: DriverManageController_verifyDriver
@@ -214,115 +323,6 @@ paths:
                         type: boolean
                         example: true
       summary: Verify driver
-      tags: *ref_0
-  /api/driver/identity:
-    post:
-      operationId: DriverController_updateIdentity
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateDriverInfoInput'
-      responses:
-        '200':
-          description: Update driver identity successfully
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ResponseDTO'
-                  - properties:
-                      data:
-                        type: boolean
-                        example: true
-      tags: &ref_1
-        - Driver
-  /api/driver/me:
-    get:
-      operationId: DriverController_meProfile
-      parameters: []
-      responses:
-        '200':
-          description: Driver info
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ResponseDTO'
-                  - properties:
-                      data:
-                        type: object
-                        $ref: '#/components/schemas/DriverSession'
-      tags: *ref_1
-  /api/driver/verify:
-    post:
-      operationId: DriverController_verifyDriver
-      parameters: []
-      responses:
-        '200':
-          description: Verify driver successfully
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ResponseDTO'
-                  - properties:
-                      data:
-                        type: boolean
-                        example: true
-      summary: Testing Verify driver
-      tags: *ref_1
-  /api/image/signed-url:
-    post:
-      description: >-
-        Get signed URL for uploading image. The URL will be expired in 30
-        seconds.
-      operationId: ImageController_signedUrl
-      parameters:
-        - name: x-shipppee-timestamp
-          in: header
-          description: Request timestamp
-          schema:
-            type: string
-        - name: x-shipppee-sha-256
-          in: header
-          description: SHA-256 hash of the request
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SignUrlInput'
-      responses:
-        '200':
-          description: Return signed URL
-          content:
-            application/json:
-              example:
-                url: >-
-                  https://ship.abc9asd.r2.cloudflarestorage.com/hihi.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=d64ccf0d4b1449153d78215ffff23asd0de1fd2b357e153026c9a3fada96&X-Amz-Credential=sda32423dasd060f73%2F20241120%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20241120T104831Z&X-Amz-Expires=30&X-Amz-Signature=5c532bae6ae932dasd44279fa980ec3bac64d5a210b037319f06d86f1&X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-checksum-sha256&x-id=PutObject
-                key: 1234-1234-1234-1234.png
-      summary: Get signed URL
-      tags: &ref_2
-        - image
-  /api/image/{key}:
-    get:
-      description: Get image from the bucket
-      operationId: ImageController_getImage
-      parameters:
-        - name: key
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Return image
-      summary: Get image
       tags: *ref_2
   /api/transport-type:
     get:
@@ -557,6 +557,63 @@ tags: []
 servers: []
 components:
   schemas:
+    UpdateDriverInfoInput:
+      type: object
+      properties:
+        identityCardNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgIdentityCardFront:
+          type: string
+          description: Image identity card front
+          example: 672ds-da9sdj-fas34-asd9
+        imgIdentityCardBack:
+          type: string
+          description: Image identity card back
+          example: 672ds-da9sdj-fas34-asd9
+        driverLicenseNumber:
+          type: string
+          description: Identity card number
+          example: '123456789'
+        imgDriverLicenseFront:
+          type: string
+          description: Image Driver License front
+          example: 672ds-da9sdj-fas34-asd9
+        imgDriverLicenseBack:
+          type: string
+          description: Image Driver License back
+          example: 672ds-da9sdj-fas34-asd9
+        licensePlates:
+          type: string
+          description: license plates
+          example: 76C193934
+        imgVehicleRegistrationCertFront:
+          type: string
+          description: Image Vehicle Registration Cert Front
+          example: 672ds-da9sdj-fas34-asd9
+        imgVehicleRegistrationCertBack:
+          type: string
+          description: Image Vehicle Registration Cert Back
+          example: 672ds-da9sdj-fas34-asd9
+      required:
+        - identityCardNumber
+        - imgIdentityCardFront
+        - imgIdentityCardBack
+    SignUrlInput:
+      type: object
+      properties:
+        fileName:
+          type: string
+          description: File name
+          example: image.jpg
+        contentType:
+          type: string
+          description: Content type
+          example: image/jpeg
+      required:
+        - fileName
+        - contentType
     Data:
       type: object
       properties:
@@ -670,49 +727,6 @@ components:
           example: 1
       required:
         - idDriver
-    UpdateDriverInfoInput:
-      type: object
-      properties:
-        identityCardNumber:
-          type: string
-          description: Identity card number
-          example: '123456789'
-        imgIdentityCardFront:
-          type: string
-          description: Image identity card front
-          example: 672ds-da9sdj-fas34-asd9
-        imgIdentityCardBack:
-          type: string
-          description: Image identity card back
-          example: 672ds-da9sdj-fas34-asd9
-        driverLicenseNumber:
-          type: string
-          description: Identity card number
-          example: '123456789'
-        imgDriverLicenseFront:
-          type: string
-          description: Image Driver License front
-          example: 672ds-da9sdj-fas34-asd9
-        imgDriverLicenseBack:
-          type: string
-          description: Image Driver License back
-          example: 672ds-da9sdj-fas34-asd9
-        licensePlates:
-          type: string
-          description: license plates
-          example: 76C193934
-        imgVehicleRegistrationCertFront:
-          type: string
-          description: Image Vehicle Registration Cert Front
-          example: 672ds-da9sdj-fas34-asd9
-        imgVehicleRegistrationCertBack:
-          type: string
-          description: Image Vehicle Registration Cert Back
-          example: 672ds-da9sdj-fas34-asd9
-      required:
-        - identityCardNumber
-        - imgIdentityCardFront
-        - imgIdentityCardBack
     CountDriverDto:
       type: object
       properties:
@@ -728,20 +742,6 @@ components:
         - isIdentityVerified
         - isAiChecked
         - isRejected
-    SignUrlInput:
-      type: object
-      properties:
-        fileName:
-          type: string
-          description: File name
-          example: image.jpg
-        contentType:
-          type: string
-          description: Content type
-          example: image/jpeg
-      required:
-        - fileName
-        - contentType
     AdminLoginInput:
       type: object
       properties:

@@ -101,9 +101,13 @@ export class DriverService implements OnModuleInit {
     }
     if (options.status) {
       if (options.status !== 'all') {
-        query.andWhere('drivers.isIdentityVerified = :isIdentityVerified', {
-          isIdentityVerified: options.status === 'verified',
-        });
+        query.andWhere(
+          'drivers.isIdentityVerified = :isIdentityVerified OR drivers.isAiChecked = :isAiChecked',
+          {
+            isIdentityVerified: options.status === 'verified',
+            isAiChecked: options.status === 'verified',
+          },
+        );
       }
     }
 
@@ -114,6 +118,7 @@ export class DriverService implements OnModuleInit {
       'drivers.email',
       'drivers.createdAt',
       'drivers.isIdentityVerified',
+      'drivers.isAiChecked',
     ]);
     applyQueryFilter(query, options);
 

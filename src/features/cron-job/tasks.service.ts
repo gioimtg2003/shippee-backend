@@ -2,15 +2,17 @@ import { ORDER_ASSIGNMENT_STATUS_ENUM } from '@constants';
 import { DriverService } from '@features/driver/driver.service';
 import { OrderAssignmentService } from '@features/order/order-assignment.service';
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
+import { CronJobService } from './cron-job.service';
 
 @Injectable()
-export class CronJobService {
-  private readonly logger = new Logger(CronJobService.name);
+export class TasksService {
+  private readonly logger = new Logger(TasksService.name);
 
   constructor(
     private readonly driverService: DriverService,
     private readonly orderAssignService: OrderAssignmentService,
+    private readonly cronJobService: CronJobService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM, {
@@ -60,11 +62,8 @@ export class CronJobService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS, {
-    name: 'acceptance-rate',
-    timeZone: 'Asia/Ho_Chi_Minh',
-  })
+  @Timeout(5000)
   cron() {
-    this.logger.log('Start cron job acceptance rate cron');
+    this.logger.log('Start cron job timeout');
   }
 }

@@ -5,6 +5,7 @@ import {
   IS_PENDING_ORDER_KEY,
   MAX_DISTANCE,
   ORDER_ASSIGNMENT_STATUS_ENUM,
+  ORDER_STATUS_ENUM,
 } from '@constants';
 import { DriverService } from '@features/driver/driver.service';
 import { RedisCacheService } from '@features/redis';
@@ -16,7 +17,11 @@ import { CalculateDistance } from '@utils';
 import { FindManyOptions, Repository } from 'typeorm';
 import { OrderAssignmentEntity } from './entities/order-assignment.entity';
 import { OrderEntity } from './entities/order.entity';
-import { ORDER_EVENT_ENUM, OrderAssignEvent } from './events';
+import {
+  ORDER_EVENT_ENUM,
+  OrderAssignCheckingEvent,
+  OrderAssignEvent,
+} from './events';
 import { OrderService } from './order.service';
 
 @Injectable()
@@ -59,6 +64,22 @@ export class OrderAssignmentService {
       },
       ...options,
     });
+  }
+
+  countAssignedByDriverId(idDriver: number) {
+    return this.repoOrderAssign
+      .createQueryBuilder('order_assignment')
+      .select('order_assignment.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .where('order_assignment.status IN (:...statuses)', {
+        statuses: [
+          ORDER_ASSIGNMENT_STATUS_ENUM.ASSIGNED,
+          ORDER_ASSIGNMENT_STATUS_ENUM.EXPIRE,
+          ORDER_ASSIGNMENT_STATUS_ENUM.REJECTED,
+        ],
+      })
+      .groupBy('order_assignment.status')
+      .getRawMany();
   }
 
   async update(id: number, data: Partial<OrderAssignmentEntity>) {
@@ -116,6 +137,11 @@ export class OrderAssignmentService {
       potentialDriverId: selectedDriver.id,
     });
     this.cacheOrderNotAssigned('false');
+
+    this.eventEmitter.emit(
+      ORDER_EVENT_ENUM.ASSIGN_CHECKING,
+      new OrderAssignCheckingEvent(idOrder),
+    );
   }
 
   private async getPotentialDrivers(
@@ -203,5 +229,24 @@ export class OrderAssignmentService {
         EXPIRE_CACHE_PENDING_ORDER,
       ),
     );
+  }
+
+  private async checkOrderAssignment(idOrder: number) {
+    const order = await this.orderService.findByField({ id: idOrder }, [], {
+      currentStatus: true,
+      id: true,
+    });
+
+    if (!order) {
+      this.logger.error('Order not found');
+      return;
+    }
+
+    if (order.currentStatus === ORDER_STATUS_ENUM.PENDING) {
+      this.logger.log('Order is still pending');
+      return false;
+    }
+
+    return order;
   }
 }

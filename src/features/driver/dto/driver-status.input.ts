@@ -1,24 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, Max, Min } from 'class-validator';
+import { LocationDto } from '@common/dto';
+import { PickType } from '@nestjs/swagger';
 
-export class DriverStatusInput {
-  @ApiProperty({
-    description: 'Longitude',
-    example: 100.0,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  @Min(-180)
-  @Max(180)
-  lng: number;
-
-  @ApiProperty({
-    description: 'latitude',
-    example: 100.0,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  @Min(-90)
-  @Max(90)
-  lat: number;
-}
+export class DriverStatusInput extends PickType(LocationDto, ['lat', 'lng']) {}

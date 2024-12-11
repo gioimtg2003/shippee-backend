@@ -8,7 +8,7 @@ export class SpecialRequireItemEntity extends CorePriceEntity {
   @Column({ type: 'enum', enum: SPECIAL_REQUIRE_ENUM })
   code: SPECIAL_REQUIRE_ENUM;
 
-  @ManyToOne(() => SpecialRequireItemEntity, (item) => item.children)
+  @ManyToOne(() => SpecialRequireItemEntity)
   parent?: Relation<SpecialRequireItemEntity>;
 
   @OneToMany(() => SpecialRequireItemEntity, (item) => item.parent)

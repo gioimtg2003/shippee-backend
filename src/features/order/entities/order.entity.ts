@@ -4,12 +4,12 @@ import {
   LIMIT_PHONE,
   NOTE_MAX_LENGTH,
   ORDER_STATUS_ENUM,
-  TRANSPORT_TYPE_ENUM,
 } from '@constants';
 import { DriverEntity } from '@features/driver/entities';
 import { OrderStatusEntity } from '@features/order-status/order-status.entity';
 import { OrderAssignmentEntity } from '@features/order/entities/order-assignment.entity';
 import { SpecialRequireItemEntity } from '@features/special-require/special-require-item.entity';
+import { TransportTypeEntity } from '@features/transport-type/transport-type.entity';
 import { CustomerEntity } from '@features/user/customer.entity';
 import { Column, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
 
@@ -52,9 +52,6 @@ export class OrderEntity extends CoreEntity {
   @Column({ type: 'char', length: LIMIT_PHONE })
   recipientPhone: string;
 
-  @Column({ type: 'enum', enum: TRANSPORT_TYPE_ENUM })
-  transportType: TRANSPORT_TYPE_ENUM;
-
   @Column({ type: 'jsonb', nullable: true })
   cod: CODEntity;
 
@@ -93,4 +90,7 @@ export class OrderEntity extends CoreEntity {
     (orderAssignment) => orderAssignment.order,
   )
   assignments: Relation<OrderAssignmentEntity[]>;
+
+  @ManyToOne(() => TransportTypeEntity)
+  transportType: Relation<TransportTypeEntity>;
 }

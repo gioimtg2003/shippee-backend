@@ -99,16 +99,12 @@ export class DriverService implements OnModuleInit {
         end: endOfDay.toISOString(),
       });
     }
-    if (options.status) {
-      if (options.status !== 'all') {
-        query.andWhere(
-          'drivers.isIdentityVerified = :isIdentityVerified OR drivers.isAiChecked = :isAiChecked',
-          {
-            isIdentityVerified: options.status === 'verified',
-            isAiChecked: options.status === 'verified',
-          },
-        );
-      }
+    if (options.status && options.status !== 'all') {
+      const isVerified = options.status === 'verified';
+      query.andWhere(
+        'drivers.isIdentityVerified = :isVerified OR drivers.isAiChecked = :isVerified',
+        { isVerified },
+      );
     }
 
     query.select([

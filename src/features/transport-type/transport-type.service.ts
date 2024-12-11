@@ -4,7 +4,7 @@ import { CacheValueEvent, RedisEvents } from '@features/redis/events';
 import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { TransportTypeEntity } from './transport-type.entity';
 
 export class TransportTypeService {
@@ -47,6 +47,31 @@ export class TransportTypeService {
   findById(id: number) {
     return this.transportType.findOne({
       where: { id },
+    });
+  }
+
+  findByField(options: FindOneOptions<TransportTypeEntity>) {
+    return this.transportType.findOne(options);
+  }
+
+  getPriceInfo(id: number) {
+    return this.findByField({
+      where: { id: id },
+      relations: ['priceInfo', 'exceedSegmentPrices'],
+      select: {
+        id: true,
+        priceInfo: {
+          id: true,
+          priceValue: true,
+          priceType: true,
+        },
+        exceedSegmentPrices: {
+          endExtraDistanceKm: true,
+          priceExtra: true,
+          startExtraDistanceKm: true,
+        },
+        loadWeight: true,
+      },
     });
   }
 }

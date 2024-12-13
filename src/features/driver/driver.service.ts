@@ -1,10 +1,14 @@
 import { DriverSession } from '@common/dto';
 import { applyQueryFilter } from '@common/query-builder';
-import { DRIVER_STATUS_ENUM, EXPIRE_CACHE_DRIVER, Role } from '@constants';
+import {
+  DRIVER_STATUS_ENUM,
+  EXPIRE_CACHE_DRIVER,
+  IS_PENDING_ORDER_KEY,
+  Role,
+} from '@constants';
 import { CryptoService } from '@features/crypto';
 import { FilterDriverOptionsDto } from '@features/driver-manage/dto';
-import { ORDER_EVENT_ENUM, OrderAssignEvent } from '@features/order/events';
-import { OrderService } from '@features/order/order.service';
+import { ORDER_EVENT_ENUM } from '@features/order/events';
 import { RedisCacheService } from '@features/redis';
 import { CacheValueEvent, RedisEvents } from '@features/redis/events';
 import {
@@ -36,12 +40,16 @@ export class DriverService implements OnModuleInit {
     private readonly cryptoService: CryptoService,
     private readonly redisService: RedisCacheService,
     private readonly eventEmitter: EventEmitter2,
-    private readonly orderService: OrderService,
   ) {}
 
   onModuleInit() {
     this.eventEmitter.on(DRIVER_EVENTS.DRIVER_ONLINE, async () => {
-      await this.checkPendingOrders();
+      const isPendingOrder = await this.redisService.get(IS_PENDING_ORDER_KEY);
+      if (!isPendingOrder || isPendingOrder === 'false') {
+        return;
+      }
+
+      this.eventEmitter.emit(ORDER_EVENT_ENUM.PENDING_CHECKING);
     });
   }
 
@@ -306,25 +314,6 @@ export class DriverService implements OnModuleInit {
     });
 
     return true;
-  }
-
-  private async checkPendingOrders() {
-    const isPendingOrder = await this.orderService.checkOrderNotAssigned();
-
-    if (!isPendingOrder || isPendingOrder === 'false') {
-      return;
-    }
-
-    const pendingOrdersId = await this.orderService.getOrderPending();
-
-    if (pendingOrdersId.length === 0) {
-      return;
-    }
-
-    this.eventEmitter.emit(
-      ORDER_EVENT_ENUM.ASSIGN,
-      new OrderAssignEvent(pendingOrdersId[0].id),
-    );
   }
 
   async softDelete(id: number) {

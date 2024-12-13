@@ -99,3 +99,8 @@ export enum PRICE_ITEMS_ENUM {
   DEFAULT = 'DEFAULT',
   EXCEED = 'EXCEED',
 }
+
+export enum ORDER_QUEUE {
+  NAME = 'order_queue',
+  ASSIGN = 'assign_order',
+}

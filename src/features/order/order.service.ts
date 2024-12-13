@@ -12,13 +12,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   CalculateDistance,
   calculatePriceInfo,
-  exceedDistancePrice,
   formatDateToUTCString,
   sample,
 } from '@utils';
 import { FindOptionsSelect, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateOrderInput } from './dto';
 import { OrderEntity } from './entities/order.entity';
+import { DefaultPriceStrategy } from './strategies/default-price.strategy';
+import { ExceedPriceStrategy } from './strategies/exceed-price.strategy';
+import { PriceCalculator } from './strategies/price-calculator';
 
 @Injectable()
 export class OrderService {
@@ -30,6 +32,7 @@ export class OrderService {
     private readonly redisService: RedisCacheService,
     private readonly transportTypeService: TransportTypeService,
     private readonly mapBoxService: MapBoxService,
+    private readonly priceCalculator: PriceCalculator,
   ) {}
 
   findByField(
@@ -91,6 +94,7 @@ export class OrderService {
       [pickup.lat, pickup.lng],
       [destination.lat, destination.lng],
     );
+
     const distanceKm = Math.ceil(distance.routes[0].distance / 1000);
 
     const { defaultPrice, exceedDistance, exceedPrice } =
@@ -103,15 +107,27 @@ export class OrderService {
     );
 
     const totalPrice = priceItems.reduce((acc, item) => acc + item.price, 0);
+
+    /**
+     * Constructs a delivery window string in UTC format if both startTime and endTime are provided.
+     * The format of the string is `[startTime, endTime)`.
+     * If either startTime or endTime is not provided, the delivery window is set to null.
+     *
+     * @param startTime - The start time of the delivery window.
+     * @param endTime - The end time of the delivery window.
+     * @returns A string representing the delivery window in UTC format or null if either time is missing.
+     */
+    const deliveryWindow =
+      startTime && endTime
+        ? `[${formatDateToUTCString(startTime)}, ${formatDateToUTCString(endTime)})`
+        : null;
+
     const order = {
       distanceTotal: distanceKm,
       priceItems,
       totalPrice,
       exceedDistance,
-      deliveryWindow:
-        startTime && endTime
-          ? `[${formatDateToUTCString(startTime)}, ${formatDateToUTCString(endTime)})`
-          : null,
+      deliveryWindow,
     };
 
     const created = this.repo.create({
@@ -145,6 +161,14 @@ export class OrderService {
     return saved;
   }
 
+  /**
+   * Creates an array of price items based on the default price and any exceed distance and price.
+   *
+   * @param {number} defaultPrice - The default price for the item.
+   * @param {number} exceedDistance - The distance that exceeds the default range.
+   * @param {number} exceedPrice - The price for the exceeded distance.
+   * @returns {Array<{ name: PRICE_ITEMS_ENUM, price: number }>} An array of price items.
+   */
   private createPriceItems(
     defaultPrice: number,
     exceedDistance: number,
@@ -167,6 +191,14 @@ export class OrderService {
     return priceItems;
   }
 
+  /**
+   * Calculates the exceed distance and price based on the total distance and transport type.
+   *
+   * @param distanceTotal - The total distance to be calculated.
+   * @param idTransportType - The ID of the transport type to retrieve price information.
+   * @returns An object containing the exceed distance, exceed price, and default price.
+   * @throws {BadRequestException} If the transport type is not found.
+   */
   async calculateExceedDistance(
     distanceTotal: number,
     idTransportType: number,
@@ -179,20 +211,45 @@ export class OrderService {
       throw new BadRequestException('Transport type not found');
     }
 
-    const exceedValue = exceedDistancePrice(
-      distanceTotal,
-      transport.exceedSegmentPrices,
-    );
-    const exceedDistance =
-      distanceTotal - transport.exceedSegmentPrices[0].startExtraDistanceKm;
-    const exceedPrice = exceedValue * exceedDistance;
+    if (
+      distanceTotal <= transport.exceedSegmentPrices[0].startExtraDistanceKm
+    ) {
+      const defaultPrice =
+        calculatePriceInfo(
+          transport.priceInfo.priceType,
+          transport.priceInfo.priceValue,
+        ) * distanceTotal;
 
-    const defaultPrice = calculatePriceInfo(
-      transport.priceInfo.priceType,
-      transport.priceInfo.priceValue,
+      return { exceedDistance: 0, exceedPrice: 0, defaultPrice };
+    }
+
+    this.priceCalculator.setStrategy(new ExceedPriceStrategy());
+    const { exceedDistance, exceedPrice } = this.priceCalculator.calculate<{
+      exceedDistance: number;
+      exceedPrice: number;
+    }>({
+      distance: distanceTotal,
+      transport,
+    });
+
+    this.priceCalculator.setStrategy(new DefaultPriceStrategy());
+    const { defaultPrice } = this.priceCalculator.calculate<{
+      defaultPrice: number;
+    }>(
+      {
+        price: transport.priceInfo.priceValue,
+        distance: distanceTotal,
+      },
+      {
+        priceType: transport.priceInfo.priceType,
+      },
     );
 
-    return { exceedDistance, exceedPrice, defaultPrice };
+    return {
+      exceedDistance,
+      exceedPrice,
+      defaultPrice,
+    };
   }
 
   async update(id: number, data: Partial<OrderEntity>) {

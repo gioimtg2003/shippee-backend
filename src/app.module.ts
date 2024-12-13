@@ -70,6 +70,7 @@ import { AppService } from './app.service';
         },
       },
     }),
+
     ThrottlerModule.forRoot([REQUEST_LIMIT_RATE['global']]),
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),

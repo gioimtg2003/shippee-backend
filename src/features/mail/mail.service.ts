@@ -1,6 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class MailService {
@@ -8,6 +10,7 @@ export class MailService {
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
+    @InjectQueue('mail') private readonly mailQueue: Queue,
   ) {}
 
   async sendMail(props: {
@@ -32,5 +35,18 @@ export class MailService {
     } catch (error) {
       this.logger.error(error);
     }
+  }
+
+  async sendMailJob() {
+    this.mailQueue.add(
+      'mail-job',
+      {
+        to: 'hi',
+      },
+      {
+        removeOnComplete: true,
+        delay: 2000,
+      },
+    );
   }
 }

@@ -11,12 +11,12 @@ export class RedisCacheService {
   private logger = new Logger(RedisCacheService.name);
 
   constructor(
-    @Inject(REDIS_MODULE_CONNECTION.CACHE) private readonly redisCache: Redis,
+    @Inject(REDIS_MODULE_CONNECTION.CACHE) private readonly client: Redis,
   ) {}
 
   async get(key: string) {
     this.logger.log(`Getting cache for key: ${key}`);
-    return this.redisCache.get(key);
+    return this.client.get(key);
   }
 
   async getAll<T>(pattern: string) {
@@ -27,8 +27,8 @@ export class RedisCacheService {
 
     this.logger.log(`Getting all cache for pattern: ${pattern}`);
 
-    const keys = await this.redisCache.keys(pattern);
-    const values = await this.redisCache.mget(keys);
+    const keys = await this.client.keys(pattern);
+    const values = await this.client.mget(keys);
 
     const records: IRedisRecord<T>[] = [];
 
@@ -47,9 +47,9 @@ export class RedisCacheService {
     const { expires } = payload;
 
     // Remove the value if it exists
-    await this.redisCache.del(key);
+    await this.client.del(key);
 
-    await this.redisCache.set(key, value, 'EX', expires);
+    await this.client.set(key, value, 'EX', expires);
     this.logger.log(`Cache set for key ${key}`);
   }
 
@@ -59,7 +59,7 @@ export class RedisCacheService {
     this.logger.log(`Updating cache for key: ${key}`);
 
     // Get the cache
-    const cache = await this.redisCache.get(key);
+    const cache = await this.client.get(key);
     if (!cache) {
       this.logger.error('Cache not found');
       return;
@@ -69,8 +69,8 @@ export class RedisCacheService {
     const cacheObj = JSON.parse(cache);
     Object.assign(cacheObj, value);
 
-    const pipeline = this.redisCache.pipeline();
-    const ttl = await this.redisCache.ttl(key);
+    const pipeline = this.client.pipeline();
+    const ttl = await this.client.ttl(key);
 
     if (ttl > 0) {
       pipeline.set(key, JSON.stringify(cacheObj), 'EX', ttl);

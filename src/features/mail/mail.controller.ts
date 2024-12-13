@@ -32,4 +32,11 @@ export class MailController {
     });
     return true;
   }
+
+  @Post('job')
+  @ApiOperation({ summary: 'Send mail job' })
+  sendMailJob() {
+    this.mailService.sendMailJob();
+    return true;
+  }
 }

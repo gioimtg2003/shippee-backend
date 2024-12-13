@@ -21,7 +21,7 @@ export const exceedDistancePrice = (
 ) => {
   const segment = exceedSegmentPrices.find((segment) => {
     return (
-      distance >= segment.startExtraDistanceKm &&
+      distance > segment.startExtraDistanceKm &&
       distance <= segment.endExtraDistanceKm
     );
   });

@@ -117,8 +117,17 @@ paths:
         '201':
           description: ''
       summary: Send mail
-      tags:
+      tags: &ref_2
         - mail
+  /api/mail/job:
+    post:
+      operationId: MailController_sendMailJob
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      summary: Send mail job
+      tags: *ref_2
   /api/transport-type:
     get:
       operationId: TransportTypeController_find
@@ -188,7 +197,7 @@ paths:
                         type: boolean
                         example: true
       summary: Create a driver
-      tags: &ref_2
+      tags: &ref_3
         - driver-manage
     get:
       operationId: DriverManageController_getAllDriver
@@ -207,7 +216,7 @@ paths:
                         items:
                           $ref: '#/components/schemas/CreateDriverInput'
       summary: Get all driver
-      tags: *ref_2
+      tags: *ref_3
     put:
       operationId: DriverManageController_updateDriver
       parameters: []
@@ -230,7 +239,7 @@ paths:
                         type: boolean
                         example: true
       summary: Update a driver
-      tags: *ref_2
+      tags: *ref_3
   /api/driver-manage/driver/{id}:
     get:
       operationId: DriverManageController_getDriver
@@ -249,7 +258,7 @@ paths:
         '200':
           description: ''
       summary: Get details driver
-      tags: *ref_2
+      tags: *ref_3
     delete:
       operationId: DriverManageController_deleteDriver
       parameters:
@@ -271,7 +280,7 @@ paths:
                         type: boolean
                         example: true
       summary: Delete driver
-      tags: *ref_2
+      tags: *ref_3
   /api/driver-manage/driver/info:
     post:
       operationId: DriverManageController_createInfo
@@ -295,7 +304,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/CreateDriverInfoInput'
       summary: Create a partner identification info
-      tags: *ref_2
+      tags: *ref_3
     put:
       operationId: DriverManageController_updateInfo
       parameters: []
@@ -318,7 +327,7 @@ paths:
                         type: boolean
                         example: true
       summary: Create a partner identification info
-      tags: *ref_2
+      tags: *ref_3
   /api/driver-manage/driver/count:
     post:
       operationId: DriverManageController_countDriver
@@ -337,7 +346,7 @@ paths:
               schema:
                 type: number
       summary: Count driver
-      tags: *ref_2
+      tags: *ref_3
   /api/driver-manage/driver/verify:
     post:
       operationId: DriverManageController_verifyDriver
@@ -355,7 +364,7 @@ paths:
                         type: boolean
                         example: true
       summary: Verify driver
-      tags: *ref_2
+      tags: *ref_3
   /api/auth-admin/login:
     post:
       operationId: AuthAdminController_login
@@ -401,7 +410,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/DriverLoginNotVerifyResponseDto'
       summary: Register Partner
-      tags: &ref_3
+      tags: &ref_4
         - Driver Auth
   /api/driver-auth/login:
     post:
@@ -428,7 +437,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Driver login
-      tags: *ref_3
+      tags: *ref_4
   /api/driver-auth/refresh-token:
     post:
       operationId: DriverAuthController_refreshToken
@@ -451,7 +460,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/ClientLoginResponseDto'
       summary: Refresh token for driver
-      tags: *ref_3
+      tags: *ref_4
   /api/driver-wallet:
     post:
       operationId: DriverWalletController_create
@@ -475,7 +484,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/TransactionResponseDto'
       summary: Create a new transaction
-      tags: &ref_4
+      tags: &ref_5
         - Driver Wallet
     get:
       operationId: DriverWalletController_getWalletDriver
@@ -484,7 +493,7 @@ paths:
         '200':
           description: ''
       summary: Get wallet histories
-      tags: *ref_4
+      tags: *ref_5
   /api/driver-wallet/{code}:
     get:
       operationId: DriverWalletController_getTransactionByCode
@@ -498,7 +507,7 @@ paths:
         '200':
           description: ''
       summary: Get transaction by code
-      tags: *ref_4
+      tags: *ref_5
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -519,7 +528,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_5
+      tags: &ref_6
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -531,7 +540,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_5
+      tags: *ref_6
   /api/payment/webhook:
     post:
       operationId: PaymentController_handleWebhook

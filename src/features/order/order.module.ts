@@ -1,5 +1,6 @@
 import { DriverModule } from '@features/driver';
 import { MapBoxService } from '@features/mapbox';
+import { OrderStatusModule } from '@features/order-status';
 import { RedisModule } from '@features/redis';
 import { TransportTypeModule } from '@features/transport-type';
 import { HttpModule } from '@nestjs/axios';
@@ -10,6 +11,8 @@ import { OrderEntity } from './entities/order.entity';
 import { OrderAssignmentService } from './order-assignment.service';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
+import { PendingPickupState } from './state';
+import { PriceCalculationModule } from './strategies';
 
 @Module({
   imports: [
@@ -18,9 +21,16 @@ import { OrderService } from './order.service';
     DriverModule,
     TransportTypeModule,
     HttpModule,
+    OrderStatusModule,
+    PriceCalculationModule,
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderAssignmentService, MapBoxService],
+  providers: [
+    OrderService,
+    OrderAssignmentService,
+    MapBoxService,
+    PendingPickupState,
+  ],
   exports: [OrderService, OrderAssignmentService],
 })
 export class OrderModule {}

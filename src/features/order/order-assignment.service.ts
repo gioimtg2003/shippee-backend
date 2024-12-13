@@ -10,7 +10,12 @@ import {
 import { DriverService } from '@features/driver/driver.service';
 import { RedisCacheService } from '@features/redis';
 import { CacheValueEvent, RedisEvents } from '@features/redis/events';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CalculateDistance } from '@utils';
@@ -25,7 +30,7 @@ import {
 import { OrderService } from './order.service';
 
 @Injectable()
-export class OrderAssignmentService {
+export class OrderAssignmentService implements OnModuleInit {
   private readonly logger = new Logger(OrderAssignmentService.name);
   constructor(
     @InjectRepository(OrderAssignmentEntity)
@@ -35,6 +40,18 @@ export class OrderAssignmentService {
     private readonly orderService: OrderService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  onModuleInit() {
+    this.eventEmitter.on(ORDER_EVENT_ENUM.PENDING_CHECKING, async () => {
+      const pendingOrdersId = await this.orderService.getOrderPending();
+
+      if (pendingOrdersId.length === 0) {
+        return;
+      }
+
+      await this.assignDriver(new OrderAssignEvent(pendingOrdersId[0].id));
+    });
+  }
 
   async create(idOrder: number, idDriver: number) {
     const created = this.repoOrderAssign.create({

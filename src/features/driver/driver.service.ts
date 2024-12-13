@@ -42,6 +42,17 @@ export class DriverService implements OnModuleInit {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
+  /**
+   * Initializes the module and sets up an event listener for the DRIVER_ONLINE event.
+   * When the DRIVER_ONLINE event is triggered, it checks if there is a pending order
+   * by querying the Redis service. If a pending order is found, it logs a message
+   * and emits the PENDING_CHECKING event.
+   *
+   * @async
+   * @function
+   * @memberof DriverService
+   * @returns {Promise<void>} - A promise that resolves when the event listener is set up.
+   */
   onModuleInit() {
     this.eventEmitter.on(DRIVER_EVENTS.DRIVER_ONLINE, async () => {
       const isPendingOrder = await this.redisService.get(IS_PENDING_ORDER_KEY);
@@ -93,6 +104,16 @@ export class DriverService implements OnModuleInit {
     return found;
   }
 
+  /**
+   * Retrieves a list of drivers based on the provided filter options.
+   *
+   * @param {FilterDriverOptionsDto} [options={}] - The filter options to apply to the query.
+   * @param {string} [options.name] - The name of the driver to filter by.
+   * @param {Date} [options.createdAt] - The creation date to filter by. The query will include drivers created up to the end of the specified day.
+   * @param {string} [options.status] - The status of the driver to filter by. Can be 'verified', 'unverified', or 'all'.
+   *
+   * @returns {Promise<Driver[]>} A promise that resolves to an array of drivers matching the filter criteria.
+   */
   findAll(options: FilterDriverOptionsDto = {}) {
     const query = this.driverRepo.createQueryBuilder('drivers');
 
@@ -202,6 +223,27 @@ export class DriverService implements OnModuleInit {
     return updated;
   }
 
+  /**
+   * Retrieves the profile of a driver by their ID.
+   *
+   * @param idDriver - The unique identifier of the driver.
+   * @returns A promise that resolves to the driver's profile.
+   *
+   * @throws {BadRequestException} If the driver is not found.
+   *
+   * @remarks
+   * - Logs the process of retrieving the driver's profile.
+   * - Checks the cache for the driver's profile before querying the database.
+   * - If the profile is found in the cache, it returns the cached profile.
+   * - If the profile is not found in the cache, it queries the database.
+   * - If the driver is found in the database, it emits an event to cache the profile.
+   *
+   * @example
+   * ```typescript
+   * const profile = await meProfile(123);
+   * console.log(profile);
+   * ```
+   */
   async meProfile(idDriver: number) {
     this.logger.log(`Getting profile of driver with id: ${idDriver}`);
     const cache = await this.redisService.get(`driver:${idDriver}`);
@@ -243,6 +285,18 @@ export class DriverService implements OnModuleInit {
     return found;
   }
 
+  /**
+   * Marks a driver as online and updates their location and state.
+   *
+   * @param id - The unique identifier of the driver.
+   * @param location - The current location of the driver.
+   * @param location.lat - The latitude of the driver's location.
+   * @param location.lng - The longitude of the driver's location.
+   *
+   * @returns A promise that resolves to `true` if the operation is successful.
+   *
+   * @throws {BadRequestException} If the driver is not found or is currently in the delivery state.
+   */
   async online(id: number, location: DriverStatusInput) {
     this.logger.log(`Driver with id: ${id} is online`);
 
@@ -282,6 +336,21 @@ export class DriverService implements OnModuleInit {
     return true;
   }
 
+  /**
+   * Sets the driver with the given ID to offline status.
+   *
+   * This method performs the following steps:
+   * 1. Logs that the driver is going offline.
+   * 2. Finds the driver by ID from the repository.
+   * 3. If the driver is not found, logs an error and throws a BadRequestException.
+   * 4. If the driver is currently in the delivery state, logs an error and throws a BadRequestException.
+   * 5. Updates the driver's state to offline in the repository.
+   * 6. Updates the driver's state to offline in the Redis cache.
+   *
+   * @param {number} id - The ID of the driver to set offline.
+   * @returns {Promise<boolean>} - Returns true if the operation is successful.
+   * @throws {BadRequestException} - If the driver is not found or is in the delivery state.
+   */
   async offline(id: number) {
     this.logger.log(`Driver with id: ${id} is offline`);
 

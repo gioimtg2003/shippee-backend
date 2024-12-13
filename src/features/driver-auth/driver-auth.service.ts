@@ -31,6 +31,27 @@ export class DriverAuthService extends RegisterJwtService {
     }
   }
 
+  /**
+   * Logs in a driver using their phone number and password.
+   *
+   * @param {DriverLoginInput} data - The login input containing the phone number and password.
+   * @returns {Promise<string>} - A promise that resolves to a JWT token if login is successful.
+   * @throws {BadRequestException} - If the driver account does not exist, the password is incorrect,
+   * or the driver's identity is not verified.
+   *
+   * The function performs the following steps:
+   * 1. Logs the phone number attempting to log in.
+   * 2. Finds the driver by phone number, including related transport type and identity information.
+   * 3. Throws an exception if the driver does not exist.
+   * 4. Validates the provided password against the stored password hash.
+   * 5. Throws an exception if the password is incorrect.
+   * 6. Checks if the driver's identity has been uploaded but not verified, and throws an exception if so.
+   * 7. For bike transport type, checks if the driver has been AI-verified and returns a JWT token for verification if not.
+   * 8. For other transport types, checks if the driver's identity is verified and returns a JWT token for verification if not.
+   * 9. Creates a driver session object with relevant driver details.
+   * 10. Emits an event to cache the driver session with a specified expiration time.
+   * 11. Returns a JWT token for the registered driver session.
+   */
   async login(data: DriverLoginInput) {
     this.logger.log(`Phone Login: ${data.phone}`);
 
@@ -107,6 +128,13 @@ export class DriverAuthService extends RegisterJwtService {
     return this.registerJwt(driverSession);
   }
 
+  /**
+   * Refreshes the JWT token for a given user session.
+   *
+   * @param {UserSession} user - The user session containing the user's ID.
+   * @returns {Promise<string>} A promise that resolves to the new JWT token.
+   * @throws {BadRequestException} If the driver does not exist.
+   */
   async refreshToken(user: UserSession) {
     const driver = await this.driverService.findById(user.id);
 
@@ -127,6 +155,13 @@ export class DriverAuthService extends RegisterJwtService {
     return this.registerJwt<DriverSession>(driverSession);
   }
 
+  /**
+   * Generates a JWT verification token for a given user session.
+   *
+   * @param {UserSession} data - The user session data containing user details.
+   * @returns {Promise<{ jwtVerify: string }>} - An object containing the generated JWT verification token.
+   * @private
+   */
   private async generateJwtVerify(data: UserSession) {
     const jwtVerify = await this.registerJwtVerify({
       id: data.id,

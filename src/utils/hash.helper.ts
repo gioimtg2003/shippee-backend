@@ -3,6 +3,13 @@ const a_table =
 const b_table = a_table.split(' ').map(function (s) {
   return parseInt(s, 16);
 });
+/**
+ * Computes a CRC32 hash of the given string and returns it modulo `maxValue`.
+ *
+ * @param str - The input string to hash.
+ * @param maxValue - The maximum value for the hash result.
+ * @returns The CRC32 hash of the input string, modulo `maxValue`.
+ */
 export function b_crc32(str: string, maxValue: number) {
   let crc = -1;
   for (let i = 0, iTop = str.length; i < iTop; i++) {

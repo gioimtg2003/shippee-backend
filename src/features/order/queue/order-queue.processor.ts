@@ -23,6 +23,9 @@ export class OrderQueueConsumer extends WorkerHost {
     super();
   }
 
+  /**
+   * Processes a job from the order queue.
+   */
   async process(job: Job<number>) {
     switch (job.name) {
       case ORDER_QUEUE.ASSIGN:

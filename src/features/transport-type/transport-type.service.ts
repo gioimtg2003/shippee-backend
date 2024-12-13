@@ -17,6 +17,16 @@ export class TransportTypeService {
     private readonly redisCacheService: RedisCacheService,
   ) {}
 
+  /**
+   * Retrieves all transport types from the cache or database.
+   *
+   * This method first attempts to retrieve the transport types from the cache.
+   * If the cache contains the data, it returns the cached value.
+   * If the cache does not contain the data, it retrieves the transport types from the database,
+   * stores the retrieved data in the cache, and then returns the data.
+   *
+   * @returns {Promise<any>} A promise that resolves to the list of transport types.
+   */
   async get() {
     this.logger.log('Getting all transport type');
     const cacheValue = await this.redisCacheService.get(

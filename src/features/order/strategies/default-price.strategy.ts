@@ -7,6 +7,14 @@ import {
 
 @Injectable()
 export class DefaultPriceStrategy implements IPriceCalculationStrategy {
+  /**
+   * Calculates the price based on the provided data and options.
+   *
+   * @template T - The type of the return value.
+   * @param {IPriceCalculationData} data - The data required for price calculation, including price and distance.
+   * @param {IPriceCalculationOptions} options - The options for price calculation, including price type.
+   * @returns {T} - The calculated price wrapped in an object of type T.
+   */
   calculate<T>(
     data: IPriceCalculationData,
     options: IPriceCalculationOptions,

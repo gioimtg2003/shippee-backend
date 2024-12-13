@@ -19,6 +19,14 @@ export const extractValueToArrByFields = <T>(
   return values;
 };
 
+/**
+ * Checks if the specified fields in the given data object have truthy values.
+ *
+ * @template T - The type of the data object.
+ * @param {T} data - The data object to check.
+ * @param {...(keyof T)[]} fields - The fields to check in the data object.
+ * @returns {boolean} - Returns `true` if all specified fields have truthy values, otherwise `false`.
+ */
 export const isValueInFields = <T>(data: T, ...fields: (keyof T)[]) => {
   for (const field of fields) {
     if (!data[field]) {

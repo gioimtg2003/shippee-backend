@@ -1,5 +1,15 @@
 openapi: 3.0.0
 paths:
+  /api/order/sample:
+    post:
+      operationId: OrderController_sample
+      parameters: []
+      responses:
+        '200':
+          description: Bulk order created
+      summary: Create bulk order
+      tags:
+        - Order
   /api/driver/identity:
     post:
       operationId: DriverController_updateIdentity
@@ -58,6 +68,24 @@ paths:
                         type: boolean
                         example: true
       summary: Testing Verify driver
+      tags: *ref_0
+  /api/driver/online:
+    post:
+      operationId: DriverController_onlineDriver
+      parameters: []
+      responses:
+        '200':
+          description: Driver online successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: Online driver
       tags: *ref_0
   /api/image/signed-url:
     post:

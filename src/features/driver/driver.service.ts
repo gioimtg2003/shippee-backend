@@ -48,6 +48,7 @@ export class DriverService implements OnModuleInit {
       if (!isPendingOrder || isPendingOrder === 'false') {
         return;
       }
+      this.logger.log(`Pending order found, checking for driver...`);
 
       this.eventEmitter.emit(ORDER_EVENT_ENUM.PENDING_CHECKING);
     });

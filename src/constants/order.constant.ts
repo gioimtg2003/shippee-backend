@@ -103,4 +103,5 @@ export enum PRICE_ITEMS_ENUM {
 export enum ORDER_QUEUE {
   NAME = 'order_queue',
   ASSIGN = 'assign_order',
+  PENDING_CHECKING = 'pending_checking',
 }

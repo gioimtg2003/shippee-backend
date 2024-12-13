@@ -18,11 +18,6 @@ class CODEntity {
   CODAmount: number;
 }
 
-class PriceItem {
-  name: string;
-  price: number;
-}
-
 @Entity('orders')
 export class OrderEntity extends CoreEntity {
   @ManyToOne(() => CustomerEntity)
@@ -58,13 +53,17 @@ export class OrderEntity extends CoreEntity {
   @Column({ type: 'boolean', default: false })
   isDeliveryCharge: boolean;
 
-  @Column({ type: 'jsonb', array: true })
-  priceItems: PriceItem[];
+  @Column('text', { array: true })
+  priceItems: string[];
 
   @Column()
   totalPrice: number;
 
-  @Column({ type: 'enum', enum: ORDER_STATUS_ENUM })
+  @Column({
+    type: 'enum',
+    enum: ORDER_STATUS_ENUM,
+    default: ORDER_STATUS_ENUM.PENDING,
+  })
   currentStatus: ORDER_STATUS_ENUM;
 
   @Column({ type: 'tstzrange', nullable: true })

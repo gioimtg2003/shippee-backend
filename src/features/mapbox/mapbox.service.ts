@@ -16,7 +16,7 @@ export class MapBoxService {
    * @returns The distance in meters between the origin and destination.
    */
   async getDistance(origin: [number, number], destination: [number, number]) {
-    this.logger.log('Getting distance');
+    this.logger.log(`Getting distance between ${origin} and ${destination}`);
     const response = await firstValueFrom(
       this.httpService.get<IDirectionMapBox>(
         `https://api.mapbox.com/directions/v5/mapbox/driving/${origin[1]},${origin[0]};${destination[1]},${destination[0]}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${process.env.MAPBOX_ACCESS_TOKEN}`,

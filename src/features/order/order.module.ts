@@ -1,9 +1,11 @@
+import { ORDER_QUEUE } from '@constants';
 import { DriverModule } from '@features/driver';
 import { MapBoxService } from '@features/mapbox';
 import { OrderStatusModule } from '@features/order-status';
 import { RedisModule } from '@features/redis';
 import { TransportTypeModule } from '@features/transport-type';
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderAssignmentEntity } from './entities/order-assignment.entity';
@@ -23,6 +25,9 @@ import { PriceCalculationModule } from './strategies';
     HttpModule,
     OrderStatusModule,
     PriceCalculationModule,
+    BullModule.registerQueue({
+      name: ORDER_QUEUE.NAME,
+    }),
   ],
   controllers: [OrderController],
   providers: [

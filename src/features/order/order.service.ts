@@ -1,20 +1,19 @@
 import {
   IS_PENDING_ORDER_KEY,
+  ORDER_QUEUE,
   ORDER_STATUS_ENUM,
   OrderDress,
   PRICE_ITEMS_ENUM,
 } from '@constants';
 import { MapBoxService } from '@features/mapbox';
+import { OrderStatusService } from '@features/order-status/order-status.service';
 import { RedisCacheService } from '@features/redis';
 import { TransportTypeService } from '@features/transport-type/transport-type.service';
+import { InjectQueue } from '@nestjs/bullmq';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CalculateDistance,
-  calculatePriceInfo,
-  formatDateToUTCString,
-  sample,
-} from '@utils';
+import { calculatePriceInfo, formatDateToUTCString, sample } from '@utils';
+import { Queue } from 'bullmq';
 import { FindOptionsSelect, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateOrderInput } from './dto';
 import { OrderEntity } from './entities/order.entity';
@@ -29,10 +28,12 @@ export class OrderService {
   constructor(
     @InjectRepository(OrderEntity)
     private readonly repo: Repository<OrderEntity>,
+    @InjectQueue(ORDER_QUEUE.NAME) private readonly queue: Queue,
     private readonly redisService: RedisCacheService,
     private readonly transportTypeService: TransportTypeService,
     private readonly mapBoxService: MapBoxService,
     private readonly priceCalculator: PriceCalculator,
+    private readonly orderStatusService: OrderStatusService,
   ) {}
 
   findByField(
@@ -43,8 +44,12 @@ export class OrderService {
     return this.repo.findOne({ where, relations, select });
   }
 
-  findById(id: number, relations: string[] = []) {
-    return this.findByField({ id }, relations);
+  findById(
+    id: number,
+    relations: string[] = [],
+    select?: FindOptionsSelect<OrderEntity>,
+  ) {
+    return this.findByField({ id }, relations, select);
   }
 
   findByDriverId(driverId: number, relations: string[] = []) {
@@ -108,56 +113,65 @@ export class OrderService {
 
     const totalPrice = priceItems.reduce((acc, item) => acc + item.price, 0);
 
-    /**
-     * Constructs a delivery window string in UTC format if both startTime and endTime are provided.
-     * The format of the string is `[startTime, endTime)`.
-     * If either startTime or endTime is not provided, the delivery window is set to null.
-     *
-     * @param startTime - The start time of the delivery window.
-     * @param endTime - The end time of the delivery window.
-     * @returns A string representing the delivery window in UTC format or null if either time is missing.
-     */
     const deliveryWindow =
       startTime && endTime
         ? `[${formatDateToUTCString(startTime)}, ${formatDateToUTCString(endTime)})`
         : null;
 
-    const order = {
+    const order = this.repo.create({
       distanceTotal: distanceKm,
-      priceItems,
+      priceItems: priceItems.map((item) => JSON.stringify(item)),
       totalPrice,
       exceedDistance,
       deliveryWindow,
-    };
-
-    const created = this.repo.create({
-      ...order,
       cod,
       cusName,
       cusPhone,
       recipientName,
       recipientPhone,
       customer: { id: idCustomer },
-      pickup,
-      destination,
+      pickup: {
+        address: pickup.address,
+        coordinates: [pickup.lat, pickup.lng],
+      },
+      destination: {
+        address: destination.address,
+        coordinates: [destination.lat, destination.lng],
+      },
       note: note || '',
       isDeliveryCharge,
       transportType: { id: idTransportType },
     });
 
-    if (!created) {
+    if (!order) {
       this.logger.error('Failed to create order');
       throw new BadRequestException('Failed to create order');
     }
 
-    const saved = await this.repo.save(created);
+    const saved = await this.repo.save(order);
 
     if (!saved.id) {
       this.logger.error('Failed to save order');
       throw new BadRequestException('Failed to save order');
     }
 
+    await this.orderStatusService.create({
+      orderId: saved.id,
+      status: saved.currentStatus,
+    });
+
     this.logger.log(`Order created: ${saved.id}`);
+
+    this.queue.add(ORDER_QUEUE.ASSIGN, saved.id, {
+      removeOnComplete: true,
+      removeOnFail: true,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 1000,
+      },
+    });
+
     return saved;
   }
 
@@ -238,7 +252,7 @@ export class OrderService {
     }>(
       {
         price: transport.priceInfo.priceValue,
-        distance: distanceTotal,
+        distance: distanceTotal - exceedDistance,
       },
       {
         priceType: transport.priceInfo.priceType,
@@ -291,16 +305,8 @@ export class OrderService {
   }
 
   async createBulk() {
-    const pickup = sample(OrderDress);
+    const pickup = OrderDress[11];
     const destination = sample(OrderDress);
-
-    const distance = CalculateDistance(
-      pickup.lat,
-      pickup.lng,
-      destination.lat,
-      destination.lng,
-    );
-    const distanceKm = Math.floor(Number(distance) / 1000);
 
     const order = {
       cusName: 'Nguyen Cong Gioi',
@@ -310,12 +316,28 @@ export class OrderService {
         coordinates: [pickup.lat, pickup.lng],
       },
       cusPhone: '0367093723',
-      recipientName: 'Nguyen Cong Gioi - 2',
+      recipientName: 'Nguyen Cong Gioi2',
       destination: {
         address: destination.address,
         coordinates: [destination.lat, destination.lng],
       },
-      distanceTotal: distanceKm,
     };
+
+    const created = await this.handleCreate({
+      cod: {
+        isCOD: false,
+      },
+      cusName: order.cusName,
+      cusPhone: order.cusPhone,
+      destination,
+      pickup,
+      idCustomer: 1,
+      idTransportType: 1,
+      isDeliveryCharge: false,
+      recipientName: order.recipientName,
+      recipientPhone: '0367093723',
+    });
+
+    return created;
   }
 }

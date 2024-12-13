@@ -58,4 +58,15 @@ export class DriverController {
   async verifyDriver() {
     return this.driverIdentityService.handleDriverVerifyEvent({ id: 1 });
   }
+
+  @Post('online')
+  @ApiOperation({ summary: 'Online driver' })
+  @ApiSuccessResponse('Driver online successfully')
+  @HttpCode(HttpStatus.OK)
+  async onlineDriver() {
+    return this.driverService.online(17, {
+      lat: 10.826214633301163,
+      lng: 106.78031168508443,
+    });
+  }
 }

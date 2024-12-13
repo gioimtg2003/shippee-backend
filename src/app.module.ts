@@ -12,6 +12,7 @@ import { ImageModule } from '@features/image/image.module';
 import { MailModule } from '@features/mail';
 import { OrderModule } from '@features/order';
 import { OrderStatusModule } from '@features/order-status';
+import { OrderQueueModule } from '@features/order/queue';
 import { PaymentModule } from '@features/payment';
 import { PriceCalculateModule } from '@features/price-calculate';
 import { RedisModule } from '@features/redis';
@@ -21,6 +22,7 @@ import { UserModule } from '@features/user';
 import { UserAuthModule } from '@features/user-auth';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
@@ -30,6 +32,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppService } from './app.service';
+import { BullConfigService } from './bull/bull-config.service';
 
 @Module({
   imports: [
@@ -74,6 +77,10 @@ import { AppService } from './app.service';
     ThrottlerModule.forRoot([REQUEST_LIMIT_RATE['global']]),
     EventEmitterModule.forRoot(),
     ScheduleModule.forRoot(),
+    BullModule.forRootAsync({
+      useClass: BullConfigService,
+    }),
+    OrderQueueModule,
     RedisModule,
     CronJobModule,
     MailModule,

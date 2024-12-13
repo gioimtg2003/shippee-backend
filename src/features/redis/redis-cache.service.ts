@@ -28,13 +28,18 @@ export class RedisCacheService {
     this.logger.log(`Getting all cache for pattern: ${pattern}`);
 
     const keys = await this.client.keys(pattern);
-    const values = await this.client.mget(keys);
+    if (keys.length === 0) {
+      this.logger.log(`No keys found for pattern: ${pattern}`);
+      return [];
+    }
 
+    const values = await this.client.mget(keys);
+    this.logger.log(`Found ${values} keys`);
     const records: IRedisRecord<T>[] = [];
 
     values.map((value, index) => {
       if (value) {
-        records.push({ key: keys[index], value: value as T });
+        records.push({ key: keys[index], value: JSON.parse(value) as T });
       }
     });
 

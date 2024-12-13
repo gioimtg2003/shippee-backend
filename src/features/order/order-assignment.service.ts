@@ -5,11 +5,14 @@ import {
   IS_PENDING_ORDER_KEY,
   MAX_DISTANCE,
   ORDER_ASSIGNMENT_STATUS_ENUM,
+  ORDER_QUEUE,
   ORDER_STATUS_ENUM,
 } from '@constants';
 import { DriverService } from '@features/driver/driver.service';
+import { MapBoxService } from '@features/mapbox';
 import { RedisCacheService } from '@features/redis';
 import { CacheValueEvent, RedisEvents } from '@features/redis/events';
+import { InjectQueue } from '@nestjs/bullmq';
 import {
   BadRequestException,
   Injectable,
@@ -18,15 +21,10 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CalculateDistance } from '@utils';
+import { Queue } from 'bullmq';
 import { FindManyOptions, Repository } from 'typeorm';
 import { OrderAssignmentEntity } from './entities/order-assignment.entity';
-import { OrderEntity } from './entities/order.entity';
-import {
-  ORDER_EVENT_ENUM,
-  OrderAssignCheckingEvent,
-  OrderAssignEvent,
-} from './events';
+import { ORDER_EVENT_ENUM, OrderAssignEvent } from './events';
 import { OrderService } from './order.service';
 
 @Injectable()
@@ -35,10 +33,12 @@ export class OrderAssignmentService implements OnModuleInit {
   constructor(
     @InjectRepository(OrderAssignmentEntity)
     private readonly repoOrderAssign: Repository<OrderAssignmentEntity>,
+    @InjectQueue(ORDER_QUEUE.NAME) private readonly queue: Queue,
     private readonly driverService: DriverService,
     private readonly redisService: RedisCacheService,
     private readonly orderService: OrderService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly mapBoxService: MapBoxService,
   ) {}
 
   onModuleInit() {
@@ -49,7 +49,15 @@ export class OrderAssignmentService implements OnModuleInit {
         return;
       }
 
-      await this.assignDriver(new OrderAssignEvent(pendingOrdersId[0].id));
+      this.queue.add(ORDER_QUEUE.ASSIGN, pendingOrdersId[0].id, {
+        removeOnComplete: true,
+        removeOnFail: true,
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      });
     });
   }
 
@@ -83,22 +91,6 @@ export class OrderAssignmentService implements OnModuleInit {
     });
   }
 
-  countAssignedByDriverId(idDriver: number) {
-    return this.repoOrderAssign
-      .createQueryBuilder('order_assignment')
-      .select('order_assignment.status', 'status')
-      .addSelect('COUNT(*)', 'count')
-      .where('order_assignment.status IN (:...statuses)', {
-        statuses: [
-          ORDER_ASSIGNMENT_STATUS_ENUM.ASSIGNED,
-          ORDER_ASSIGNMENT_STATUS_ENUM.EXPIRE,
-          ORDER_ASSIGNMENT_STATUS_ENUM.REJECTED,
-        ],
-      })
-      .groupBy('order_assignment.status')
-      .getRawMany();
-  }
-
   async update(id: number, data: Partial<OrderAssignmentEntity>) {
     const found = await this.repoOrderAssign.findOne({ where: { id } });
     if (!found) {
@@ -124,22 +116,29 @@ export class OrderAssignmentService implements OnModuleInit {
   @OnEvent(ORDER_EVENT_ENUM.ASSIGN)
   async assignDriver({ idOrder }: OrderAssignEvent) {
     const drivers = await this.redisService.getAll<DriverSession>('driver:*');
+
     if (!drivers.length) {
       this.logger.log('No driver available');
       this.cacheOrderNotAssigned();
       return;
     }
 
-    const order = await this.orderService.findById(idOrder);
+    const order = await this.orderService.findById(idOrder, [], {
+      pickup: {
+        coordinates: true,
+      },
+      id: true,
+    });
+
     if (!order) {
       this.logger.error('Order not found');
       return;
     }
-
     const driverSessions = drivers.map((driver) => driver.value);
+
     const potentialDrivers = await this.getPotentialDrivers(
       driverSessions,
-      order,
+      order.pickup.coordinates,
     );
 
     if (!potentialDrivers.length) {
@@ -154,16 +153,11 @@ export class OrderAssignmentService implements OnModuleInit {
       potentialDriverId: selectedDriver.id,
     });
     this.cacheOrderNotAssigned('false');
-
-    this.eventEmitter.emit(
-      ORDER_EVENT_ENUM.ASSIGN_CHECKING,
-      new OrderAssignCheckingEvent(idOrder),
-    );
   }
 
   private async getPotentialDrivers(
     drivers: DriverSession[],
-    order: OrderEntity,
+    coordinates: [number, number],
   ) {
     const potentialDrivers: {
       id: number;
@@ -171,17 +165,16 @@ export class OrderAssignmentService implements OnModuleInit {
       distance: number;
       orderAssigned: number;
     }[] = [];
+    this.logger.log(`Drivers: ${JSON.stringify(drivers)}`);
 
     for (const driver of drivers) {
       if (this.isDriverEligible(driver)) {
-        const distance = CalculateDistance(
-          driver.lat,
-          driver.lng,
-          order.pickup.coordinates[1],
-          order.pickup.coordinates[0],
+        const distance = await this.mapBoxService.getDistance(
+          [driver['lat'], driver['lng']],
+          [coordinates[0], coordinates[1]],
         );
 
-        if (Number(distance) <= MAX_DISTANCE) {
+        if (Math.ceil(distance.routes[0].distance) <= MAX_DISTANCE) {
           const found = await this.driverService.findByField(
             { id: driver.id },
             [],
@@ -191,7 +184,7 @@ export class OrderAssignmentService implements OnModuleInit {
           const countOrderAssigned = await this.countByDriverId(driver.id, {
             where: { status: ORDER_ASSIGNMENT_STATUS_ENUM.ASSIGNED },
           });
-
+          console.log(countOrderAssigned);
           if (countOrderAssigned <= 2) {
             potentialDrivers.push({
               id: found.id,
@@ -209,12 +202,12 @@ export class OrderAssignmentService implements OnModuleInit {
 
   private isDriverEligible(driver: DriverSession) {
     return (
-      driver.lat &&
-      driver.lng &&
-      driver.isAiChecked &&
-      driver.isIdentityVerified &&
-      driver.balance > 0 &&
-      driver.state === DRIVER_STATUS_ENUM.FREE
+      driver['lat'] &&
+      driver['lng'] &&
+      driver['isAiChecked'] &&
+      driver['isIdentityVerified'] &&
+      driver['balance'] > 0 &&
+      driver['state'] === DRIVER_STATUS_ENUM.FREE
     );
   }
 
@@ -236,6 +229,7 @@ export class OrderAssignmentService implements OnModuleInit {
   }
 
   private cacheOrderNotAssigned(cache: 'true' | 'false' = 'true') {
+    this.logger.log(`Cache order not assigned: ${cache}`);
     this.eventEmitter.emit(
       RedisEvents.CACHE_VALUE,
       new CacheValueEvent(

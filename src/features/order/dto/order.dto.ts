@@ -116,7 +116,8 @@ class CODDto {
   isCOD: boolean;
 
   @IsNumber()
-  CODAmount: number;
+  @IsOptional()
+  CODAmount?: number;
 }
 
 class LocationOrderDto extends PickType(LocationDto, ['lat', 'lng']) {

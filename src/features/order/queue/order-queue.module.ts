@@ -1,8 +1,9 @@
 import { ORDER_QUEUE } from '@constants';
+import { MailModule } from '@features/mail';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { OrderModule } from '../order.module';
-import { OrderQueueConsumer } from './order-queue.consumer';
+import { OrderQueueConsumer } from './order-queue.processor';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { OrderQueueConsumer } from './order-queue.consumer';
       name: ORDER_QUEUE.NAME,
     }),
     OrderModule,
+    MailModule,
   ],
   providers: [OrderQueueConsumer],
 })

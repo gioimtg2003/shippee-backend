@@ -1,6 +1,5 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
-import { EmailConsumer } from './email.consumer';
 import { MailController } from './mail.controller';
 import { MailService } from './mail.service';
 
@@ -11,7 +10,7 @@ import { MailService } from './mail.service';
     }),
   ],
   controllers: [MailController],
-  providers: [MailService, EmailConsumer],
+  providers: [MailService],
   exports: [MailService],
 })
 export class MailModule {}

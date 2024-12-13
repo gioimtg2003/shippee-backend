@@ -153,6 +153,11 @@ export class OrderAssignmentService implements OnModuleInit {
       potentialDriverId: selectedDriver.id,
     });
     this.cacheOrderNotAssigned('false');
+
+    return {
+      idOrder,
+      idDriver: selectedDriver.id,
+    };
   }
 
   private async getPotentialDrivers(

@@ -70,9 +70,15 @@ paths:
       summary: Testing Verify driver
       tags: *ref_0
   /api/driver/online:
-    post:
+    put:
       operationId: DriverController_onlineDriver
       parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverStatusInput'
       responses:
         '200':
           description: Driver online successfully
@@ -86,6 +92,24 @@ paths:
                         type: boolean
                         example: true
       summary: Online driver
+      tags: *ref_0
+  /api/driver/offline:
+    put:
+      operationId: DriverController_offlineDriver
+      parameters: []
+      responses:
+        '200':
+          description: Driver offline successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: offline driver
       tags: *ref_0
   /api/image/signed-url:
     post:
@@ -585,6 +609,24 @@ paths:
       summary: Handle payment webhook
       tags:
         - Payment
+  /api/vietinbank/transactions:
+    get:
+      operationId: VietinbankController_transactions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Get Transactions
+      tags: &ref_7
+        - Vietinbank
+  /api/vietinbank/enc:
+    get:
+      operationId: VietinbankController_enc
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_7
 info:
   title: Shipppee system API
   description: The Shipppee system API description
@@ -637,6 +679,20 @@ components:
         - identityCardNumber
         - imgIdentityCardFront
         - imgIdentityCardBack
+    DriverStatusInput:
+      type: object
+      properties:
+        lng:
+          type: number
+          description: Longitude
+          example: 100
+        lat:
+          type: number
+          description: latitude
+          example: 100
+      required:
+        - lng
+        - lat
     SignUrlInput:
       type: object
       properties:

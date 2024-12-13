@@ -1,3 +1,4 @@
+export * from './captcha.helper';
 export * from './distance.helper';
 export * from './extract-token.helper';
 export * from './phone.helper';

@@ -14,6 +14,11 @@ export class RedisCacheService {
     @Inject(REDIS_MODULE_CONNECTION.CACHE) private readonly client: Redis,
   ) {}
 
+  async del(key: string) {
+    this.logger.log(`Deleting cache for key: ${key}`);
+    return this.client.del(key);
+  }
+
   async get(key: string) {
     this.logger.log(`Getting cache for key: ${key}`);
     return this.client.get(key);
@@ -58,6 +63,7 @@ export class RedisCacheService {
     this.logger.log(`Cache set for key ${key}`);
   }
 
+  @OnEvent(RedisEvents.UPDATE_VALUE)
   async updateObject(payload: UpdateCacheValueEvent) {
     const { key, value } = payload;
 

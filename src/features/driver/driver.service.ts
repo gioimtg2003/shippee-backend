@@ -249,8 +249,8 @@ export class DriverService implements OnModuleInit {
     const cache = await this.redisService.get(`driver:${idDriver}`);
 
     if (cache) {
-      const driver: DriverSession = JSON.parse(cache);
-      return driver;
+      this.logger.log(`Cache hit for driver with value: ${cache}`);
+      return JSON.parse(cache);
     }
     const found = await this.findById(idDriver);
 

@@ -32,6 +32,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppService } from './app.service';
+import { BankModule } from './bank';
 import { BullConfigService } from './bull/bull-config.service';
 
 @Module({
@@ -100,6 +101,7 @@ import { BullConfigService } from './bull/bull-config.service';
     UserModule,
     UserAuthModule,
     PaymentModule,
+    BankModule,
   ],
   controllers: [],
   providers: [

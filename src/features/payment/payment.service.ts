@@ -25,7 +25,7 @@ export class PaymentService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const saved = await this.repo.save(created);
 
-    const splitCode = 'oAov1b1G'; // saved.code.split('OD')[1];
+    const splitCode = saved.code.split('OD')[1];
 
     if (splitCode) {
       const transaction = await this.driverWalletService.findOneByField({
@@ -34,8 +34,8 @@ export class PaymentService {
 
       if (
         transaction &&
-        transaction.status === WALLET_STATUS_ENUM.PENDING //&&
-        // data.transferAmount === transaction.amount
+        transaction.status === WALLET_STATUS_ENUM.PENDING &&
+        data.transferAmount === transaction.amount
       ) {
         this.logger.log(
           `Updating wallet history status for transaction ${transaction.id}`,

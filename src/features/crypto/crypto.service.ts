@@ -16,11 +16,11 @@ export class CryptoService {
     return crypto.randomBytes(this.IV_LENGTH).toString(this.ENCODING);
   }
 
-  encrypt(text: string): string {
+  encrypt(text: string, key?: string): string {
     const iv = crypto.randomBytes(this.IV_LENGTH);
     const cipher = crypto.createCipheriv(
       this.ENCRYPTION_ALGORITHM,
-      Buffer.from(this.CRYPTO_ENCRYPTION_KEY),
+      Buffer.from(key || this.CRYPTO_ENCRYPTION_KEY),
       iv,
     );
     let encrypted = cipher.update(text);
@@ -34,13 +34,13 @@ export class CryptoService {
     );
   }
 
-  decrypt(text: string): string {
+  decrypt(text: string, key?: string): string {
     const textParts = text.split(this.SPLIT_KEY);
     const iv = Buffer.from(textParts.shift(), this.ENCODING);
     const encryptedText = Buffer.from(textParts.join(':'), this.ENCODING);
     const decipher = crypto.createDecipheriv(
       this.ENCRYPTION_ALGORITHM,
-      Buffer.from(this.CRYPTO_ENCRYPTION_KEY),
+      Buffer.from(key || this.CRYPTO_ENCRYPTION_KEY),
       iv,
     );
     let decrypted = decipher.update(encryptedText);

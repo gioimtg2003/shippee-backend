@@ -14,11 +14,13 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { DriverIdentityService } from './driver-identity.service';
 import { DriverService } from './driver.service';
+import { DriverStatusInput } from './dto/driver-status.input';
 import { UpdateDriverInfoInput } from './dto/update-driver-info.input';
 
 @Controller('driver')
@@ -59,14 +61,24 @@ export class DriverController {
     return this.driverIdentityService.handleDriverVerifyEvent({ id: 1 });
   }
 
-  @Post('online')
+  @Put('online')
   @ApiOperation({ summary: 'Online driver' })
   @ApiSuccessResponse('Driver online successfully')
+  @UseGuards(DriverAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async onlineDriver() {
-    return this.driverService.online(17, {
-      lat: 10.826214633301163,
-      lng: 106.78031168508443,
-    });
+  async onlineDriver(
+    @Body() data: DriverStatusInput,
+    @CurrentUser() user: DriverSession,
+  ) {
+    return this.driverService.online(user.id, data);
+  }
+
+  @Put('offline')
+  @ApiOperation({ summary: 'offline driver' })
+  @ApiSuccessResponse('Driver offline successfully')
+  @UseGuards(DriverAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async offlineDriver(@CurrentUser() user: DriverSession) {
+    return this.driverService.offline(user.id);
   }
 }

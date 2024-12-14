@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import NodeRSA from 'node-rsa';
 
 @Injectable()
 export class CryptoService {
@@ -64,5 +65,16 @@ export class CryptoService {
 
   compareHash(raw: string, hash: string): Promise<boolean> {
     return bcrypt.compare(raw, hash);
+  }
+
+  encryptRsa(text: string, publicKey: string): string {
+    const key = new NodeRSA(publicKey);
+
+    const encrypted = key.encrypt(text, 'base64');
+    return encrypted;
+  }
+
+  md5(text: string): string {
+    return crypto.createHash('md5').update(text).digest('hex');
   }
 }

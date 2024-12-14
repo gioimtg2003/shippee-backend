@@ -6,6 +6,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { bypassCaptcha } from '@utils';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
+import qs from 'qs';
 import { catchError, firstValueFrom } from 'rxjs';
 
 @Injectable()
@@ -125,6 +126,7 @@ export class VietinbankService {
     const requestId = this.generateRequestId();
     const dateNow = dayjs().format('YYYY-MM-DD');
     const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+
     const accountNumber = this.cryptoService.decrypt(
       process.env.CUSTOMER_NUMBER__B_,
       process.env.ENCRYPTION_KEY_ACCOUNT,
@@ -235,34 +237,24 @@ export class VietinbankService {
   }
 
   private async encryptData(data: { [key: string]: string | number | null }) {
-    const urls = [
-      'https://encrypt1.pay2world.vip/api.php?act=encrypt_viettin',
-      'https://babygroupvip.com/encrypt/api.php?act=encrypt_viettin',
-      'https://vcbbiz2.pay2world.vip/api.php?act=encrypt_viettin',
-    ];
+    data['signature'] = this.cryptoService
+      .md5(
+        qs.stringify(data, {
+          arrayFormat: 'repeat',
+          sort: (a, b) => a.localeCompare(b),
+        }),
+      )
+      .toString();
 
     const payload = JSON.stringify(data);
-    const headers = {
-      'Content-Type': 'application/json',
+
+    const encrypt = this.cryptoService.encryptRsa(
+      payload,
+      process.env.VIETINBANK_PUBLIC_KEY,
+    );
+    return {
+      encrypted: encrypt,
     };
-
-    for (const url of urls) {
-      try {
-        const response = await firstValueFrom(
-          this.httpService.post(url, payload, { headers, timeout: 10000 }),
-        );
-
-        if (response.status === 404 || response.status === 502) {
-          continue;
-        }
-
-        return response.data;
-      } catch {
-        continue;
-      }
-    }
-
-    return {};
   }
 
   enc() {

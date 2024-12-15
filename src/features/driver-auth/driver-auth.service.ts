@@ -1,10 +1,9 @@
 import { DriverSession, UserSession } from '@common/dto';
 import { RegisterJwtService } from '@common/services';
-import { EXPIRE_CACHE_DRIVER, Role, TRANSPORT_TYPE_ENUM } from '@constants';
+import { Role, TRANSPORT_TYPE_ENUM } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { DriverService } from '@features/driver/driver.service';
 import { CreateDriverInput } from '@features/driver/dto';
-import { CacheValueEvent, RedisEvents } from '@features/redis/events';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
@@ -110,20 +109,6 @@ export class DriverAuthService extends RegisterJwtService {
       isAiChecked: driver.isAiChecked,
       isIdentityVerified: driver.isIdentityVerified,
     };
-
-    this.eventEmitter.emit(
-      RedisEvents.CACHE_VALUE,
-      new CacheValueEvent(
-        {
-          key: `driver:${driver.id}`,
-          value: JSON.stringify({
-            ...driverSession,
-            balance: driver.balance,
-          }),
-        },
-        EXPIRE_CACHE_DRIVER,
-      ),
-    );
 
     return this.registerJwt(driverSession);
   }

@@ -91,13 +91,6 @@ export class PickOrderCommand implements CommandDriverOrder {
         status: ORDER_STATUS_ENUM.PENDING_PICKUP,
       });
 
-      const updateBalance = driver.balance - platformFee;
-
-      if (updateBalance < 0) {
-        this.logger.error(`Driver has not enough money: ${data.idDriver}`);
-        throw new BadRequestException('Tài khoản không đủ tiền');
-      }
-
       await queryRunner.manager.update('drivers', driver.id, {
         idOrder: data.idOrder,
         balance: updateBalance,

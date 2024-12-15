@@ -71,11 +71,13 @@ export class PickOrderCommand implements CommandDriverOrder {
         throw new BadRequestException('Đơn hàng đã được Tài xế khác nhận rồi!');
       }
 
-      const { platformFee } = this.driverService.calculateDiscountPrice(
+      const { realRevenue } = this.driverService.calculateDiscountPrice(
         order.totalPrice,
       );
 
-      if (driver.balance < platformFee) {
+      const updateBalance = driver.balance - (order.totalPrice - realRevenue);
+
+      if (updateBalance < 0) {
         this.logger.error(`Driver has not enough money: ${data.idDriver}`);
         throw new BadRequestException('Tài khoản không đủ tiền');
       }

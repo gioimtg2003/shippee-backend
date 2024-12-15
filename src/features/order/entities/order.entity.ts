@@ -53,6 +53,9 @@ export class OrderEntity extends CoreEntity {
   @Column({ type: 'boolean', default: false })
   isDeliveryCharge: boolean;
 
+  @Column()
+  loadWeight: number;
+
   @Column('text', { array: true })
   priceItems: string[];
 

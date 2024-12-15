@@ -54,7 +54,11 @@ export class DriverAuthGuard implements CanActivate {
         secret: JWT[jwtSecretType],
       });
       const driverSession = await this.cacheService.get(`driver:${payload.id}`);
-      req.user = JSON.parse(driverSession);
+      req.user = {
+        ...payload,
+        ...JSON.parse(driverSession),
+      };
+      this.logger.debug(req.user);
 
       const customer = payload;
 

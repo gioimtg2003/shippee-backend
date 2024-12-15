@@ -236,7 +236,8 @@ export class OrderAssignmentService implements OnModuleInit {
       driver['isAiChecked'] &&
       driver['isIdentityVerified'] &&
       driver['balance'] > 0 &&
-      driver['state'] === DRIVER_STATUS_ENUM.FREE
+      driver['state'] === DRIVER_STATUS_ENUM.FREE &&
+      driver['isAutoReceiveOrder']
     );
   }
 

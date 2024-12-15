@@ -252,7 +252,21 @@ export class DriverService implements OnModuleInit {
       this.logger.log(`Cache hit for driver with value: ${cache}`);
       return JSON.parse(cache);
     }
-    const found = await this.findById(idDriver);
+    const found = await this.findById(idDriver, ['transportType'], {
+      id: true,
+      name: true,
+      phone: true,
+      email: true,
+      balance: true,
+      isAiChecked: true,
+      state: true,
+      isIdentityVerified: true,
+      transportType: {
+        id: true,
+        loadWeight: true,
+        code: true,
+      },
+    });
 
     if (!found) {
       this.logger.error(`⚠️ Driver not found with id: ${idDriver}`);
@@ -269,6 +283,8 @@ export class DriverService implements OnModuleInit {
       isAiChecked: found.isAiChecked,
       isIdentityVerified: found.isIdentityVerified,
       balance: found.balance,
+      transportType: found.transportType.code,
+      loadWeight: found.transportType.loadWeight,
     };
 
     this.eventEmitter.emit(

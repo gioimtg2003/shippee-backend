@@ -1,6 +1,7 @@
 import { IDriverSessionProps } from '@common/interfaces';
 import { JWT_TYPE_ENUM, Role } from '@constants';
 import { JWT_SECRET_TYPE } from '@decorators';
+import { RedisCacheService } from '@features/redis';
 import {
   CanActivate,
   ExecutionContext,
@@ -20,6 +21,7 @@ export class DriverAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private reflector: Reflector,
+    private readonly cacheService: RedisCacheService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -51,7 +53,8 @@ export class DriverAuthGuard implements CanActivate {
       const payload = await this.jwtService.verify<IDriverSessionProps>(token, {
         secret: JWT[jwtSecretType],
       });
-      req.user = payload;
+      const driverSession = await this.cacheService.get(`driver:${payload.id}`);
+      req.user = JSON.parse(driverSession);
 
       const customer = payload;
 

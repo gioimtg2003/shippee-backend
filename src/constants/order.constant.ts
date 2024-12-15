@@ -104,4 +104,9 @@ export enum ORDER_QUEUE {
   NAME = 'order_queue',
   ASSIGN = 'assign_order',
   PENDING_CHECKING = 'pending_checking',
+  PICKUP_CHECKING = 'pickup_checking',
 }
+
+export const RATE_PIT = 0.15;
+export const RATE_VAT = 0.1;
+export const RATE_PLATFORM = 0.1;

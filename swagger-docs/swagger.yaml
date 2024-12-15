@@ -578,8 +578,45 @@ paths:
                         items:
                           $ref: '#/components/schemas/OrderEntity'
       summary: Get order pending for driver
-      tags:
+      tags: &ref_6
         - Driver Order
+  /api/driver-order/pending/{id}:
+    get:
+      operationId: DriverOrderController_getOrderPendingDetail
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/OrderEntity'
+      summary: Get order pending for driver
+      tags: *ref_6
+  /api/driver-order/pickup/{id}:
+    post:
+      operationId: DriverOrderController_pickupOrder
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      summary: Pick up order
+      tags: *ref_6
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -600,7 +637,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Customer login
-      tags: &ref_6
+      tags: &ref_7
         - user-auth
   /api/user-auth/refresh-token:
     get:
@@ -612,7 +649,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Refresh token
-      tags: *ref_6
+      tags: *ref_7
   /api/payment/webhook:
     post:
       operationId: PaymentController_handleWebhook
@@ -637,7 +674,7 @@ paths:
         '200':
           description: ''
       summary: Get Transactions
-      tags: &ref_7
+      tags: &ref_8
         - Vietinbank
   /api/vietinbank/enc:
     get:
@@ -646,7 +683,7 @@ paths:
       responses:
         '200':
           description: ''
-      tags: *ref_7
+      tags: *ref_8
 info:
   title: Shipppee system API
   description: The Shipppee system API description

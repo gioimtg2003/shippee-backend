@@ -34,6 +34,9 @@ export class OrderQueueConsumer extends WorkerHost {
           idOrder: job.data,
         });
 
+      case ORDER_QUEUE.PICKUP_CHECKING:
+        this.logger.log(`Get job to check pickup for order: ${job.data}`);
+
       default:
         this.logger.error('Invalid job name');
         return Promise.reject('Invalid job name');
@@ -41,8 +44,9 @@ export class OrderQueueConsumer extends WorkerHost {
   }
 
   @OnWorkerEvent('error')
-  handleError(job: Job, error: Error) {
-    this.logger.error(`Job ${job.id} failed with error: ${error.message}`);
+  handleError(job: Job, error: any) {
+    this.logger.error(error);
+    this.logger.error(`Job ${job.id} failed`);
     // Send email or notification to admin
   }
 

@@ -33,7 +33,7 @@ export class DriverOfflineCommand implements CommandDriver {
 
     if (found.state === DRIVER_STATUS_ENUM.DELIVERY) {
       this.logger.error('⚠️ Driver is in delivery state');
-      throw new BadRequestException('Driver is in delivery state');
+      throw new BadRequestException('Tài xế trong trạng thái giao hàng');
     }
 
     await this.repo.update(

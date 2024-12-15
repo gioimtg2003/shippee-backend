@@ -168,15 +168,15 @@ export class OrderService {
 
     this.logger.log(`Order created: ${saved.id}`);
 
-    this.queue.add(ORDER_QUEUE.ASSIGN, saved.id, {
-      removeOnComplete: true,
-      removeOnFail: true,
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 1000,
-      },
-    });
+    // this.queue.add(ORDER_QUEUE.ASSIGN, saved.id, {
+    //   removeOnComplete: true,
+    //   removeOnFail: true,
+    //   attempts: 3,
+    //   backoff: {
+    //     type: 'exponential',
+    //     delay: 1000,
+    //   },
+    // });
 
     return saved;
   }
@@ -339,7 +339,8 @@ export class OrderService {
 
     const created = await this.handleCreate({
       cod: {
-        isCOD: false,
+        isCOD: true,
+        CODAmount: 100000,
       },
       cusName: order.cusName,
       cusPhone: order.cusPhone,

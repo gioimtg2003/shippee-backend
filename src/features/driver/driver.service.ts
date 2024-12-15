@@ -1,6 +1,13 @@
 import { DriverSession } from '@common/dto';
 import { applyQueryFilter } from '@common/query-builder';
-import { EXPIRE_CACHE_DRIVER, IS_PENDING_ORDER_KEY, Role } from '@constants';
+import {
+  EXPIRE_CACHE_DRIVER,
+  IS_PENDING_ORDER_KEY,
+  RATE_PIT,
+  RATE_PLATFORM,
+  RATE_VAT,
+  Role,
+} from '@constants';
 import { CryptoService } from '@features/crypto';
 import { FilterDriverOptionsDto } from '@features/driver-manage/dto';
 import { ORDER_EVENT_ENUM } from '@features/order/events';
@@ -246,7 +253,7 @@ export class DriverService implements OnModuleInit {
   async meProfile(idDriver: number) {
     this.logger.log(`Getting profile of driver with id: ${idDriver}`);
     const cache = await this.redisService.get(`driver:${idDriver}`);
-
+    console.log(cache);
     if (cache) {
       this.logger.log(`Cache hit for driver with value: ${cache}`);
       return JSON.parse(cache);
@@ -354,5 +361,18 @@ export class DriverService implements OnModuleInit {
     }
 
     this.driverRepo.softDelete(id);
+  }
+
+  calculateDiscountPrice(price: number) {
+    const vat = price * RATE_VAT;
+    const platformFee = price * RATE_PLATFORM;
+    const revenue = price - (vat + platformFee);
+    const pit = revenue * RATE_PIT;
+    const realRevenue = revenue - pit;
+
+    return {
+      platformFee,
+      realRevenue,
+    };
   }
 }

@@ -52,10 +52,15 @@ export class OrderService {
     return this.findByField({ id }, relations, select);
   }
 
-  findByDriverId(driverId: number, relations: string[] = []) {
+  findByDriverId(
+    driverId: number,
+    where: FindOptionsWhere<OrderEntity> = {},
+    relations: string[] = [],
+  ) {
     return this.repo.find({
       where: {
         driver: { id: driverId },
+        ...where,
       },
       relations,
     });
@@ -102,7 +107,7 @@ export class OrderService {
 
     const distanceKm = Math.ceil(distance.routes[0].distance / 1000);
 
-    const { defaultPrice, exceedDistance, exceedPrice } =
+    const { defaultPrice, exceedDistance, exceedPrice, loadWeight } =
       await this.calculateExceedDistance(distanceKm, idTransportType);
 
     const priceItems = this.createPriceItems(
@@ -129,6 +134,7 @@ export class OrderService {
       cusPhone,
       recipientName,
       recipientPhone,
+      loadWeight,
       customer: { id: idCustomer },
       pickup: {
         address: pickup.address,
@@ -234,7 +240,12 @@ export class OrderService {
           transport.priceInfo.priceValue,
         ) * distanceTotal;
 
-      return { exceedDistance: 0, exceedPrice: 0, defaultPrice };
+      return {
+        exceedDistance: 0,
+        exceedPrice: 0,
+        defaultPrice,
+        loadWeight: transport.loadWeight,
+      };
     }
 
     this.priceCalculator.setStrategy(new ExceedPriceStrategy());
@@ -263,6 +274,7 @@ export class OrderService {
       exceedDistance,
       exceedPrice,
       defaultPrice,
+      loadWeight: transport.loadWeight,
     };
   }
 
@@ -287,19 +299,21 @@ export class OrderService {
     return this.redisService.get(IS_PENDING_ORDER_KEY);
   }
 
-  getOrderPending() {
+  getOrderPending(
+    where: FindOptionsWhere<OrderEntity> = {},
+    select: FindOptionsSelect<OrderEntity> = { id: true },
+  ) {
     return this.repo.find({
       where: {
         potentialDriverId: null,
         currentStatus: ORDER_STATUS_ENUM.PENDING,
+        ...where,
       },
       order: {
         createdAt: 'ASC',
       },
-      take: 1,
-      skip: 0,
       select: {
-        id: true,
+        ...select,
       },
     });
   }

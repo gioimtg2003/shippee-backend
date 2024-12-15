@@ -170,6 +170,17 @@ export class VietinbankService {
     return data;
   }
 
+  /**
+   * Asynchronously retrieves a captcha code from the Vietinbank service.
+   *
+   * This method generates a new captcha ID, creates the necessary headers,
+   * logs the captcha ID, and then makes an HTTP GET request to retrieve the captcha.
+   * The captcha code is then processed and returned.
+   *
+   * @returns {Promise<string>} A promise that resolves to the captcha code as a string.
+   *
+   * @throws {Error} If the HTTP request fails or the captcha code cannot be processed.
+   */
   async getCaptcha() {
     this.captcha_id = this.generateCaptchaId();
     const headers = await this.createHeaderNull();
@@ -185,6 +196,12 @@ export class VietinbankService {
     return this.captcha_code;
   }
 
+  /**
+   * Creates and returns a headers object for HTTP requests.
+   * If the user is logged in and a session exists, the 'sessionId' header is also included.
+   *
+   * @returns {Promise<Record<string, string>>} A promise that resolves to an object containing the headers.
+   */
   private async createHeaderNull() {
     const headers = {
       'Accept-Encoding': 'gzip',
@@ -203,6 +220,14 @@ export class VietinbankService {
     return headers;
   }
 
+  /**
+   * Generates a unique request ID.
+   *
+   * The request ID is a 12-character string composed of uppercase letters and digits,
+   * followed by a pipe character (`|`) and the current timestamp in milliseconds.
+   *
+   * @returns {string} The generated request ID.
+   */
   private generateRequestId(): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let requestId = '';
@@ -215,6 +240,11 @@ export class VietinbankService {
     return `${requestId}|${Date.now()}`;
   }
 
+  /**
+   * Generates a random captcha ID consisting of 9 alphanumeric characters.
+   *
+   * @returns {string} A randomly generated captcha ID.
+   */
   private generateCaptchaId(): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const captchaId = Array.from({ length: 9 }, () =>
@@ -223,6 +253,15 @@ export class VietinbankService {
     return captchaId;
   }
 
+  /**
+   * Handles the body request by adding a session ID if the user is logged in,
+   * and then encrypts the data.
+   *
+   * @param param - An object containing key-value pairs where the values can be strings, numbers, or null.
+   * @returns A promise that resolves to the encrypted data.
+   *
+   * @throws Will throw an error if the encryption process fails.
+   */
   private async handleBodyRequest(param: {
     [key: string]: string | number | null;
   }) {
@@ -236,6 +275,23 @@ export class VietinbankService {
     return await this.encryptData(param);
   }
 
+  /**
+   * Encrypts the given data using RSA encryption and adds a signature.
+   *
+   * @param data - An object containing key-value pairs to be encrypted. The values can be strings, numbers, or null.
+   * @returns An object containing the encrypted data.
+   *
+   * @remarks
+   * The function first generates a signature for the data using the MD5 hash algorithm.
+   * It then converts the data to a JSON string and encrypts it using RSA encryption with the public key specified in the environment variable `VIETINBANK_PUBLIC_KEY`.
+   *
+   * @example
+   * ```typescript
+   * const data = { amount: 1000, currency: 'USD', transactionId: '12345' };
+   * const result = await encryptData(data);
+   * console.log(result.encrypted); // Encrypted data
+   * ```
+   */
   private async encryptData(data: { [key: string]: string | number | null }) {
     data['signature'] = this.cryptoService
       .md5(

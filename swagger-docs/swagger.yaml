@@ -560,6 +560,26 @@ paths:
           description: ''
       summary: Get transaction by code
       tags: *ref_5
+  /api/driver-order/pending:
+    get:
+      operationId: DriverOrderController_getOrderPending
+      parameters: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OrderEntity'
+      summary: Get order pending for driver
+      tags:
+        - Driver Order
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -1060,3 +1080,262 @@ components:
           example: ''
       required:
         - jwtVerify
+    CustomerEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        deletedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+    LocationEntity:
+      type: object
+      properties: {}
+    CODEntity:
+      type: object
+      properties: {}
+    SpecialRequireItemEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        deletedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+    OrderStatusEntity:
+      type: object
+      properties: {}
+    DriverEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        deletedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+    OrderAssignmentEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        deletedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+    TransportTypeEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        deletedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+    OrderEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        deletedAt:
+          format: date-time
+          type: string
+          example: '2021-09-01T14:00:00.000Z'
+          description: timestamp
+        customer:
+          $ref: '#/components/schemas/CustomerEntity'
+        cusName:
+          type: string
+        pickup:
+          $ref: '#/components/schemas/LocationEntity'
+        cusPhone:
+          type: string
+        recipientName:
+          type: string
+        destination:
+          $ref: '#/components/schemas/LocationEntity'
+        distanceTotal:
+          type: number
+        exceedDistance:
+          type: number
+        recipientPhone:
+          type: string
+        cod:
+          $ref: '#/components/schemas/CODEntity'
+        isDeliveryCharge:
+          type: boolean
+        loadWeight:
+          type: number
+        priceItems:
+          type: array
+          items:
+            type: string
+        totalPrice:
+          type: number
+        currentStatus:
+          type: string
+          enum:
+            - PENDING
+            - PENDING_PICKUP
+            - PICKED_UP
+            - SUCCESS
+            - RETURN
+            - RETURNING
+            - RETURNED
+            - CANCELED
+            - RELEASE
+          default: PENDING
+        deliveryWindow:
+          type: string
+        note:
+          type: string
+        specialRequireItemPrice:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpecialRequireItemEntity'
+        statusOrderHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStatusEntity'
+        potentialDriverId:
+          type: number
+        driver:
+          $ref: '#/components/schemas/DriverEntity'
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderAssignmentEntity'
+        transportType:
+          $ref: '#/components/schemas/TransportTypeEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - customer
+        - cusName
+        - pickup
+        - cusPhone
+        - recipientName
+        - destination
+        - distanceTotal
+        - exceedDistance
+        - recipientPhone
+        - cod
+        - isDeliveryCharge
+        - loadWeight
+        - priceItems
+        - totalPrice
+        - currentStatus
+        - deliveryWindow
+        - note
+        - specialRequireItemPrice
+        - statusOrderHistory
+        - potentialDriverId
+        - driver
+        - assignments
+        - transportType

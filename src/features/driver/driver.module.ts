@@ -8,6 +8,8 @@ import { TransportTypeModule } from '@features/transport-type';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DriverOnlineCommand } from './command';
+import { DriverOfflineCommand } from './command/driver-offline.command';
 import { DriverIdentityService } from './driver-identity.service';
 import { DriverController } from './driver.controller';
 import { DriverService } from './driver.service';
@@ -27,7 +29,12 @@ import { DriverEntity, DriverIdentityEntity } from './entities';
     TransportTypeModule,
   ],
   controllers: [DriverController],
-  providers: [DriverService, DriverIdentityService],
+  providers: [
+    DriverService,
+    DriverIdentityService,
+    DriverOnlineCommand,
+    DriverOfflineCommand,
+  ],
   exports: [DriverService, DriverIdentityService],
 })
 export class DriverModule {}

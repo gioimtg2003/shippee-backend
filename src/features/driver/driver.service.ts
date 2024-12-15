@@ -1,11 +1,6 @@
 import { DriverSession } from '@common/dto';
 import { applyQueryFilter } from '@common/query-builder';
-import {
-  DRIVER_STATUS_ENUM,
-  EXPIRE_CACHE_DRIVER,
-  IS_PENDING_ORDER_KEY,
-  Role,
-} from '@constants';
+import { EXPIRE_CACHE_DRIVER, IS_PENDING_ORDER_KEY, Role } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { FilterDriverOptionsDto } from '@features/driver-manage/dto';
 import { ORDER_EVENT_ENUM } from '@features/order/events';
@@ -26,6 +21,8 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
+import { DriverOnlineCommand } from './command';
+import { DriverOfflineCommand } from './command/driver-offline.command';
 import { CreateDriverInput } from './dto/create-driver.input';
 import { DriverStatusInput } from './dto/driver-status.input';
 import { DriverEntity } from './entities';
@@ -40,6 +37,8 @@ export class DriverService implements OnModuleInit {
     private readonly cryptoService: CryptoService,
     private readonly redisService: RedisCacheService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly onlineCommand: DriverOnlineCommand,
+    private readonly offlineCommand: DriverOfflineCommand,
   ) {}
 
   /**
@@ -314,37 +313,9 @@ export class DriverService implements OnModuleInit {
    * @throws {BadRequestException} If the driver is not found or is currently in the delivery state.
    */
   async online(id: number, location: DriverStatusInput) {
-    this.logger.log(`Driver with id: ${id} is online`);
-
-    const found = await this.driverRepo.findOne({
-      where: { id },
-      select: {
-        id: true,
-        state: true,
-      },
-    });
-
-    if (!found) {
-      this.logger.error('⚠️ Driver not found');
-      throw new BadRequestException('Driver not found');
-    }
-
-    if (found.state === DRIVER_STATUS_ENUM.DELIVERY) {
-      this.logger.error('⚠️ Driver is in delivery state');
-      throw new BadRequestException('Driver is in delivery state');
-    }
-
-    await this.update(id, {
-      state: DRIVER_STATUS_ENUM.FREE,
-    });
-
-    await this.redisService.updateObject({
-      key: `driver:${id}`,
-      value: {
-        lat: location.lat,
-        lng: location.lng,
-        state: DRIVER_STATUS_ENUM.FREE,
-      },
+    await this.onlineCommand.execute({
+      idDriver: id,
+      ...location,
     });
 
     this.eventEmitter.emit(DRIVER_EVENTS.DRIVER_ONLINE);
@@ -368,36 +339,7 @@ export class DriverService implements OnModuleInit {
    * @throws {BadRequestException} - If the driver is not found or is in the delivery state.
    */
   async offline(id: number) {
-    this.logger.log(`Driver with id: ${id} is offline`);
-
-    const found = await this.driverRepo.findOne({
-      where: { id },
-      select: {
-        id: true,
-        state: true,
-      },
-    });
-
-    if (!found) {
-      this.logger.error('⚠️ Driver not found');
-      throw new BadRequestException('Driver not found');
-    }
-
-    if (found.state === DRIVER_STATUS_ENUM.DELIVERY) {
-      this.logger.error('⚠️ Driver is in delivery state');
-      throw new BadRequestException('Driver is in delivery state');
-    }
-
-    await this.update(id, {
-      state: DRIVER_STATUS_ENUM.OFFLINE,
-    });
-
-    await this.redisService.updateObject({
-      key: `driver:${id}`,
-      value: {
-        state: DRIVER_STATUS_ENUM.OFFLINE,
-      },
-    });
+    await this.offlineCommand.execute({ idDriver: id });
 
     return true;
   }

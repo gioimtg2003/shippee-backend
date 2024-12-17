@@ -180,9 +180,7 @@ export class OrderAssignmentService implements OnModuleInit {
    *   { id: 2, lat: 34.0522, lng: -118.2437, ... },
    * ];
    * const coordinates: [number, number] = [37.7749, -122.4194];
-   * const potentialDrivers = await getPotentialDrivers(drivers, coordinates);
-   * console.log(potentialDrivers);
-   * ```
+   * getPotentialDrivers(drivers, coordinates); // [{ id: 1, acceptanceRate: 0.8, distance: 100, orderAssigned: 1 }]
    */
   private async getPotentialDrivers(
     drivers: DriverSession[],

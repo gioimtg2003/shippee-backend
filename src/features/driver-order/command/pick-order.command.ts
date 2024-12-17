@@ -1,5 +1,9 @@
 import { DRIVER_STATUS_ENUM, ORDER_QUEUE, ORDER_STATUS_ENUM } from '@constants';
 import { DriverService } from '@features/driver/driver.service';
+import { DriverEntity } from '@features/driver/entities';
+import { OrderStatusEntity } from '@features/order-status/order-status.entity';
+import { OrderAssignmentEntity } from '@features/order/entities/order-assignment.entity';
+import { OrderEntity } from '@features/order/entities/order.entity';
 import { OrderService } from '@features/order/order.service';
 import { RedisEvents } from '@features/redis/events';
 import { UpdateCacheValueEvent } from '@features/redis/events/update-value.event';
@@ -82,21 +86,27 @@ export class PickOrderCommand implements CommandDriverOrder {
         throw new BadRequestException('Tài khoản không đủ tiền');
       }
 
-      await queryRunner.manager.insert('order_assignments', {
-        orderId: data.idOrder,
-        driverId: data.idDriver,
+      await queryRunner.manager.insert(OrderAssignmentEntity, {
+        order: {
+          id: data.idOrder,
+        },
+        driver: {
+          id: data.idDriver,
+        },
       });
-      await queryRunner.manager.insert('order_status_history', {
-        orderId: data.idOrder,
+      await queryRunner.manager.insert(OrderStatusEntity, {
+        order: {
+          id: data.idOrder,
+        },
         status: ORDER_STATUS_ENUM.PENDING_PICKUP,
       });
 
-      await queryRunner.manager.update('drivers', driver.id, {
+      await queryRunner.manager.update(DriverEntity, driver.id, {
         idOrder: data.idOrder,
         balance: updateBalance,
         state: DRIVER_STATUS_ENUM.DELIVERY,
       });
-      await queryRunner.manager.update('orders', data.idOrder, {
+      await queryRunner.manager.update(OrderEntity, data.idOrder, {
         potentialDriverId: data.idDriver,
         currentStatus: ORDER_STATUS_ENUM.PENDING_PICKUP,
         driver: {

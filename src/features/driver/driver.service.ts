@@ -266,6 +266,7 @@ export class DriverService implements OnModuleInit {
       balance: true,
       isAiChecked: true,
       state: true,
+      idOrder: true,
       isIdentityVerified: true,
       transportType: {
         id: true,

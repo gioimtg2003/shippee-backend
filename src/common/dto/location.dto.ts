@@ -7,7 +7,9 @@ export class LocationDto {
     example: 100.0,
   })
   @IsNumber()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Longitude is required',
+  })
   @Min(-180)
   @Max(180)
   lng: number;
@@ -17,7 +19,9 @@ export class LocationDto {
     example: 100.0,
   })
   @IsNumber()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Longitude is required',
+  })
   @Min(-90)
   @Max(90)
   lat: number;

@@ -1,4 +1,6 @@
 import { AdminAuthGuard } from '@features/auth-admin/guards';
+import { WalletPaginateDto } from '@features/driver-wallet/dto';
+import { WalletHistoryEntity } from '@features/driver-wallet/entities';
 import { CreateDriverInput } from '@features/driver/dto';
 import { CreateDriverInfoInput } from '@features/driver/dto/create-driver-info.input';
 import { UpdateDriverInfoInput } from '@features/driver/dto/update-driver-info.input';
@@ -25,7 +27,7 @@ import {
   ApiObjectResponse,
   ApiSuccessResponse,
 } from 'src/decorators/response-swagger.decorator';
-import { FilterQuery } from './decorators';
+import { FilterQuery, FilterWallet } from './decorators';
 import { DriverManageService } from './driver-manage.service';
 import { FilterDriverOptionsDto } from './dto';
 import { CountDriverDto } from './dto/count-driver.dto';
@@ -59,6 +61,16 @@ export class DriverManageController {
   @UsePipes(new ValidationPipe({ transform: true }))
   async getAllDriver(@FilterQuery() filter: FilterDriverOptionsDto) {
     return this.driverManageService.getAllDriver(filter);
+  }
+
+  @ApiOperation({ summary: 'Get all driver' })
+  @ApiArrayResponse(WalletHistoryEntity)
+  @Get('driver/wallet')
+  @UseGuards(AdminAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getAllDriverWallet(@FilterWallet() filter: WalletPaginateDto) {
+    return this.driverManageService.getAllDriverWallet(filter);
   }
 
   @ApiOperation({ summary: 'Update a driver' })

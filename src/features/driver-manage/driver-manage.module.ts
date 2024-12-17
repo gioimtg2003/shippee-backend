@@ -1,3 +1,4 @@
+import { DriverWalletModule } from '@features/driver-wallet';
 import { DriverModule } from '@features/driver/driver.module';
 import { ImageModule } from '@features/image/image.module';
 import { MailModule } from '@features/mail';
@@ -8,7 +9,13 @@ import { DriverManageController } from './driver-manage.controller';
 import { DriverManageService } from './driver-manage.service';
 
 @Module({
-  imports: [DriverModule, MailModule, ImageModule, TransportTypeModule],
+  imports: [
+    DriverModule,
+    MailModule,
+    ImageModule,
+    TransportTypeModule,
+    DriverWalletModule,
+  ],
   controllers: [DriverManageController],
   providers: [DriverManageService, JwtService],
 })

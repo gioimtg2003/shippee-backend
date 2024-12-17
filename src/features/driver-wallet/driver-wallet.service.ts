@@ -6,8 +6,8 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { generateRandomCode } from '@utils';
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
-import { TransactionInput } from './dto';
+import { Between, DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { TransactionInput, WalletPaginateDto } from './dto';
 import { WalletHistoryEntity } from './entities';
 import { UpdateWalletEvent, WALLET_EVENTS } from './events';
 
@@ -69,6 +69,42 @@ export class DriverWalletService {
         'amount',
       ],
       order: { createdAt: 'DESC' },
+    });
+  }
+
+  async paginateWallet(options: WalletPaginateDto) {
+    const filter: FindOptionsWhere<WalletHistoryEntity> = {};
+
+    if (options.startTime && options.endTime) {
+      filter.createdAt = Between(
+        new Date(options.startTime),
+        new Date(options.endTime),
+      );
+    }
+
+    if (options.fromAmt && options.toAmt) {
+      filter.amount = Between(options.fromAmt, options.toAmt);
+    }
+    this.logger.log('Fetching all wallet history');
+    return this.repo.find({
+      where: {
+        ...filter,
+      },
+      order: {
+        id: 'DESC',
+      },
+      take: options?.take || 10,
+      skip: options?.skip || 0,
+      relations: ['driver'],
+      select: {
+        id: true,
+        amount: true,
+        code: true,
+        status: true,
+        action: true,
+        createdAt: true,
+        driver: { id: true, name: true, phone: true },
+      },
     });
   }
 

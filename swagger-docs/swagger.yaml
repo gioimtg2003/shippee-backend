@@ -292,6 +292,25 @@ paths:
                         example: true
       summary: Update a driver
       tags: *ref_3
+  /api/driver-manage/driver/wallet:
+    get:
+      operationId: DriverManageController_getAllDriverWallet
+      parameters: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/WalletHistoryEntity'
+      summary: Get all driver
+      tags: *ref_3
   /api/driver-manage/driver/{id}:
     get:
       operationId: DriverManageController_getDriver
@@ -417,6 +436,53 @@ paths:
                         example: true
       summary: Verify driver
       tags: *ref_3
+  /api/driver-wallet:
+    post:
+      operationId: DriverWalletController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/TransactionResponseDto'
+      summary: Create a new transaction
+      tags: &ref_4
+        - Driver Wallet
+    get:
+      operationId: DriverWalletController_getWalletDriver
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Get wallet histories
+      tags: *ref_4
+  /api/driver-wallet/{code}:
+    get:
+      operationId: DriverWalletController_getTransactionByCode
+      parameters:
+        - name: code
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      summary: Get transaction by code
+      tags: *ref_4
   /api/auth-admin/login:
     post:
       operationId: AuthAdminController_login
@@ -462,7 +528,7 @@ paths:
                         type: object
                         $ref: '#/components/schemas/DriverLoginNotVerifyResponseDto'
       summary: Register Partner
-      tags: &ref_4
+      tags: &ref_5
         - Driver Auth
   /api/driver-auth/login:
     post:
@@ -489,7 +555,7 @@ paths:
         '401':
           description: Unauthorized
       summary: Driver login
-      tags: *ref_4
+      tags: *ref_5
   /api/driver-auth/refresh-token:
     post:
       operationId: DriverAuthController_refreshToken
@@ -512,53 +578,6 @@ paths:
                         type: object
                         $ref: '#/components/schemas/ClientLoginResponseDto'
       summary: Refresh token for driver
-      tags: *ref_4
-  /api/driver-wallet:
-    post:
-      operationId: DriverWalletController_create
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionInput'
-      responses:
-        '200':
-          description: Success response
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/ResponseDTO'
-                  - properties:
-                      data:
-                        type: object
-                        $ref: '#/components/schemas/TransactionResponseDto'
-      summary: Create a new transaction
-      tags: &ref_5
-        - Driver Wallet
-    get:
-      operationId: DriverWalletController_getWalletDriver
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      summary: Get wallet histories
-      tags: *ref_5
-  /api/driver-wallet/{code}:
-    get:
-      operationId: DriverWalletController_getTransactionByCode
-      parameters:
-        - name: code
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-      summary: Get transaction by code
       tags: *ref_5
   /api/driver-order/pending:
     get:
@@ -892,6 +911,23 @@ components:
         - isIdentityVerified
         - isAiChecked
         - isRejected
+    TransactionInput:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 10000
+          description: Amount to deposit
+        action:
+          type: string
+          example: deposit
+          description: Action to perform
+          enum:
+            - DEPOSIT
+            - WITHDRAW
+      required:
+        - amount
+        - action
     AdminLoginInput:
       type: object
       properties:
@@ -952,23 +988,6 @@ components:
       required:
         - password
         - phone
-    TransactionInput:
-      type: object
-      properties:
-        amount:
-          type: number
-          example: 10000
-          description: Amount to deposit
-        action:
-          type: string
-          example: deposit
-          description: Action to perform
-          enum:
-            - DEPOSIT
-            - WITHDRAW
-      required:
-        - amount
-        - action
     CustomerLoginInput:
       type: object
       properties:

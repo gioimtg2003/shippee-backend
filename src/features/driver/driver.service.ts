@@ -290,6 +290,7 @@ export class DriverService implements OnModuleInit {
       isAiChecked: found.isAiChecked,
       isIdentityVerified: found.isIdentityVerified,
       balance: found.balance,
+      idOrder: found.idOrder,
       transportType: found.transportType.code,
       loadWeight: found.transportType.loadWeight,
     };

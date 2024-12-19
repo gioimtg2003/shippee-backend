@@ -636,6 +636,25 @@ paths:
           description: ''
       summary: Pick up order
       tags: *ref_6
+  /api/driver-order/delivery:
+    get:
+      operationId: DriverOrderController_getDetailDelivery
+      parameters: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OrderEntity'
+      summary: Get order pending for driver
+      tags: *ref_6
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login

@@ -45,4 +45,13 @@ export class DriverOrderService {
   getOrderPendingDetail(orderId: number) {
     return this.orderService.findById(orderId);
   }
+
+  async getOrderDetailDelivery(orderId: number, idDriver: number) {
+    this.logger.log(`Get order detail delivery for driver ${idDriver}`);
+    return this.orderService.findByField({
+      id: orderId,
+      driver: { id: idDriver },
+      potentialDriverId: idDriver,
+    });
+  }
 }

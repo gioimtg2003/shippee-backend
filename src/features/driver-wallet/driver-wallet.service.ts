@@ -86,15 +86,10 @@ export class DriverWalletService {
       filter.amount = Between(options.fromAmt, options.toAmt);
     }
     this.logger.log('Fetching all wallet history');
-    return this.repo.find({
+    const [data, count] = await this.repo.findAndCount({
       where: {
         ...filter,
       },
-      order: {
-        id: 'DESC',
-      },
-      take: options?.take || 10,
-      skip: options?.skip || 0,
       relations: ['driver'],
       select: {
         id: true,
@@ -105,7 +100,15 @@ export class DriverWalletService {
         createdAt: true,
         driver: { id: true, name: true, phone: true },
       },
+      order: { id: 'DESC' },
+      take: options.take || 10,
+      skip: options.skip || 0,
     });
+
+    return {
+      data,
+      count,
+    };
   }
 
   private async makeUniqueCode(driverId?: number): Promise<string> {

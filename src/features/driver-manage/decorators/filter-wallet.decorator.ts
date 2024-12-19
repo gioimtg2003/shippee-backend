@@ -4,8 +4,16 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export const FilterWallet = createParamDecorator(
   (data, context: ExecutionContext) => {
     const req = context.switchToHttp().getRequest();
-    const { endTime, fromAmt, startTime, toAmt, walletStatus, actionType } =
-      req.query;
+    const {
+      endTime,
+      fromAmt,
+      startTime,
+      toAmt,
+      walletStatus,
+      actionType,
+      take,
+      skip,
+    } = req.query;
 
     const result = new WalletPaginateDto();
     result.endTime = endTime;
@@ -14,6 +22,8 @@ export const FilterWallet = createParamDecorator(
     result.toAmt = toAmt;
     result.walletStatus = walletStatus;
     result.actionType = actionType;
+    result.take = take;
+    result.skip = skip;
 
     return result;
   },

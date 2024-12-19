@@ -48,4 +48,16 @@ export class DriverOrderController {
   ) {
     return this.driverOrderService.pickupOrder(driver, orderId);
   }
+
+  @Get('/delivery')
+  @UseGuards(DriverAuthGuard)
+  @ApiOperation({ summary: 'Get order pending for driver' })
+  @ApiArrayResponse(OrderEntity)
+  @HttpCode(HttpStatus.OK)
+  async getDetailDelivery(@CurrentUser() driver: DriverSession) {
+    return this.driverOrderService.getOrderDetailDelivery(
+      driver.idOrder,
+      driver.id,
+    );
+  }
 }

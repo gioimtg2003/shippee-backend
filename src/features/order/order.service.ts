@@ -4,6 +4,7 @@ import {
   ORDER_STATUS_ENUM,
   OrderDress,
   PRICE_ITEMS_ENUM,
+  RATE_VAT,
 } from '@constants';
 import { MapBoxService } from '@features/mapbox';
 import { OrderStatusService } from '@features/order-status/order-status.service';
@@ -116,7 +117,11 @@ export class OrderService {
       exceedPrice,
     );
 
-    const totalPrice = priceItems.reduce((acc, item) => acc + item.price, 0);
+    const totalPriceItem = priceItems.reduce(
+      (acc, item) => acc + item.price,
+      0,
+    );
+    const priceVAT = totalPriceItem * RATE_VAT;
 
     const deliveryWindow =
       startTime && endTime
@@ -126,7 +131,7 @@ export class OrderService {
     const order = this.repo.create({
       distanceTotal: distanceKm,
       priceItems: priceItems.map((item) => JSON.stringify(item)),
-      totalPrice,
+      totalPrice: totalPriceItem + priceVAT,
       exceedDistance,
       deliveryWindow,
       cod,

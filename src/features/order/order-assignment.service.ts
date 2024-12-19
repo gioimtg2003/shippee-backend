@@ -211,7 +211,7 @@ export class OrderAssignmentService implements OnModuleInit {
           const countOrderAssigned = await this.countByDriverId(driver.id, {
             where: { status: ORDER_ASSIGNMENT_STATUS_ENUM.ASSIGNED },
           });
-          console.log(countOrderAssigned);
+
           if (countOrderAssigned <= 2) {
             potentialDrivers.push({
               id: found.id,

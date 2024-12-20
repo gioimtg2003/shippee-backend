@@ -35,11 +35,11 @@ export class PickOrderCommand implements CommandDriverOrder {
     }
 
     await this.orderService.update(data.idOrder, {
-      currentStatus: ORDER_STATUS_ENUM.ARRIVED_AT_PICKUP,
+      currentStatus: ORDER_STATUS_ENUM.PICKED_UP,
     });
     await this.orderStatus.create({
       orderId: data.idOrder,
-      status: ORDER_STATUS_ENUM.ARRIVED_AT_PICKUP,
+      status: ORDER_STATUS_ENUM.PICKED_UP,
     });
 
     // Notification

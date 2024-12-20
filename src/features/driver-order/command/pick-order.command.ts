@@ -78,8 +78,11 @@ export class PickOrderCommand implements CommandDriverOrder {
       const { realRevenue } = this.driverService.calculateDiscountPrice(
         order.totalPrice,
       );
-
-      const updateBalance = driver.balance - (order.totalPrice - realRevenue);
+      this.logger.log(`Real revenue: ${realRevenue}`);
+      this.logger.log(`Driver balance: ${driver.balance}`);
+      this.logger.log(`Order total price: ${order.totalPrice}`);
+      const updateBalance =
+        driver.balance - (order.totalPrice - Math.ceil(realRevenue));
 
       if (updateBalance < 0) {
         this.logger.error(`Driver has not enough money: ${data.idDriver}`);

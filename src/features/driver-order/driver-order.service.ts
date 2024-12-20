@@ -4,6 +4,7 @@ import { RedisCacheService } from '@features/redis';
 import { Injectable, Logger } from '@nestjs/common';
 import { LessThanOrEqual } from 'typeorm';
 import { PickOrderCommand } from './command';
+import { ArrivedPickupOrder } from './command/arrived-pickup-order.command';
 
 @Injectable()
 export class DriverOrderService {
@@ -12,6 +13,7 @@ export class DriverOrderService {
     private readonly orderService: OrderService,
     private readonly cacheService: RedisCacheService,
     private readonly pickOrderCommand: PickOrderCommand,
+    private readonly arrivedPickupOrder: ArrivedPickupOrder,
   ) {}
 
   async getOrderPending(driver: DriverSession) {
@@ -53,5 +55,15 @@ export class DriverOrderService {
       driver: { id: idDriver },
       potentialDriverId: idDriver,
     });
+  }
+
+  async arrivedPickup(driver: DriverSession) {
+    this.logger.log(`Arrived at destination for driver ${driver.id}`);
+    await this.arrivedPickupOrder.execute({
+      idDriver: driver.id,
+      idOrder: driver.idOrder,
+    });
+
+    return true;
   }
 }

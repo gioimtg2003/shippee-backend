@@ -679,6 +679,15 @@ paths:
                           $ref: '#/components/schemas/OrderEntity'
       summary: Get order pending for driver
       tags: *ref_6
+  /api/driver-order/arrived:
+    put:
+      operationId: DriverOrderController_arrivedDestination
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Arrived at destination
+      tags: *ref_6
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login

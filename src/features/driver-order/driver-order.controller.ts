@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -59,5 +60,13 @@ export class DriverOrderController {
       driver.idOrder,
       driver.id,
     );
+  }
+
+  @Put('arrived')
+  @UseGuards(DriverAuthGuard)
+  @ApiOperation({ summary: 'Arrived at destination' })
+  @HttpCode(HttpStatus.OK)
+  async arrivedDestination(@CurrentUser() driver: DriverSession) {
+    return this.driverOrderService.arrivedPickup(driver);
   }
 }

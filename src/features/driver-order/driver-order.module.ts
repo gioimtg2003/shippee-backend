@@ -7,6 +7,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PickOrderCommand } from './command';
+import { ArrivedPickupOrder } from './command/arrived-pickup-order.command';
 import { DriverOrderController } from './driver-order.controller';
 import { DriverOrderService } from './driver-order.service';
 
@@ -22,6 +23,6 @@ import { DriverOrderService } from './driver-order.service';
     OrderStatusModule,
   ],
   controllers: [DriverOrderController],
-  providers: [DriverOrderService, PickOrderCommand],
+  providers: [DriverOrderService, PickOrderCommand, ArrivedPickupOrder],
 })
 export class DriverOrderModule {}

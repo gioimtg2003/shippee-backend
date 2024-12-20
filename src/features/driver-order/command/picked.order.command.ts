@@ -29,17 +29,17 @@ export class PickOrderCommand implements CommandDriverOrder {
       throw new BadRequestException('Order not found');
     }
 
-    if (order.currentStatus !== ORDER_STATUS_ENUM.PENDING_PICKUP) {
-      this.logger.error(`Order is not pending pickup: ${data.idOrder}`);
-      throw new BadRequestException('Order is not pending pickup');
+    if (order.currentStatus !== ORDER_STATUS_ENUM.ARRIVED_AT_PICKUP) {
+      this.logger.error(`Driver is not arrived: ${data.idOrder}`);
+      throw new BadRequestException('Driver is not arrived');
     }
 
     await this.orderService.update(data.idOrder, {
-      currentStatus: ORDER_STATUS_ENUM.PICKED_UP,
+      currentStatus: ORDER_STATUS_ENUM.ARRIVED_AT_PICKUP,
     });
     await this.orderStatus.create({
       orderId: data.idOrder,
-      status: ORDER_STATUS_ENUM.PICKED_UP,
+      status: ORDER_STATUS_ENUM.ARRIVED_AT_PICKUP,
     });
 
     // Notification

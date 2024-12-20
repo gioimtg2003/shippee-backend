@@ -123,7 +123,7 @@ paths:
               $ref: '#/components/schemas/DriverStatusInput'
       responses:
         '200':
-          description: Driver offline successfully
+          description: Update location successfully
           content:
             application/json:
               schema:
@@ -133,7 +133,7 @@ paths:
                       data:
                         type: boolean
                         example: true
-      summary: offline driver
+      summary: Update Location
       tags: *ref_0
   /api/image/signed-url:
     post:
@@ -1367,6 +1367,12 @@ components:
           $ref: '#/components/schemas/CODEntity'
         isDeliveryCharge:
           type: boolean
+        payer:
+          type: string
+          enum:
+            - SENDER
+            - RECIPIENT
+          default: SENDER
         loadWeight:
           type: number
         priceItems:
@@ -1381,12 +1387,13 @@ components:
             - PENDING
             - PENDING_PICKUP
             - PICKED_UP
-            - SUCCESS
+            - COMPLETED
             - RETURN
             - RETURNING
             - RETURNED
             - CANCELED
             - RELEASE
+            - ARRIVED_AT_PICKUP
           default: PENDING
         deliveryWindow:
           type: string
@@ -1426,6 +1433,7 @@ components:
         - recipientPhone
         - cod
         - isDeliveryCharge
+        - payer
         - loadWeight
         - priceItems
         - totalPrice

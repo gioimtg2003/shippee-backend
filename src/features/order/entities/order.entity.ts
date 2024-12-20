@@ -3,6 +3,7 @@ import {
   LIMIT_NAME,
   LIMIT_PHONE,
   NOTE_MAX_LENGTH,
+  ORDER_PAYER_ENUM,
   ORDER_STATUS_ENUM,
 } from '@constants';
 import { DriverEntity } from '@features/driver/entities';
@@ -64,6 +65,14 @@ export class OrderEntity extends CoreEntity {
   @ApiProperty()
   @Column({ type: 'boolean', default: false })
   isDeliveryCharge: boolean;
+
+  @ApiProperty({ enum: ORDER_PAYER_ENUM, default: ORDER_PAYER_ENUM.SENDER })
+  @Column({
+    type: 'enum',
+    enum: ORDER_PAYER_ENUM,
+    default: ORDER_PAYER_ENUM.SENDER,
+  })
+  payer: ORDER_PAYER_ENUM;
 
   @ApiProperty()
   @Column()

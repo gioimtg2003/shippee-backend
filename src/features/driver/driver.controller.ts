@@ -81,4 +81,16 @@ export class DriverController {
   async offlineDriver(@CurrentUser() user: DriverSession) {
     return this.driverService.offline(user.id);
   }
+
+  @Put('location')
+  @ApiOperation({ summary: 'Update Location' })
+  @ApiSuccessResponse('Update location successfully')
+  @UseGuards(DriverAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateLocation(
+    @CurrentUser() user: DriverSession,
+    @Body() data: DriverStatusInput,
+  ) {
+    return this.driverService.updateLocation(user.id, data);
+  }
 }

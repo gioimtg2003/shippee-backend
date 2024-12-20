@@ -1,6 +1,7 @@
 import { ORDER_QUEUE } from '@constants';
 import { DriverModule } from '@features/driver/driver.module';
 import { OrderModule } from '@features/order';
+import { OrderStatusModule } from '@features/order-status';
 import { RedisModule } from '@features/redis';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { DriverOrderService } from './driver-order.service';
     BullModule.registerQueue({
       name: ORDER_QUEUE.NAME,
     }),
+    OrderStatusModule,
   ],
   controllers: [DriverOrderController],
   providers: [DriverOrderService, PickOrderCommand],

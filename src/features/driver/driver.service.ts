@@ -13,6 +13,7 @@ import { FilterDriverOptionsDto } from '@features/driver-manage/dto';
 import { ORDER_EVENT_ENUM } from '@features/order/events';
 import { RedisCacheService } from '@features/redis';
 import { CacheValueEvent, RedisEvents } from '@features/redis/events';
+import { UpdateCacheValueEvent } from '@features/redis/events/update-value.event';
 import {
   BadRequestException,
   Injectable,
@@ -376,5 +377,16 @@ export class DriverService implements OnModuleInit {
       platformFee,
       realRevenue,
     };
+  }
+
+  updateLocation(id: number, location: DriverStatusInput) {
+    this.eventEmitter.emit(
+      RedisEvents.UPDATE_VALUE,
+      new UpdateCacheValueEvent(`driver:${id}`, {
+        lat: location.lat,
+        lng: location.lng,
+      }),
+    );
+    return true;
   }
 }

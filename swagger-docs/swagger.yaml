@@ -111,6 +111,30 @@ paths:
                         example: true
       summary: offline driver
       tags: *ref_0
+  /api/driver/location:
+    put:
+      operationId: DriverController_updateLocation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverStatusInput'
+      responses:
+        '200':
+          description: Driver offline successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: boolean
+                        example: true
+      summary: offline driver
+      tags: *ref_0
   /api/image/signed-url:
     post:
       description: >-

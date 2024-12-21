@@ -69,4 +69,20 @@ export class DriverOrderController {
   async arrivedDestination(@CurrentUser() driver: DriverSession) {
     return this.driverOrderService.arrivedPickup(driver);
   }
+
+  @Put('picked')
+  @UseGuards(DriverAuthGuard)
+  @ApiOperation({ summary: 'Picked Order' })
+  @HttpCode(HttpStatus.OK)
+  async pickedOrder(@CurrentUser() driver: DriverSession) {
+    return this.driverOrderService.pickedOrder(driver);
+  }
+
+  @Put('arrived-recipient')
+  @UseGuards(DriverAuthGuard)
+  @ApiOperation({ summary: 'Arrived at destination' })
+  @HttpCode(HttpStatus.OK)
+  async arrivedRecipient(@CurrentUser() driver: DriverSession) {
+    return this.driverOrderService.arrivedRecipient(driver);
+  }
 }

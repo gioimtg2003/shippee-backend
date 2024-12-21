@@ -688,6 +688,24 @@ paths:
           description: ''
       summary: Arrived at destination
       tags: *ref_6
+  /api/driver-order/picked:
+    put:
+      operationId: DriverOrderController_pickedOrder
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Picked Order
+      tags: *ref_6
+  /api/driver-order/arrived-recipient:
+    put:
+      operationId: DriverOrderController_arrivedRecipient
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Arrived at destination
+      tags: *ref_6
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -1403,6 +1421,7 @@ components:
             - CANCELED
             - RELEASE
             - ARRIVED_AT_PICKUP
+            - ARRIVED_AT_RECIPIENT
           default: PENDING
         deliveryWindow:
           type: string

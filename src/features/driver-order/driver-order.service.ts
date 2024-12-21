@@ -5,6 +5,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { LessThanOrEqual } from 'typeorm';
 import { PickOrderCommand } from './command';
 import { ArrivedPickupOrder } from './command/arrived-pickup-order.command';
+import { ArrivedRecipientCommand } from './command/arrived-recipient.command';
+import { PickedOrderCommand } from './command/picked.order.command';
 
 @Injectable()
 export class DriverOrderService {
@@ -14,6 +16,8 @@ export class DriverOrderService {
     private readonly cacheService: RedisCacheService,
     private readonly pickOrderCommand: PickOrderCommand,
     private readonly arrivedPickupOrder: ArrivedPickupOrder,
+    private readonly pickedOrderCommand: PickedOrderCommand,
+    private readonly arrivedRecipientCommand: ArrivedRecipientCommand,
   ) {}
 
   async getOrderPending(driver: DriverSession) {
@@ -60,6 +64,26 @@ export class DriverOrderService {
   async arrivedPickup(driver: DriverSession) {
     this.logger.log(`Arrived at destination for driver ${driver.id}`);
     await this.arrivedPickupOrder.execute({
+      idDriver: driver.id,
+      idOrder: driver.idOrder,
+    });
+
+    return true;
+  }
+
+  async pickedOrder(driver: DriverSession) {
+    this.logger.log(`Picked Order for driver ${driver.id}`);
+    await this.pickedOrderCommand.execute({
+      idDriver: driver.id,
+      idOrder: driver.idOrder,
+    });
+
+    return true;
+  }
+
+  async arrivedRecipient(driver: DriverSession) {
+    this.logger.log(`Arrived at recipient for driver ${driver.id}`);
+    await this.arrivedRecipientCommand.execute({
       idDriver: driver.id,
       idOrder: driver.idOrder,
     });

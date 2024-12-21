@@ -8,6 +8,8 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PickOrderCommand } from './command';
 import { ArrivedPickupOrder } from './command/arrived-pickup-order.command';
+import { ArrivedRecipientCommand } from './command/arrived-recipient.command';
+import { PickedOrderCommand } from './command/picked.order.command';
 import { DriverOrderController } from './driver-order.controller';
 import { DriverOrderService } from './driver-order.service';
 
@@ -23,6 +25,12 @@ import { DriverOrderService } from './driver-order.service';
     OrderStatusModule,
   ],
   controllers: [DriverOrderController],
-  providers: [DriverOrderService, PickOrderCommand, ArrivedPickupOrder],
+  providers: [
+    DriverOrderService,
+    PickOrderCommand,
+    ArrivedPickupOrder,
+    PickedOrderCommand,
+    ArrivedRecipientCommand,
+  ],
 })
 export class DriverOrderModule {}

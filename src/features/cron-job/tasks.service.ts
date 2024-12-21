@@ -3,7 +3,6 @@ import { DriverService } from '@features/driver/driver.service';
 import { OrderAssignmentService } from '@features/order/order-assignment.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
-import { CronJobService } from './cron-job.service';
 
 @Injectable()
 export class TasksService {
@@ -12,7 +11,6 @@ export class TasksService {
   constructor(
     private readonly driverService: DriverService,
     private readonly orderAssignService: OrderAssignmentService,
-    private readonly cronJobService: CronJobService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_1AM, {

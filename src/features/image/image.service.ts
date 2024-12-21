@@ -22,13 +22,13 @@ export class ImageService {
   ) {}
 
   async getSignedUrlUploadDocument(data: SignUrlInput) {
-    const { fileName, contentType } = data;
+    const { fileName, contentType, bucket } = data;
     const fileNameWithUuid = this.extractSuffix(fileName);
 
     const url = await this.cloudflareService.getSignedUrl(
       fileNameWithUuid,
       contentType,
-      BUCKET.DRIVER,
+      bucket,
     );
 
     return { url, key: fileNameWithUuid };

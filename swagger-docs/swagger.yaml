@@ -850,9 +850,19 @@ components:
           type: string
           description: Content type
           example: image/jpeg
+        bucket:
+          type: string
+          description: Bucket
+          example: driver
+          enum:
+            - driver
+            - vehicle
+            - shippee
+            - order
       required:
         - fileName
         - contentType
+        - bucket
     Data:
       type: object
       properties:

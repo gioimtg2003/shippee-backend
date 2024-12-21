@@ -1,6 +1,7 @@
+import { BUCKET } from '@constants';
 import { IsImageFileName, IsImageType } from '@decorators';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class SignUrlInput {
   @ApiProperty({
@@ -20,6 +21,15 @@ export class SignUrlInput {
   @IsString()
   @IsImageType()
   contentType: string;
+
+  @ApiProperty({
+    description: 'Bucket',
+    example: BUCKET.DRIVER,
+    enum: BUCKET,
+  })
+  @IsNotEmpty()
+  @IsEnum(BUCKET)
+  bucket: BUCKET;
 }
 
 export class ResponseSignUrl {

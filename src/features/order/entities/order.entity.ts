@@ -105,6 +105,10 @@ export class OrderEntity extends CoreEntity {
   @Column({ length: NOTE_MAX_LENGTH, nullable: true })
   note: string;
 
+  @ApiProperty()
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  imgDelivered: string;
+
   @ApiProperty({ type: () => SpecialRequireItemEntity, isArray: true })
   @Column({ type: 'jsonb', array: true, default: [] })
   specialRequireItemPrice: SpecialRequireItemEntity[];

@@ -1437,6 +1437,8 @@ components:
           type: string
         note:
           type: string
+        imgDelivered:
+          type: string
         specialRequireItemPrice:
           type: array
           items:
@@ -1478,6 +1480,7 @@ components:
         - currentStatus
         - deliveryWindow
         - note
+        - imgDelivered
         - specialRequireItemPrice
         - statusOrderHistory
         - potentialDriverId

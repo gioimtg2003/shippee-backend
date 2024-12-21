@@ -8,8 +8,8 @@ import {
 } from './command.interface';
 
 @Injectable()
-export class ArrivedPickupOrder implements CommandDriverOrder {
-  private readonly logger = new Logger(ArrivedPickupOrder.name);
+export class ArrivedPickupOrderCommand implements CommandDriverOrder {
+  private readonly logger = new Logger(ArrivedPickupOrderCommand.name);
 
   constructor(
     private readonly orderStatus: OrderStatusService,

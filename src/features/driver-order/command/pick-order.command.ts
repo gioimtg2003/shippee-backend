@@ -127,16 +127,16 @@ export class PickOrderCommand implements CommandDriverOrder {
       );
 
       // submit into queue to check order after 15 minutes
-      this.queue.add(ORDER_QUEUE.PICKUP_CHECKING, data.idOrder, {
-        removeOnComplete: true,
-        removeOnFail: true,
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
-        delay: 60 * 10 * 1000,
-      });
+      // this.queue.add(ORDER_QUEUE.PICKUP_CHECKING, data.idOrder, {
+      //   removeOnComplete: true,
+      //   removeOnFail: true,
+      //   attempts: 3,
+      //   backoff: {
+      //     type: 'exponential',
+      //     delay: 5000,
+      //   },
+      //   delay: 60 * 10 * 1000,
+      // });
 
       await queryRunner.commitTransaction();
     } catch (error) {

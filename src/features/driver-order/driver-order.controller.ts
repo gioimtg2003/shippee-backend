@@ -3,6 +3,7 @@ import { ApiArrayResponse, ApiObjectResponse, CurrentUser } from '@decorators';
 import { DriverAuthGuard } from '@features/driver-auth/guards';
 import { OrderEntity } from '@features/order/entities/order.entity';
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -14,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DriverOrderService } from './driver-order.service';
+import { OrderCompletedInput } from './dto/order-completed.input';
 import { DriverOrderGuard } from './guards';
 
 @ApiTags('Driver Order')
@@ -84,5 +86,17 @@ export class DriverOrderController {
   @HttpCode(HttpStatus.OK)
   async arrivedRecipient(@CurrentUser() driver: DriverSession) {
     return this.driverOrderService.arrivedRecipient(driver);
+  }
+
+  @Post('completed')
+  @UseGuards(DriverAuthGuard)
+  @ApiOperation({ summary: 'Delivery Order' })
+  @HttpCode(HttpStatus.OK)
+  async deliveryCompleted(
+    @Body() data: OrderCompletedInput,
+    @CurrentUser() driver: DriverSession,
+  ) {
+    console.log('data', data);
+    return this.driverOrderService.deliveryCompleted(driver, data);
   }
 }

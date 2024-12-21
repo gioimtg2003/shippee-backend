@@ -6,7 +6,9 @@ import { LessThanOrEqual } from 'typeorm';
 import { PickOrderCommand } from './command';
 import { ArrivedPickupOrderCommand } from './command/arrived-pickup-order.command';
 import { ArrivedRecipientCommand } from './command/arrived-recipient.command';
+import { DeliveryCompletedCommand } from './command/delivery-completed.command';
 import { PickedOrderCommand } from './command/picked.order.command';
+import { OrderCompletedInput } from './dto/order-completed.input';
 
 @Injectable()
 export class DriverOrderService {
@@ -18,6 +20,7 @@ export class DriverOrderService {
     private readonly arrivedPickupOrderCommand: ArrivedPickupOrderCommand,
     private readonly pickedOrderCommand: PickedOrderCommand,
     private readonly arrivedRecipientCommand: ArrivedRecipientCommand,
+    private readonly deliveryCompletedCommand: DeliveryCompletedCommand,
   ) {}
 
   async getOrderPending(driver: DriverSession) {
@@ -86,6 +89,19 @@ export class DriverOrderService {
     await this.arrivedRecipientCommand.execute({
       idDriver: driver.id,
       idOrder: driver.idOrder,
+    });
+
+    return true;
+  }
+
+  async deliveryCompleted(driver: DriverSession, input: OrderCompletedInput) {
+    const { imgDelivered } = input;
+
+    this.logger.log(`Delivery completed for driver ${driver.id}`);
+    await this.deliveryCompletedCommand.execute({
+      idDriver: driver.id,
+      idOrder: driver.idOrder,
+      imgDelivered,
     });
 
     return true;

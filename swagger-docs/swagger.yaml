@@ -706,6 +706,21 @@ paths:
           description: ''
       summary: Arrived at destination
       tags: *ref_6
+  /api/driver-order/completed:
+    post:
+      operationId: DriverOrderController_deliveryCompleted
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCompletedInput'
+      responses:
+        '200':
+          description: ''
+      summary: Delivery Order
+      tags: *ref_6
   /api/user-auth/login:
     post:
       operationId: UserAuthController_login
@@ -1068,6 +1083,9 @@ components:
       required:
         - password
         - phone
+    OrderCompletedInput:
+      type: object
+      properties: {}
     CustomerLoginInput:
       type: object
       properties:

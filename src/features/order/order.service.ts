@@ -106,6 +106,8 @@ export class OrderService {
       [destination.lat, destination.lng],
     );
 
+    this.logger.log(`Distance calculated: ${distance.routes[0].distance}`);
+
     const distanceKm = Math.ceil(distance.routes[0].distance / 1000);
 
     const { defaultPrice, exceedDistance, exceedPrice, loadWeight } =

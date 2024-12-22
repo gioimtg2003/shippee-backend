@@ -10,6 +10,8 @@ import { UpdateDriverInput } from '@features/driver/dto/update-driver.input';
 import { DRIVER_EVENTS, DriverCreateEvent } from '@features/driver/events';
 import { ImageService } from '@features/image/image.service';
 import { MailService } from '@features/mail/mail.service';
+import { RedisEvents } from '@features/redis/events';
+import { UpdateCacheValueEvent } from '@features/redis/events/update-value.event';
 import { TransportTypeService } from '@features/transport-type/transport-type.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
@@ -114,6 +116,7 @@ export class DriverManageService {
 
   async updateDriver(data: UpdateDriverInput) {
     const { id, transportTypeId, ...rest } = data;
+    const cache = {};
 
     if (transportTypeId) {
       const transportType =
@@ -122,11 +125,28 @@ export class DriverManageService {
         throw new BadRequestException('Transport type not found');
       }
 
+      Object.assign(cache, {
+        transportType: transportType.code,
+        loadWeight: transportType.loadWeight,
+      });
       Object.assign(rest, { transportType });
     }
 
     const updated = await this.driverService.update(id, rest);
+
     if (updated) {
+      Object.assign(cache, {
+        name: updated.name,
+        phone: updated.phone,
+        email: updated.email,
+      });
+
+      this.eventEmitter.emit(
+        RedisEvents.UPDATE_VALUE,
+        new UpdateCacheValueEvent(`driver:${id}`, {
+          ...cache,
+        }),
+      );
       return true;
     }
   }

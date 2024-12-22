@@ -65,23 +65,24 @@ export class TransportTypeService {
   }
 
   getPriceInfo(id: number) {
-    return this.findByField({
-      where: { id: id },
-      relations: ['priceInfo', 'exceedSegmentPrices'],
-      select: {
-        id: true,
-        priceInfo: {
-          id: true,
-          priceValue: true,
-          priceType: true,
-        },
-        exceedSegmentPrices: {
-          endExtraDistanceKm: true,
-          priceExtra: true,
-          startExtraDistanceKm: true,
-        },
-        loadWeight: true,
-      },
-    });
+    return this.transportType
+      .createQueryBuilder('transport_types')
+      .leftJoinAndSelect(
+        'transport_types.exceedSegmentPrices',
+        'exceed_segment_price',
+      )
+      .leftJoinAndSelect('transport_types.priceInfo', 'price_info')
+      .where('transport_types.id = :id', { id })
+      .select([
+        'transport_types.id',
+        'transport_types.loadWeight',
+        'price_info.id',
+        'price_info.priceValue',
+        'price_info.priceType',
+        'exceed_segment_price.endExtraDistanceKm',
+        'exceed_segment_price.priceExtra',
+        'exceed_segment_price.startExtraDistanceKm',
+      ])
+      .getOne();
   }
 }

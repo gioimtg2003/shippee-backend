@@ -316,7 +316,7 @@ export class OrderService {
         ...where,
       },
       order: {
-        createdAt: 'ASC',
+        createdAt: 'DESC',
       },
       select: {
         ...select,

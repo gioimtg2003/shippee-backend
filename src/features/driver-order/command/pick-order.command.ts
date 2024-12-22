@@ -142,7 +142,12 @@ export class PickOrderCommand implements CommandDriverOrder {
     } catch (error) {
       this.logger.error(`Error when pick order: ${error.message}`);
       await queryRunner.rollbackTransaction();
-      throw new BadGatewayException('Lỗi khi nhận đơn hàng');
+
+      if (error.message.endsWith('tiền')) {
+        throw new BadRequestException('Tài khoản không đủ tiền');
+      } else {
+        throw new BadGatewayException('Lỗi khi nhận đơn hàng');
+      }
     } finally {
       await queryRunner.release();
     }

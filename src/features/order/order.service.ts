@@ -270,7 +270,6 @@ export class OrderService {
     }>(
       {
         price: transport.priceInfo.priceValue,
-        distance: distanceTotal - exceedDistance,
       },
       {
         priceType: transport.priceInfo.priceType,

@@ -15,7 +15,12 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { calculatePriceInfo, formatDateToUTCString, sample } from '@utils';
 import { Queue } from 'bullmq';
-import { FindOptionsSelect, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOptionsSelect,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { CreateOrderInput } from './dto';
 import { OrderEntity } from './entities/order.entity';
 import { DefaultPriceStrategy } from './strategies/default-price.strategy';
@@ -322,6 +327,10 @@ export class OrderService {
         ...select,
       },
     });
+  }
+
+  count(options?: FindManyOptions<OrderEntity>) {
+    return this.repo.count(options);
   }
 
   async createBulk() {

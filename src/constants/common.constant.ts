@@ -19,3 +19,21 @@ export enum JWT_TYPE_ENUM {
   REFRESH = 'REFRESH',
   VERIFY = 'VERIFY',
 }
+
+export const CACHE_TIME = {
+  ONE_MINUTE: 60,
+  ONE_HOUR: 60 * 60,
+  TWO_HOUR: 60 * 60 * 2,
+  THREE_HOUR: 60 * 60 * 3,
+  FOUR_HOUR: 60 * 60 * 4,
+  FIVE_HOUR: 60 * 60 * 5,
+  SIX_HOUR: 60 * 60 * 6,
+  SEVEN_HOUR: 60 * 60 * 7,
+  EIGHT_HOUR: 60 * 60 * 8,
+  NINE_HOUR: 60 * 60 * 9,
+  TEN_HOUR: 60 * 60 * 10,
+  ELEVEN_HOUR: 60 * 60 * 11,
+  TWELVE_HOUR: 60 * 60 * 12,
+  ONE_DAY: 60 * 60 * 24,
+  ONE_WEEK: 60 * 60 * 24 * 7,
+};

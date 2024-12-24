@@ -13,3 +13,8 @@ export function getEndOfDay(dateStr: string) {
 export const formatDateToUTCString = (date: string): string => {
   return dayjs(date).utc().format('YYYY-MM-DD HH:mm:ssZ');
 };
+
+export const getStartAndEndOfMonth = (date: dayjs.Dayjs) => ({
+  start: date.startOf('month').toDate(),
+  end: date.endOf('month').toDate(),
+});

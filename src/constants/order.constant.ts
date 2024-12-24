@@ -28,6 +28,7 @@ export enum ORDER_ASSIGNMENT_STATUS_ENUM {
 export const MAX_DISTANCE = 3000; // 3 km
 export const IS_PENDING_ORDER_KEY = 'is_pending_order';
 export const EXPIRE_CACHE_PENDING_ORDER = 60 * 60 * 24; // 1 day
+export const KEY_COUNT_DELIVERY = 'count_delivery';
 
 export const OrderDress = [
   {

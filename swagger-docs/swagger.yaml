@@ -788,6 +788,16 @@ paths:
         '200':
           description: ''
       tags: *ref_8
+  /api/analytics/order:
+    get:
+      operationId: AnalyticsController_getOrderAnalytics
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      summary: Get analytics
+      tags:
+        - Analytics
 info:
   title: Shipppee system API
   description: The Shipppee system API description

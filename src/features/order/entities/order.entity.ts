@@ -6,12 +6,12 @@ import {
   ORDER_PAYER_ENUM,
   ORDER_STATUS_ENUM,
 } from '@constants';
+import { CustomerEntity } from '@features/customer/customer.entity';
 import { DriverEntity } from '@features/driver/entities';
 import { OrderStatusEntity } from '@features/order-status/order-status.entity';
 import { OrderAssignmentEntity } from '@features/order/entities/order-assignment.entity';
 import { SpecialRequireItemEntity } from '@features/special-require/special-require-item.entity';
 import { TransportTypeEntity } from '@features/transport-type/transport-type.entity';
-import { CustomerEntity } from '@features/user/customer.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
 

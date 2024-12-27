@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
@@ -7,11 +14,14 @@ import {
 } from '@nestjs/swagger';
 
 import { UserSession } from '@common/dto';
+import { DecryptFields } from '@decorators';
 import { CustomerAuthService } from './customer-auth.service';
 import { CustomerLoginInput } from './dto/customer-login.input';
+import { CustomerRegisterInput } from './dto/customer-register.input';
+import { CustomerDecryptGuard } from './guards';
 
-@ApiTags('user-auth')
-@Controller('user-auth')
+@ApiTags('Customer Authenticate')
+@Controller('customer-auth')
 export class UserAuthController {
   constructor(private readonly cusAuthService: CustomerAuthService) {}
 
@@ -46,8 +56,10 @@ export class UserAuthController {
     description: 'Successful refresh token',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(CustomerDecryptGuard)
+  @DecryptFields<CustomerRegisterInput>('email', 'password')
   @HttpCode(HttpStatus.OK)
-  async register() {
-    return { message: 'Refresh token' };
+  async register(@Body() registerDto: CustomerRegisterInput) {
+    return registerDto;
   }
 }

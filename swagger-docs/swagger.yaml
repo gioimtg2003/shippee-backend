@@ -721,7 +721,7 @@ paths:
           description: ''
       summary: Delivery Order
       tags: *ref_6
-  /api/user-auth/login:
+  /api/customer-auth/login:
     post:
       operationId: UserAuthController_login
       parameters: []
@@ -742,8 +742,8 @@ paths:
           description: Unauthorized
       summary: Customer login
       tags: &ref_7
-        - user-auth
-  /api/user-auth/refresh-token:
+        - Customer Authenticate
+  /api/customer-auth/refresh-token:
     post:
       operationId: UserAuthController_refreshToken
       parameters: []
@@ -754,10 +754,16 @@ paths:
           description: Unauthorized
       summary: Refresh token
       tags: *ref_7
-  /api/user-auth/register:
+  /api/customer-auth/register:
     post:
       operationId: UserAuthController_register
       parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRegisterInput'
       responses:
         '200':
           description: Successful refresh token
@@ -1149,6 +1155,16 @@ components:
         - phone
         - accessToken
         - refreshToken
+    CustomerRegisterInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
     WebhookDto:
       type: object
       properties: {}

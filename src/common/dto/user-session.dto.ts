@@ -1,6 +1,6 @@
 import { IDriverSessionProps, IUserSessionProps } from '@common/interfaces';
 import { DRIVER_STATUS_ENUM, Role, TRANSPORT_TYPE_ENUM } from '@constants';
-import { CustomerEntity } from '@features/user/customer.entity';
+import { CustomerEntity } from '@features/customer/customer.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { FindOptionsSelect } from 'typeorm';
 

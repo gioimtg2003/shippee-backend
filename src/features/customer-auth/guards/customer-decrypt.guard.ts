@@ -9,12 +9,13 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { omit } from 'lodash';
+import { stringify } from 'qs';
 import { Observable } from 'rxjs';
 import { DECRYPT_FIELDS_KEY } from 'src/decorators/decrypt-fields.decorator';
 
 @Injectable()
-export class UserDecryptGuard implements CanActivate {
-  private readonly logger = new Logger(UserDecryptGuard.name);
+export class CustomerDecryptGuard implements CanActivate {
+  private readonly logger = new Logger(CustomerDecryptGuard.name);
   private readonly MAX_REQUEST_TIME = 30 * 1000;
 
   constructor(
@@ -50,7 +51,6 @@ export class UserDecryptGuard implements CanActivate {
     if (!decryptedData) {
       throw new BadRequestException('Invalid payload request');
     }
-
     let data: Record<string, any>;
     try {
       data = JSON.parse(decryptedData);
@@ -81,8 +81,13 @@ export class UserDecryptGuard implements CanActivate {
     }
 
     const hashedData = omit(data, ['signature']);
+    this.logger.debug('Hashed data', hashedData);
+    this.logger.debug('Signature', signature);
     const isSignatureValid = this.cryptoService.compareHash256(
-      JSON.stringify(hashedData),
+      stringify(hashedData, {
+        arrayFormat: 'repeat',
+        sort: (a, b) => a.localeCompare(b),
+      }),
       signature,
     );
     if (!isSignatureValid) {

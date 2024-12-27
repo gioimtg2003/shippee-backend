@@ -1,14 +1,14 @@
 import { CryptoModule } from '@features/crypto';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CustomerController } from './customer.controller';
 import { CustomerEntity } from './customer.entity';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { CustomerService } from './customer.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CustomerEntity]), CryptoModule],
-  controllers: [UserController],
-  providers: [UserService],
-  exports: [UserService],
+  controllers: [CustomerController],
+  providers: [CustomerService],
+  exports: [CustomerService],
 })
-export class UserModule {}
+export class CustomerModule {}

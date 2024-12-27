@@ -362,7 +362,7 @@ export class OrderService {
       destination,
       pickup,
       idCustomer: 1,
-      idTransportType: 2,
+      idTransportType: 1,
       isDeliveryCharge: false,
       recipientName: order.recipientName,
       recipientPhone: '0367093723',

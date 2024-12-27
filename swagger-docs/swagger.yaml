@@ -744,8 +744,19 @@ paths:
       tags: &ref_7
         - user-auth
   /api/user-auth/refresh-token:
-    get:
+    post:
       operationId: UserAuthController_refreshToken
+      parameters: []
+      responses:
+        '200':
+          description: Successful refresh token
+        '401':
+          description: Unauthorized
+      summary: Refresh token
+      tags: *ref_7
+  /api/user-auth/register:
+    post:
+      operationId: UserAuthController_register
       parameters: []
       responses:
         '200':
@@ -1266,11 +1277,45 @@ components:
           type: string
           example: '2021-09-01T14:00:00.000Z'
           description: timestamp
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        province:
+          type: string
+        district:
+          type: string
+        ward:
+          type: string
+        address:
+          type: string
+        emailVerified:
+          type: boolean
+        otp:
+          type: string
+        timeOtp:
+          format: date-time
+          type: string
       required:
         - id
         - createdAt
         - updatedAt
         - deletedAt
+        - name
+        - email
+        - password
+        - phone
+        - province
+        - district
+        - ward
+        - address
+        - emailVerified
+        - otp
+        - timeOtp
     LocationEntity:
       type: object
       properties: {}

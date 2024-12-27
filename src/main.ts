@@ -5,6 +5,7 @@ import {
 } from '@common/dto';
 import { TransformationInterceptor } from '@common/interceptor';
 import { buildConfig } from '@config';
+import { CustomerEntity } from '@features/customer/customer.entity';
 import { OrderEntity } from '@features/order/entities/order.entity';
 import { TransportTypeDTO } from '@features/transport-type/dto';
 import { Logger, ValidationPipe } from '@nestjs/common';
@@ -38,6 +39,7 @@ async function bootstrap() {
         TransportTypeDTO,
         DriverLoginNotVerifyResponseDto,
         OrderEntity,
+        CustomerEntity,
       ],
     });
     const yamlString = yaml.dump(document);

@@ -5,6 +5,8 @@ import { AnalyticsModule } from '@features/analytics';
 import { AuthAdminModule } from '@features/auth-admin';
 import { CronJobModule } from '@features/cron-job';
 import { CryptoModule } from '@features/crypto';
+import { CustomerModule } from '@features/customer';
+import { CustomerAuthModule } from '@features/customer-auth';
 import { DriverModule } from '@features/driver';
 import { DriverAuthModule } from '@features/driver-auth';
 import { DriverManageModule } from '@features/driver-manage';
@@ -20,8 +22,6 @@ import { PriceCalculateModule } from '@features/price-calculate';
 import { RedisModule } from '@features/redis';
 import { SpecialRequireModule } from '@features/special-require';
 import { TransportTypeModule } from '@features/transport-type';
-import { UserModule } from '@features/user';
-import { UserAuthModule } from '@features/user-auth';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { BullModule } from '@nestjs/bullmq';
@@ -100,9 +100,9 @@ import { BullConfigService } from './bull/bull-config.service';
     OrderModule,
     DriverWalletModule,
     DriverModule,
-    UserModule,
+    CustomerModule,
     DriverOrderModule,
-    UserAuthModule,
+    CustomerAuthModule,
     PaymentModule,
     BankModule,
     AnalyticsModule,

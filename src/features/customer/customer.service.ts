@@ -11,8 +11,8 @@ import { CustomerEntity } from './customer.entity';
 import { CreateCustomerInput } from './dto/create-customer.dto';
 
 @Injectable()
-export class UserService {
-  private readonly logger = new Logger(UserService.name);
+export class CustomerService {
+  private readonly logger = new Logger(CustomerService.name);
   constructor(
     @InjectRepository(CustomerEntity)
     private readonly cusRepo: Repository<CustomerEntity>,

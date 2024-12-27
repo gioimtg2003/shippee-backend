@@ -1,17 +1,17 @@
 import { SelectedUserSessionFields, UserSession } from '@common/dto';
 import { EXPIRES_ACCESS_TOKEN, EXPIRES_REFRESH_TOKEN, Role } from '@constants';
 import { CryptoService } from '@features/crypto';
-import { UserService } from '@features/user/user.service';
+import { CustomerService } from '@features/customer/customer.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CustomerLoginInput } from './dto/customer-login.input';
 
 @Injectable()
-export class UserAuthService {
-  private readonly logger = new Logger(UserAuthService.name);
+export class CustomerAuthService {
+  private readonly logger = new Logger(CustomerAuthService.name);
 
   constructor(
-    private readonly finderService: UserService,
+    private readonly cusService: CustomerService,
     private readonly cryptoService: CryptoService,
     private readonly jwtService: JwtService,
   ) {}
@@ -19,7 +19,7 @@ export class UserAuthService {
   async login(data: CustomerLoginInput) {
     this.logger.log(`Email Login: ${data.email}`);
 
-    const customer = await this.finderService.findByEmail(
+    const customer = await this.cusService.findByEmail(
       data.email,
       SelectedUserSessionFields,
     );

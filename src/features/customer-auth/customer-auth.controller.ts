@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
@@ -14,13 +7,13 @@ import {
 } from '@nestjs/swagger';
 
 import { UserSession } from '@common/dto';
+import { CustomerAuthService } from './customer-auth.service';
 import { CustomerLoginInput } from './dto/customer-login.input';
-import { UserAuthService } from './user-auth.service';
 
 @ApiTags('user-auth')
 @Controller('user-auth')
 export class UserAuthController {
-  constructor(private readonly userAuthService: UserAuthService) {}
+  constructor(private readonly cusAuthService: CustomerAuthService) {}
 
   @Post('/login')
   @ApiOperation({ summary: 'Customer login' })
@@ -31,10 +24,10 @@ export class UserAuthController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: CustomerLoginInput) {
-    return this.userAuthService.login(loginDto);
+    return this.cusAuthService.login(loginDto);
   }
 
-  @Get('/refresh-token')
+  @Post('/refresh-token')
   @ApiOperation({ summary: 'Refresh token' })
   @ApiResponse({
     status: 200,
@@ -43,6 +36,18 @@ export class UserAuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @HttpCode(HttpStatus.OK)
   async refreshToken() {
+    return { message: 'Refresh token' };
+  }
+
+  @Post('/register')
+  @ApiOperation({ summary: 'Refresh token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful refresh token',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @HttpCode(HttpStatus.OK)
+  async register() {
     return { message: 'Refresh token' };
   }
 }

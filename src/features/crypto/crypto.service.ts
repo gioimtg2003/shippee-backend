@@ -77,4 +77,14 @@ export class CryptoService {
   md5(text: string): string {
     return crypto.createHash('md5').update(text).digest('hex');
   }
+
+  decryptRsa(text: string, privateKey?: string): string {
+    const buffer = Buffer.from(text, 'base64');
+    const decrypted = crypto.privateDecrypt(
+      privateKey ?? process.env.SERVER_PRIVATE_KEY,
+      buffer,
+    );
+
+    return decrypted.toString('utf8');
+  }
 }

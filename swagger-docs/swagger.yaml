@@ -766,7 +766,7 @@ paths:
               $ref: '#/components/schemas/CustomerRegisterInput'
       responses:
         '200':
-          description: Successful refresh token
+          description: Successful register
         '401':
           description: Unauthorized
       summary: Refresh token

@@ -14,7 +14,9 @@ import {
 } from '@nestjs/swagger';
 
 import { UserSession } from '@common/dto';
+import { REQUEST_LIMIT_RATE } from '@constants';
 import { DecryptFields } from '@decorators';
+import { Throttle } from '@nestjs/throttler';
 import { CustomerAuthService } from './customer-auth.service';
 import { CustomerLoginInput } from './dto/customer-login.input';
 import { CustomerRegisterInput } from './dto/customer-register.input';
@@ -49,17 +51,20 @@ export class UserAuthController {
     return { message: 'Refresh token' };
   }
 
+  @Throttle({
+    default: REQUEST_LIMIT_RATE.register,
+  })
   @Post('/register')
   @ApiOperation({ summary: 'Refresh token' })
   @ApiResponse({
     status: 200,
-    description: 'Successful refresh token',
+    description: 'Successful register',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(CustomerDecryptGuard)
   @DecryptFields<CustomerRegisterInput>('email', 'password')
   @HttpCode(HttpStatus.OK)
   async register(@Body() registerDto: CustomerRegisterInput) {
-    return registerDto;
+    return this.cusAuthService.register(registerDto);
   }
 }

@@ -44,4 +44,12 @@ export class CreateCustomerInput {
   @MaxLength(LIMIT_NAME)
   @ApiProperty()
   address: string;
+
+  @IsOptional()
+  @ApiProperty()
+  timeOtp: Date;
+
+  @IsOptional()
+  @ApiProperty()
+  otp: string;
 }

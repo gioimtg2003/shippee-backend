@@ -30,7 +30,7 @@ export class CustomerService {
     relations: string[] = [],
     selectField: FindOptionsSelect<CustomerEntity> = {},
   ) {
-    this.logger.debug(`Finding finder by ${where}}`);
+    this.logger.debug(`Finding customer by ${JSON.stringify(where)}`);
 
     const found = await this.cusRepo.findOne({
       where,
@@ -38,11 +38,6 @@ export class CustomerService {
       //slected all fields
       select: selectField,
     });
-
-    if (!found?.id) {
-      this.logger.error('Customer not found');
-      throw new NotFoundException('Finder not found');
-    }
 
     return found;
   }
@@ -69,9 +64,8 @@ export class CustomerService {
     return this.findByField({ email }, [], selectField);
   }
 
-  async create(data: CreateCustomerInput) {
-    const isExistedEmail = this.findByEmail(data.email, { id: true });
-
+  async create(data: Partial<CreateCustomerInput>) {
+    const isExistedEmail = await this.findByEmail(data.email, { id: true });
     if (isExistedEmail) {
       this.logger.error('Email already existed');
       throw new BadRequestException('Email existed');
@@ -86,9 +80,24 @@ export class CustomerService {
       throw new BadRequestException('Cannot create customer');
     }
 
-    // emit event
-
     return saved;
+  }
+
+  async update(id: number, data: Partial<CreateCustomerInput>) {
+    const found = await this.findById(id);
+    if (!found) {
+      throw new NotFoundException('Customer not found');
+    }
+    Object.assign(found, data);
+
+    const updated = await this.cusRepo.save(found);
+    if (!updated.id) {
+      this.logger.error('Cannot update customer');
+      throw new BadRequestException('Cannot update customer');
+    }
+    this.logger.debug(`Updated customer ${id}`);
+
+    return updated;
   }
 
   public async updatePassword(cusId: number, newPassword: string) {

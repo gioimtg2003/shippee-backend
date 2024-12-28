@@ -6,7 +6,7 @@ import { Column, Entity, OneToMany, Relation } from 'typeorm';
 
 @Entity('customers')
 export class CustomerEntity extends CoreEntity {
-  @Column({ type: 'varchar', length: LIMIT_NAME })
+  @Column({ type: 'varchar', length: LIMIT_NAME, nullable: true })
   @ApiProperty()
   name: string;
 
@@ -18,9 +18,14 @@ export class CustomerEntity extends CoreEntity {
   @ApiProperty()
   password: string;
 
-  @Column({ type: 'char', length: LIMIT_PHONE, unique: true, nullable: true })
+  @Column({
+    type: 'varchar',
+    length: LIMIT_PHONE,
+    unique: true,
+    nullable: true,
+  })
   @ApiProperty()
-  phone: string;
+  phone?: string;
 
   @Column({
     nullable: true,

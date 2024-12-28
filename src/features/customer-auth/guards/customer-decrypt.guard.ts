@@ -1,3 +1,4 @@
+import { DECRYPT_FIELDS_KEY } from '@decorators';
 import { CryptoService } from '@features/crypto';
 import {
   BadRequestException,
@@ -11,7 +12,6 @@ import { Request } from 'express';
 import { omit } from 'lodash';
 import { stringify } from 'qs';
 import { Observable } from 'rxjs';
-import { DECRYPT_FIELDS_KEY } from 'src/decorators/decrypt-fields.decorator';
 
 @Injectable()
 export class CustomerDecryptGuard implements CanActivate {
@@ -81,8 +81,6 @@ export class CustomerDecryptGuard implements CanActivate {
     }
 
     const hashedData = omit(data, ['signature']);
-    this.logger.debug('Hashed data', hashedData);
-    this.logger.debug('Signature', signature);
     const isSignatureValid = this.cryptoService.compareHash256(
       stringify(hashedData, {
         arrayFormat: 'repeat',

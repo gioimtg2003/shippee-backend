@@ -22,6 +22,7 @@ import { CustomerLoginInput } from './dto/customer-login.input';
 import {
   CustomerRegisterInput,
   CustomerVerifyEmailInput,
+  RefreshOtpInput,
 } from './dto/customer-register.input';
 import { CustomerDecryptGuard } from './guards';
 
@@ -86,5 +87,22 @@ export class UserAuthController {
   @HttpCode(HttpStatus.OK)
   async verifyEmail(@Body() verifyDto: CustomerVerifyEmailInput) {
     return this.cusAuthService.verifyEmail(verifyDto.email, verifyDto.otp);
+  }
+
+  @Throttle({
+    default: REQUEST_LIMIT_RATE.register,
+  })
+  @Post('/refresh-verify-email')
+  @ApiOperation({ summary: 'Refresh Verify Email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful Refresh Verify Email',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(CustomerDecryptGuard)
+  @DecryptFields<RefreshOtpInput>('email')
+  @HttpCode(HttpStatus.OK)
+  async refreshVerifyEmail(@Body() verifyDto: CustomerVerifyEmailInput) {
+    return this.cusAuthService.refreshVerifyEmail(verifyDto.email);
   }
 }

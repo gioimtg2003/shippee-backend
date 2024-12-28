@@ -788,6 +788,23 @@ paths:
           description: Unauthorized
       summary: Verify Email
       tags: *ref_7
+  /api/customer-auth/refresh-verify-email:
+    post:
+      operationId: UserAuthController_refreshVerifyEmail
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerVerifyEmailInput'
+      responses:
+        '200':
+          description: Successful Refresh Verify Email
+        '401':
+          description: Unauthorized
+      summary: Refresh Verify Email
+      tags: *ref_7
   /api/payment/webhook:
     post:
       operationId: PaymentController_handleWebhook

@@ -10,3 +10,5 @@ export class CustomerVerifyEmailInput extends PickType(CreateCustomerInput, [
   'email',
   'otp',
 ]) {}
+
+export class RefreshOtpInput extends PickType(CreateCustomerInput, ['email']) {}

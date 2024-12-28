@@ -100,7 +100,7 @@ export class CustomerAuthService {
       throw new BadRequestException('Invalid OTP');
     }
 
-    if (customer.timeOtp < new Date()) {
+    if (customer.timeOtp.getTime() + 10 * 60 * 1000 < new Date().getTime()) {
       throw new BadRequestException('OTP expired');
     }
 
@@ -109,6 +109,27 @@ export class CustomerAuthService {
     customer.timeOtp = null;
 
     await this.cusService.update(customer.id, customer);
+
+    return true;
+  }
+
+  async refreshVerifyEmail(email: string) {
+    const customer = await this.cusService.findByEmail(email);
+
+    if (!customer) {
+      throw new BadRequestException('Email not found');
+    }
+
+    const otp = randOtp();
+    customer.otp = otp;
+    customer.timeOtp = new Date();
+
+    await this.cusService.update(customer.id, customer);
+
+    this.eventEmitter.emit(
+      CUSTOMER_AUTH_EVENTS.VERIFY_EMAIL,
+      new VerifyEmailCustomerEvent(customer.email, otp),
+    );
 
     return true;
   }

@@ -4,7 +4,7 @@ import { CustomerEntity } from '@features/customer/customer.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { FindOptionsSelect } from 'typeorm';
 
-export class UserSession {
+export class CustomerSession {
   @ApiProperty()
   id: number;
 

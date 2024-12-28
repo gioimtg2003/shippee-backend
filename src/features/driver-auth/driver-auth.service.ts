@@ -1,4 +1,4 @@
-import { DriverSession, UserSession } from '@common/dto';
+import { CustomerSession, DriverSession } from '@common/dto';
 import { RegisterJwtService } from '@common/services';
 import { Role, TRANSPORT_TYPE_ENUM } from '@constants';
 import { CryptoService } from '@features/crypto';
@@ -120,7 +120,7 @@ export class DriverAuthService extends RegisterJwtService {
    * @returns {Promise<string>} A promise that resolves to the new JWT token.
    * @throws {BadRequestException} If the driver does not exist.
    */
-  async refreshToken(user: UserSession) {
+  async refreshToken(user: DriverSession) {
     const driver = await this.driverService.findById(user.id);
 
     if (!driver) {
@@ -147,7 +147,7 @@ export class DriverAuthService extends RegisterJwtService {
    * @returns {Promise<{ jwtVerify: string }>} - An object containing the generated JWT verification token.
    * @private
    */
-  private async generateJwtVerify(data: UserSession) {
+  private async generateJwtVerify(data: CustomerSession) {
     const jwtVerify = await this.registerJwtVerify({
       id: data.id,
       phone: data.phone,

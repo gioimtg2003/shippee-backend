@@ -737,7 +737,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserSession'
+                $ref: '#/components/schemas/CustomerSession'
         '401':
           description: Unauthorized
       summary: Customer login
@@ -1159,7 +1159,7 @@ components:
       required:
         - email
         - password
-    UserSession:
+    CustomerSession:
       type: object
       properties:
         id:

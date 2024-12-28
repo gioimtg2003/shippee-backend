@@ -1,5 +1,6 @@
-import { SelectedUserSessionFields, UserSession } from '@common/dto';
-import { EXPIRES_ACCESS_TOKEN, EXPIRES_REFRESH_TOKEN, Role } from '@constants';
+import { CustomerSession, SelectedUserSessionFields } from '@common/dto';
+import { RegisterJwtService } from '@common/services';
+import { Role } from '@constants';
 import { CryptoService } from '@features/crypto';
 import { CustomerService } from '@features/customer/customer.service';
 import { MailService } from '@features/mail/mail.service';
@@ -12,16 +13,18 @@ import { CustomerRegisterInput } from './dto/customer-register.input';
 import { CUSTOMER_AUTH_EVENTS, VerifyEmailCustomerEvent } from './events';
 
 @Injectable()
-export class CustomerAuthService {
+export class CustomerAuthService extends RegisterJwtService {
   private readonly logger = new Logger(CustomerAuthService.name);
 
   constructor(
     private readonly cusService: CustomerService,
     private readonly cryptoService: CryptoService,
-    private readonly jwtService: JwtService,
+    protected readonly jwtService: JwtService,
     private readonly mailService: MailService,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    super(jwtService);
+  }
 
   async login(data: CustomerLoginInput) {
     this.logger.log(`Email Login: ${data.email}`);
@@ -44,30 +47,14 @@ export class CustomerAuthService {
       throw new BadRequestException('Invalid password');
     }
 
-    const userSession: UserSession = {
+    const userSession: CustomerSession = {
       email: customer.email,
       id: customer.id,
       name: customer.name,
       role: Role.CUSTOMER,
     };
 
-    const accessToken = this.jwtService.sign(userSession, {
-      secret: process.env.JWT_SECRET,
-      expiresIn: EXPIRES_ACCESS_TOKEN,
-    });
-
-    const refreshToken = this.jwtService.sign(
-      {
-        ...userSession,
-        aT: true,
-      },
-      {
-        secret: process.env.JWT_SECRET,
-        expiresIn: EXPIRES_REFRESH_TOKEN,
-      },
-    );
-
-    return { ...userSession, accessToken, refreshToken };
+    return this.registerJwt<CustomerSession>(userSession);
   }
 
   async register(data: CustomerRegisterInput) {

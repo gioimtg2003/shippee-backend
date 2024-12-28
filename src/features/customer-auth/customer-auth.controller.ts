@@ -13,7 +13,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
-import { UserSession } from '@common/dto';
+import { CustomerSession } from '@common/dto';
 import { REQUEST_LIMIT_RATE } from '@constants';
 import { DecryptFields } from '@decorators';
 import { Throttle } from '@nestjs/throttler';
@@ -35,7 +35,7 @@ export class UserAuthController {
   @ApiOperation({ summary: 'Customer login' })
   @ApiResponse({
     status: 200,
-    type: UserSession,
+    type: CustomerSession,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @HttpCode(HttpStatus.OK)

@@ -769,7 +769,24 @@ paths:
           description: Successful register
         '401':
           description: Unauthorized
-      summary: Refresh token
+      summary: Register Account
+      tags: *ref_7
+  /api/customer-auth/verify-email:
+    post:
+      operationId: UserAuthController_verifyEmail
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerVerifyEmailInput'
+      responses:
+        '200':
+          description: Successful verify email
+        '401':
+          description: Unauthorized
+      summary: Verify Email
       tags: *ref_7
   /api/payment/webhook:
     post:
@@ -1165,6 +1182,16 @@ components:
       required:
         - email
         - password
+    CustomerVerifyEmailInput:
+      type: object
+      properties:
+        email:
+          type: string
+        otp:
+          type: string
+      required:
+        - email
+        - otp
     WebhookDto:
       type: object
       properties: {}

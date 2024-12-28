@@ -19,7 +19,10 @@ import { DecryptFields } from '@decorators';
 import { Throttle } from '@nestjs/throttler';
 import { CustomerAuthService } from './customer-auth.service';
 import { CustomerLoginInput } from './dto/customer-login.input';
-import { CustomerRegisterInput } from './dto/customer-register.input';
+import {
+  CustomerRegisterInput,
+  CustomerVerifyEmailInput,
+} from './dto/customer-register.input';
 import { CustomerDecryptGuard } from './guards';
 
 @ApiTags('Customer Authenticate')
@@ -55,7 +58,7 @@ export class UserAuthController {
     default: REQUEST_LIMIT_RATE.register,
   })
   @Post('/register')
-  @ApiOperation({ summary: 'Refresh token' })
+  @ApiOperation({ summary: 'Register Account' })
   @ApiResponse({
     status: 200,
     description: 'Successful register',
@@ -66,5 +69,22 @@ export class UserAuthController {
   @HttpCode(HttpStatus.OK)
   async register(@Body() registerDto: CustomerRegisterInput) {
     return this.cusAuthService.register(registerDto);
+  }
+
+  @Throttle({
+    default: REQUEST_LIMIT_RATE.register,
+  })
+  @Post('/verify-email')
+  @ApiOperation({ summary: 'Verify Email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful verify email',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(CustomerDecryptGuard)
+  @DecryptFields<CustomerVerifyEmailInput>('email', 'otp')
+  @HttpCode(HttpStatus.OK)
+  async verifyEmail(@Body() verifyDto: CustomerVerifyEmailInput) {
+    return this.cusAuthService.verifyEmail(verifyDto.email, verifyDto.otp);
   }
 }

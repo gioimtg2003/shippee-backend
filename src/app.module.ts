@@ -2,6 +2,7 @@ import { Environment } from '@config';
 import { REQUEST_LIMIT_RATE } from '@constants';
 import { AdminModule } from '@features/admin';
 import { AnalyticsModule } from '@features/analytics';
+import { AssistantCustomerModule } from '@features/assistants';
 import { AuthAdminModule } from '@features/auth-admin';
 import { CronJobModule } from '@features/cron-job';
 import { CryptoModule } from '@features/crypto';
@@ -106,6 +107,7 @@ import { BullConfigService } from './bull/bull-config.service';
     PaymentModule,
     BankModule,
     AnalyticsModule,
+    AssistantCustomerModule,
   ],
   controllers: [],
   providers: [

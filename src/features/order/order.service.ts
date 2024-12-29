@@ -341,7 +341,7 @@ export class OrderService {
     });
   }
 
-  async findByCustomerDetail(customerId: number, idOrder) {
+  async findByCustomerDetail(customerId: number, idOrder: number) {
     return this.repo.findOne({
       where: {
         customer: { id: customerId },

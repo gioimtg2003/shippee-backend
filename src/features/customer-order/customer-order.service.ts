@@ -8,6 +8,14 @@ export class CustomerOrderService {
   constructor(private readonly orderService: OrderService) {}
 
   async getMyOrders(customerId: number) {
+    this.logger.log(`Finding orders for customer ${customerId}`);
+
     return this.orderService.findByCustomer(customerId);
+  }
+
+  async getOrderDetail(customerId: number, orderId: number) {
+    this.logger.log(`Finding order ${orderId} for customer ${customerId}`);
+
+    return this.orderService.findByCustomerDetail(customerId, orderId);
   }
 }

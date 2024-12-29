@@ -1,4 +1,5 @@
 import {
+  Content,
   GenerateContentRequest,
   GoogleGenerativeAI,
   Part,
@@ -27,29 +28,33 @@ export class GoogleAIService {
   }
 
   async getFunctionCalling(
-    user: string,
-    functionConfig: Tool,
-    historyMessages: string[],
+    prompt: string,
+    options: {
+      functionConfig: Tool;
+      historyMessages: Content[];
+      systemInstruction?: string;
+    },
   ) {
+    const { functionConfig, historyMessages, systemInstruction } = options;
+
     const modelAi = this.googleAI.getGenerativeModel({
       model: 'gemini-1.5-flash',
       tools: [functionConfig],
       generationConfig: {
         maxOutputTokens: 1024,
       },
+      systemInstruction,
     });
 
-    const prompt = ` Bạn là trợ lý của hệ thống giao hàng Shippee. Bạn ở đây để giúp đỡ khách hàng của hệ thống này.
-                  Nếu khách hàng cung cấp thiếu thông tin để thực hiện yêu cầu bạn sẽ phải nhớ rằng luôn luôn hỏi khách hàng có đồng ý hoặc chắc chắn để thực hiện yêu cầu của họ hay không.
-                  Nếu có chắc chắn hoặc đồng ý hãy thực hiện yêu cầu của họ, nếu không hãy thông báo cho họ biết rằng bạn không thể thực hiện yêu cầu của họ hoặc 1 câu trả lời từ chối phù hợp
-                  Khách hàng:${user}
-                  Lịch sử tin nhắn: ${historyMessages.join('\n')}
-    `;
-    const chat = modelAi.startChat();
+    const chat = modelAi.startChat({
+      history: [...historyMessages],
+    });
+
     const result = await chat.sendMessage(prompt);
     console.log(result.response.text());
 
     const call = result.response.functionCalls();
+    console.log(call);
     return call;
   }
 }

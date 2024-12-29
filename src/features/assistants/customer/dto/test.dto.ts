@@ -22,7 +22,38 @@ export class TestFunctionCallingDto {
   @ArrayMaxSize(10)
   @ApiProperty({
     description: 'History of the prompt',
+    example: [{ role: 'user', parts: [{ text: 'test' }] }],
+  })
+  history: HistoryDto[];
+}
+
+class HistoryDto {
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
+  @ApiProperty({
+    description: 'History of the prompt',
+    example: 'test',
+  })
+  role: 'user' | 'model';
+
+  @IsNotEmpty()
+  @IsArray()
+  @ArrayMaxSize(10)
+  @ApiProperty({
+    description: 'History of the prompt',
     example: ['test'],
   })
-  history: string[];
+  parts: PartDto[];
+}
+
+class PartDto {
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
+  @ApiProperty({
+    description: 'History of the prompt',
+    example: 'test',
+  })
+  text: string;
 }

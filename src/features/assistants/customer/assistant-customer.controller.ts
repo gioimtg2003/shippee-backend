@@ -12,6 +12,7 @@ export class AssistantCustomerController {
   @ApiOperation({ summary: 'Test function calling' })
   async testFunctionCalling(@Body() data: TestFunctionCallingDto) {
     return await this.assistantCusService.testFunctionCalling(
+      2,
       data.prompt,
       data.history,
     );

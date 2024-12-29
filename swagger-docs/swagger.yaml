@@ -1257,7 +1257,9 @@ components:
         history:
           description: History of the prompt
           example:
-            - test
+            - role: user
+              parts:
+                - text: test
           type: array
           items:
             type: string

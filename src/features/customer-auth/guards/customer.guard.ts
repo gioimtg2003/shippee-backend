@@ -9,10 +9,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 import { IUserSessionProps } from '@common/interfaces';
-import { JWT, JWT_TYPE_ENUM, Role } from '@constants';
+import { JWT_TYPE_ENUM, Role } from '@constants';
 import { JWT_SECRET_TYPE } from '@decorators';
 import { Reflector } from '@nestjs/core';
-import { extractTokenFromHeader } from '@utils';
+import { extractTokenFromBody, extractTokenFromHeader } from '@utils';
 
 @Injectable()
 export class CustomerGuard implements CanActivate {
@@ -23,13 +23,13 @@ export class CustomerGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
-    const token = extractTokenFromHeader(req);
+    const JWT: { [key in JWT_TYPE_ENUM]: string } = {
+      [JWT_TYPE_ENUM.ACCESS]: process.env.JWT_SECRET,
+      [JWT_TYPE_ENUM.REFRESH]: process.env.JWT_SECRET_REFRESH_TOKEN,
+      [JWT_TYPE_ENUM.VERIFY]: process.env.JWT_SECRET_VERIFY,
+    };
 
-    if (!token) {
-      this.logger.debug('No JWT token found');
-      throw new UnauthorizedException('Token not found!');
-    }
+    const req = context.switchToHttp().getRequest();
 
     try {
       const jwtSecretType =
@@ -38,14 +38,22 @@ export class CustomerGuard implements CanActivate {
           context.getHandler(),
         ) || JWT_TYPE_ENUM.ACCESS;
 
+      let token = '';
+      if (jwtSecretType === JWT_TYPE_ENUM.ACCESS) {
+        token = extractTokenFromHeader(req);
+      } else {
+        token = extractTokenFromBody(req);
+      }
+
+      if (!token) {
+        this.logger.debug('No JWT token found');
+        throw new UnauthorizedException('Token not found!');
+      }
       const payload = await this.jwtService.verify<IUserSessionProps>(token, {
         secret: JWT[jwtSecretType],
       });
-      req.user = payload;
 
-      const customer = payload;
-
-      if (customer.role !== Role.CUSTOMER) {
+      if (payload.role !== Role.CUSTOMER) {
         this.logger.error(
           'Access denied. User does not have the Customer role.',
         );
@@ -53,6 +61,7 @@ export class CustomerGuard implements CanActivate {
           'Access denied. User does not have the Customer role.',
         );
       }
+      req.user = payload;
     } catch {
       throw new UnauthorizedException('Invalid token');
     }

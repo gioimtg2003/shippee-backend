@@ -38,6 +38,8 @@ export class UserAuthController {
     type: CustomerSession,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(CustomerLoginInput)
+  @DecryptFields<CustomerLoginInput>('email', 'password')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: CustomerLoginInput) {
     return this.cusAuthService.login(loginDto);

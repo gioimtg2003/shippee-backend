@@ -603,6 +603,25 @@ paths:
                         $ref: '#/components/schemas/ClientLoginResponseDto'
       summary: Refresh token for driver
       tags: *ref_5
+  /api/user/me:
+    get:
+      operationId: CustomerController_getMe
+      parameters: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseDTO'
+                  - properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/CustomerSession'
+      summary: Get current user
+      tags:
+        - Customer
   /api/driver-order/pending:
     get:
       operationId: DriverOrderController_getOrderPending

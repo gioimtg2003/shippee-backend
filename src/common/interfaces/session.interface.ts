@@ -5,8 +5,6 @@ export interface IUserSessionProps {
   name: string;
   email: string;
   role: Role;
-  accessToken: string;
-  refreshToken: string;
 }
 
 export interface IDriverSessionProps {

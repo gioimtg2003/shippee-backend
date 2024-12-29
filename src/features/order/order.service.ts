@@ -333,6 +333,29 @@ export class OrderService {
     return this.repo.count(options);
   }
 
+  async findByCustomer(customerId: number) {
+    return this.repo.find({
+      where: {
+        customer: { id: customerId },
+      },
+    });
+  }
+
+  async findByCustomerDetail(customerId: number, idOrder) {
+    return this.repo.findOne({
+      where: {
+        customer: { id: customerId },
+        id: idOrder,
+      },
+      relations: ['statusOrderHistory'],
+      order: {
+        statusOrderHistory: {
+          createdAt: 'DESC',
+        },
+      },
+    });
+  }
+
   async createBulk() {
     const pickup = OrderDress[11];
     const destination = sample(OrderDress);

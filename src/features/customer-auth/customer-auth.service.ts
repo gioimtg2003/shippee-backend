@@ -35,7 +35,11 @@ export class CustomerAuthService extends RegisterJwtService {
     );
 
     if (!customer) {
-      throw new BadRequestException('This email is not registered');
+      throw new BadRequestException('Tài khoản không tồn tại');
+    }
+
+    if (!customer.emailVerified) {
+      throw new BadRequestException('Email chưa được xác thực');
     }
 
     const isPasswordValid = await this.cryptoService.compareHash(
@@ -44,7 +48,7 @@ export class CustomerAuthService extends RegisterJwtService {
     );
 
     if (!isPasswordValid) {
-      throw new BadRequestException('Invalid password');
+      throw new BadRequestException('Mật khẩu không đúng');
     }
 
     const userSession: CustomerSession = {
@@ -80,15 +84,15 @@ export class CustomerAuthService extends RegisterJwtService {
     const customer = await this.cusService.findByEmail(email);
 
     if (!customer) {
-      throw new BadRequestException('Email not found');
+      throw new BadRequestException('Không tìm thấy email');
     }
 
     if (customer.otp !== otp) {
-      throw new BadRequestException('Invalid OTP');
+      throw new BadRequestException('OTP không chính xác');
     }
 
     if (customer.timeOtp.getTime() + 10 * 60 * 1000 < new Date().getTime()) {
-      throw new BadRequestException('OTP expired');
+      throw new BadRequestException('OTP đã hết hạn');
     }
 
     customer.emailVerified = true;
@@ -104,7 +108,7 @@ export class CustomerAuthService extends RegisterJwtService {
     const customer = await this.cusService.findByEmail(email);
 
     if (!customer) {
-      throw new BadRequestException('Email not found');
+      throw new BadRequestException('Không tìm thấy email');
     }
 
     const otp = randOtp();
@@ -119,6 +123,10 @@ export class CustomerAuthService extends RegisterJwtService {
     );
 
     return true;
+  }
+
+  refreshToken(user: CustomerSession) {
+    return this.registerJwt<CustomerSession>(user);
   }
 
   @OnEvent(CUSTOMER_AUTH_EVENTS.VERIFY_EMAIL)

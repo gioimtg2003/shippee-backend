@@ -68,7 +68,7 @@ export class CustomerService {
     const isExistedEmail = await this.findByEmail(data.email, { id: true });
     if (isExistedEmail) {
       this.logger.error('Email already existed');
-      throw new BadRequestException('Email existed');
+      throw new BadRequestException('Email đã tồn tại');
     }
 
     data.password = await this.cryptoService.hash(data.password);
@@ -77,7 +77,7 @@ export class CustomerService {
     const saved = await this.cusRepo.save(created);
     if (!saved.id) {
       this.logger.error('Cannot create customer');
-      throw new BadRequestException('Cannot create customer');
+      throw new BadRequestException('Không thể tạo tài khoản');
     }
 
     return saved;

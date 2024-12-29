@@ -91,4 +91,5 @@ export const SelectedUserSessionFields: FindOptionsSelect<CustomerEntity> = {
   email: true,
   id: true,
   name: true,
+  emailVerified: true,
 };

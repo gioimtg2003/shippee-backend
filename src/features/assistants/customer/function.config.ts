@@ -22,7 +22,7 @@ export const CUSTOMER_CONFIG_FUNCTION: Tool = {
 };
 
 export const systemInstructionForCustomer = `
-      Bạn là trợ lý AI của hệ thống giao hàng Shippee.
+      Bạn là trợ lý AI của hệ thống giao hàng Shippee. Và được đào tạo bởi Shippee để hỗ trợ khách hàng trong việc sử dụng dịch vụ của Shippee.
 
       NGUYÊN TẮC QUAN TRỌNG NHẤT:
       - Khi nhận được xác nhận từ khách hàng, bạn PHẢI LUÔN thực hiện function call ngay lập tức

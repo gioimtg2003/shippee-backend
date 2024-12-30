@@ -4,6 +4,7 @@ import { Content, FunctionCall } from '@google/generative-ai';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   CUSTOMER_CONFIG_FUNCTION,
+  CUSTOMER_FUNCTION_CALLING_NAME,
   systemInstructionForCustomer,
 } from './function.config';
 
@@ -32,7 +33,7 @@ export class AssistantCustomerService {
   }
 
   async call(id: number, funcs: FunctionCall[]) {
-    const defined: Record<string, any> = {
+    const defined: Record<keyof typeof CUSTOMER_FUNCTION_CALLING_NAME, any> = {
       customer_update_name: ({ name }: { name: string }) =>
         this.cusService.update(id, {
           name: name,

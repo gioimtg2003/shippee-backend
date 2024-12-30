@@ -1,9 +1,12 @@
 import { SchemaType, Tool } from '@google/generative-ai';
+export const CUSTOMER_FUNCTION_CALLING_NAME = {
+  customer_update_name: 'customer_update_name',
+};
 
 export const CUSTOMER_CONFIG_FUNCTION: Tool = {
   functionDeclarations: [
     {
-      name: 'customer_update_name',
+      name: CUSTOMER_FUNCTION_CALLING_NAME.customer_update_name,
       description:
         "This function will update the customer's name, the user just needs to pass the name parameter and nothing else is needed.",
       parameters: {

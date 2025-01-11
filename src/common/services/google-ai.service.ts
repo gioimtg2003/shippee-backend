@@ -1,3 +1,4 @@
+import { GOOGLE_MODEL_NAME } from '@constants';
 import {
   Content,
   GenerateContentRequest,
@@ -38,7 +39,7 @@ export class GoogleAIService {
     const { functionConfig, historyMessages, systemInstruction } = options;
 
     const modelAi = this.googleAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: GOOGLE_MODEL_NAME.GEMINI_1_5_FLASH,
       tools: [functionConfig],
       generationConfig: {
         maxOutputTokens: 1024,
@@ -52,7 +53,7 @@ export class GoogleAIService {
 
     const result = await chat.sendMessage(prompt);
     console.log(result.response.text());
-
+    console.log(result.response.usageMetadata);
     const call = result.response.functionCalls();
     console.log(call);
     return call;

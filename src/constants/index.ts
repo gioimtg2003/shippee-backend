@@ -3,6 +3,7 @@ export * from './config.constant';
 export * from './customer.constant';
 export * from './driver.constant';
 export * from './image.constant';
+export * from './model.constant';
 export * from './order.constant';
 export * from './redis.constant';
 export * from './role.constant';

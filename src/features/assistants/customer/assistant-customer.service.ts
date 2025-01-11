@@ -38,6 +38,15 @@ export class AssistantCustomerService {
         this.cusService.update(id, {
           name: name,
         }),
+      calculate_price: ({
+        urlMap,
+        idTransportType,
+      }: {
+        urlMap: string;
+        idTransportType: number;
+      }) => {
+        console.log(urlMap, idTransportType);
+      },
     };
 
     for (const func of funcs) {

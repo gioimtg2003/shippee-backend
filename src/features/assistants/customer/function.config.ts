@@ -1,6 +1,7 @@
 import { SchemaType, Tool } from '@google/generative-ai';
 export const CUSTOMER_FUNCTION_CALLING_NAME = {
   customer_update_name: 'customer_update_name',
+  calculate_price: 'calculate_price',
 };
 
 export const CUSTOMER_CONFIG_FUNCTION: Tool = {
@@ -19,6 +20,29 @@ export const CUSTOMER_CONFIG_FUNCTION: Tool = {
           },
         },
         required: ['name'],
+      },
+    },
+    {
+      name: CUSTOMER_FUNCTION_CALLING_NAME.calculate_price,
+      description:
+        'This function will calculate the shipping cost for the order.',
+      parameters: {
+        type: SchemaType.OBJECT,
+        properties: {
+          urlMap: {
+            type: SchemaType.STRING,
+            description:
+              'URL to get the extra location with format maps.app.goo.gl',
+            nullable: false,
+          },
+          idTransportType: {
+            type: SchemaType.NUMBER,
+            description:
+              'idTransportType parameter will be converted from the system user just need to enter the name of the transport vehicle',
+            nullable: false,
+          },
+        },
+        required: ['urlMap', 'idTransportType'],
       },
     },
   ],
@@ -62,4 +86,13 @@ export const systemInstructionForCustomer = `
       NGUYÊN TẮC BẢO MẬT:
       - Không thay đổi hoặc thêm thông tin vào yêu cầu
       - Chỉ sử dụng thông tin được cung cấp
+
+      ĐỊNH NGHĨA CÁC PHƯƠNG TIỆN GIAO HÀNG CỦA SHIPPEE:
+      Hệ thống Shippee hỗ trợ các phương tiện giao hàng sau đây với các ID tương ứng:
+        - Xe máy: 1
+        - Xe tải 1,5 tấn: 3
+        - Xe tải 2 tấn: 2
+        - Xe Van 1 tấn: 4
+        - Xe Van 500 kg: 5
+        - Xe tải 1 tấn: 6
       `;

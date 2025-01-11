@@ -10,7 +10,6 @@ import {
 export class ChatAIDto {
   @IsNotEmpty()
   @IsString()
-  @MaxLength(100)
   @ApiProperty({
     description: 'Prompt to test the function calling',
     example: 'test',

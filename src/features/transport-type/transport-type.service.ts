@@ -4,6 +4,7 @@ import { CacheValueEvent, RedisEvents } from '@features/redis/events';
 import { Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
+import { parseJsonSafely } from '@utils';
 import { FindOneOptions, Repository } from 'typeorm';
 import { TransportTypeEntity } from './transport-type.entity';
 
@@ -34,7 +35,7 @@ export class TransportTypeService {
     );
     if (cacheValue) {
       this.logger.log('Cache hit for transport type');
-      return JSON.parse(cacheValue);
+      return parseJsonSafely(cacheValue);
     }
 
     this.logger.log('Cache miss for transport type');

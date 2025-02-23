@@ -5,6 +5,7 @@ export * from './phone.helper';
 export * from './price.helper';
 export * from './prompt.helper';
 export * from './random.helper';
+export * from './text.helper';
 export * from './time.helper';
 export * from './type.helper';
 export * from './url.helper';

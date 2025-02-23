@@ -4,7 +4,7 @@ import { RedisCacheService } from '@features/redis';
 import { CacheValueEvent, RedisEvents } from '@features/redis/events';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { getStartAndEndOfMonth } from '@utils';
+import { getStartAndEndOfMonth, parseJsonSafely } from '@utils';
 import dayjs from 'dayjs';
 import { Between } from 'typeorm';
 
@@ -43,7 +43,8 @@ export class AnalyticsService {
     const cache = await this.cacheService.get(KEY_COUNT_DELIVERY);
 
     if (cache) {
-      const { currentMonthDeliveries, lastMonthDeliveries } = JSON.parse(cache);
+      const { currentMonthDeliveries, lastMonthDeliveries } =
+        parseJsonSafely(cache);
       if (lastMonthDeliveries === 0) {
         return {
           total,

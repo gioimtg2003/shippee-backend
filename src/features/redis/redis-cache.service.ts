@@ -2,6 +2,7 @@ import { REDIS_MODULE_CONNECTION } from '@constants';
 import { IRedisRecord } from '@interfaces';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { parseJsonSafely } from '@utils';
 import Redis from 'ioredis';
 import { CacheValueEvent, RedisEvents } from './events';
 import { UpdateCacheValueEvent } from './events/update-value.event';
@@ -44,7 +45,7 @@ export class RedisCacheService {
 
     values.map((value, index) => {
       if (value) {
-        records.push({ key: keys[index], value: JSON.parse(value) as T });
+        records.push({ key: keys[index], value: parseJsonSafely(value) as T });
       }
     });
 
@@ -77,7 +78,7 @@ export class RedisCacheService {
     }
 
     // Merge the cache with the new value
-    const cacheObj = JSON.parse(cache);
+    const cacheObj = parseJsonSafely(cache);
     Object.assign(cacheObj, value);
 
     const pipeline = this.client.pipeline();

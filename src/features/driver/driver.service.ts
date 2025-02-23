@@ -22,7 +22,7 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getEndOfDay } from '@utils';
+import { getEndOfDay, parseJsonSafely } from '@utils';
 import {
   FindOptionsSelect,
   FindOptionsSelectByString,
@@ -257,7 +257,7 @@ export class DriverService implements OnModuleInit {
     console.log(cache);
     if (cache) {
       this.logger.log(`Cache hit for driver with value: ${cache}`);
-      return JSON.parse(cache);
+      return parseJsonSafely(cache);
     }
     const found = await this.findById(idDriver, ['transportType'], {
       id: true,

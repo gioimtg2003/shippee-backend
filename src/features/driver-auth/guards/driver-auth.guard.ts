@@ -12,7 +12,11 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { extractTokenFromBody, extractTokenFromHeader } from '@utils';
+import {
+  extractTokenFromBody,
+  extractTokenFromHeader,
+  parseJsonSafely,
+} from '@utils';
 
 @Injectable()
 export class DriverAuthGuard implements CanActivate {
@@ -60,7 +64,7 @@ export class DriverAuthGuard implements CanActivate {
         );
         req.user = {
           ...payload,
-          ...JSON.parse(driverSession),
+          ...parseJsonSafely(driverSession),
         };
       } else {
         req.user = payload;

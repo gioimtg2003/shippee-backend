@@ -2,6 +2,7 @@ import { DriverSession } from '@common/dto';
 import { OrderService } from '@features/order/order.service';
 import { RedisCacheService } from '@features/redis';
 import { Injectable, Logger } from '@nestjs/common';
+import { parseJsonSafely } from '@utils';
 import { LessThanOrEqual } from 'typeorm';
 import { PickOrderCommand } from './command';
 import { ArrivedPickupOrderCommand } from './command/arrived-pickup-order.command';
@@ -26,7 +27,7 @@ export class DriverOrderService {
   async getOrderPending(driver: DriverSession) {
     this.logger.log(`Get order pending for driver ${driver.id}`);
     const driverSession = await this.cacheService.get(`driver:${driver.id}`);
-    const driverObject = JSON.parse(driverSession);
+    const driverObject = parseJsonSafely(driverSession);
 
     return this.orderService.getOrderPending(
       {

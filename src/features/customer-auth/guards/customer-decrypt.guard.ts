@@ -8,6 +8,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { parseJsonSafely } from '@utils';
 import { Request } from 'express';
 import { omit } from 'lodash';
 import { stringify } from 'qs';
@@ -53,7 +54,7 @@ export class CustomerDecryptGuard implements CanActivate {
     }
     let data: Record<string, any>;
     try {
-      data = JSON.parse(decryptedData);
+      data = parseJsonSafely(decryptedData);
     } catch (error) {
       this.logger.error('Failed to parse decrypted data', error);
       throw new BadRequestException('Invalid payload request');

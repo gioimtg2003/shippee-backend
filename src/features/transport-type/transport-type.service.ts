@@ -25,8 +25,6 @@ export class TransportTypeService {
    * If the cache contains the data, it returns the cached value.
    * If the cache does not contain the data, it retrieves the transport types from the database,
    * stores the retrieved data in the cache, and then returns the data.
-   *
-   * @returns {Promise<any>} A promise that resolves to the list of transport types.
    */
   async get() {
     this.logger.log('Getting all transport type');

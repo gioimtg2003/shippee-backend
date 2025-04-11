@@ -37,3 +37,11 @@ export const CACHE_TIME = {
   ONE_DAY: 60 * 60 * 24,
   ONE_WEEK: 60 * 60 * 24 * 7,
 };
+
+export const ERRORS = {
+  TokenExpiredError: 'TokenExpiredError',
+  Unauthorized: 'Unauthorized',
+  MissingToken: 'Please provide token',
+  TokenInvalid: 'Token has been invalidated',
+  RefreshTokenNotMatching: 'CODE_RefreshTokenIncorrect',
+};

@@ -9,6 +9,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   OneToOne,
   Relation,
@@ -43,10 +45,8 @@ export class TransportTypeEntity extends CoreEntity {
   @OneToMany(() => DriverEntity, (driver) => driver.transportType)
   driver: Relation<DriverEntity[]>;
 
-  @OneToMany(
-    () => SpecialRequireItemEntity,
-    (specReqItem) => specReqItem.transportType,
-  )
+  @ManyToMany(() => SpecialRequireItemEntity)
+  @JoinTable()
   specialRequireItems: Relation<SpecialRequireItemEntity[]>;
 
   @OneToOne(() => PriceInfoEntity, (priceInfo) => priceInfo.transportType)

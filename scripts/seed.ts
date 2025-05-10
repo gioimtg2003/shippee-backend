@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Environment } from '@config';
 import { AdminEntity } from '@features/admin/entities';
+import { CustomerEntity } from '@features/customer/customer.entity';
 import { WalletHistoryEntity } from '@features/driver-wallet/entities';
 import { DriverEntity, DriverIdentityEntity } from '@features/driver/entities';
 import { OrderStatusEntity } from '@features/order-status/order-status.entity';
@@ -8,10 +9,9 @@ import { OrderAssignmentEntity } from '@features/order/entities/order-assignment
 import { OrderEntity } from '@features/order/entities/order.entity';
 import { ExceedSegmentPriceEntity } from '@features/price-calculate/enities/exceed-segment-price.entity';
 import { PriceInfoEntity } from '@features/price-calculate/enities/price-info.entity';
-import { SegmentPrice } from '@features/price-calculate/seed/segment-price.seed';
+import { SpecialRequireSeed } from '@features/special-require/seed';
 import { SpecialRequireItemEntity } from '@features/special-require/special-require-item.entity';
 import { TransportTypeEntity } from '@features/transport-type/transport-type.entity';
-import { CustomerEntity } from '@features/user/customer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { seeder } from 'nestjs-seeder';
 import { loadEnv } from 'src/doppler';
@@ -46,4 +46,4 @@ seeder({
       OrderAssignmentEntity,
     ]),
   ],
-}).run([SegmentPrice]);
+}).run([SpecialRequireSeed]);

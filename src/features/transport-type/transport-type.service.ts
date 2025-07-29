@@ -37,7 +37,14 @@ export class TransportTypeService {
     }
 
     this.logger.log('Cache miss for transport type');
-    const transportTypes = await this.transportType.find();
+    const transportTypes = await this.transportType.find({
+      relations: {
+        specialRequireItems: {
+          children: true,
+        },
+        exceedSegmentPrices: true,
+      },
+    });
 
     this.eventEmitter.emit(
       RedisEvents.CACHE_VALUE,

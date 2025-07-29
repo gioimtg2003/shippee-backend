@@ -1,40 +1,41 @@
-# Run application backend and web frontend
-
-### 1. Install Node.js and pnpm
-
-First, you need to install Node.js version 20 and pnpm version 9.7.1.
-
-### Install Node.js
-
-You can download Node.js from the official website: Node.js.
-
-### Install pnpm
-
-After installing Node.js, you can install pnpm using the following command:
-
-```bash
-npm install -g pnpm@9.7.1
-
-```
-
-_Note: npm pnpm cannot be loaded because running script is disabled |set execution policy._
-
-```powershell
-Select Start  -- All Programs Windows PowerShell version  Windows PowerShell.
-Type-- Set-ExecutionPolicy RemoteSigned -- to set the policy to RemoteSigned.
-Type Set--ExecutionPolicy Unrestricted --to set the policy to Unrestricted.
-Type Get-ExecutionPolicy to verify the current settings for the execution policy.
-Type Exit.
-```
-
-Link: https://www.youtube.com/watch?v=Jy0xbH8cMeM
-
-### 2. Install Dependencies package
-
-- Run the following command to install all dependencies:
-
-```bash
-pnpm install
-```
-
-### 3. Run application
+src/
+├── delivery/
+│ ├── steps/ # Các bước riêng biệt trong flow
+│ │ ├── available-driver/
+│ │ │ ├── available-driver.service.ts
+│ │ │ ├── available-driver.dto.ts
+│ │ │ └── available-driver.module.ts
+│ │ ├── pending-order/
+│ │ │ ├── pending-order.service.ts
+│ │ │ ├── pending-order.dto.ts
+│ │ │ └── pending-order.module.ts
+│ │ ├── constraint-check/
+│ │ │ ├── constraint-check.service.ts
+│ │ │ ├── constraint-check.types.ts
+│ │ │ └── constraint-check.module.ts
+│ │ ├── matching/
+│ │ │ ├── matching.service.ts
+│ │ │ ├── hungarian.ts # Thuật toán Hungarian
+│ │ │ ├── matching.types.ts
+│ │ │ └── matching.module.ts
+│ │ ├── routing/
+│ │ │ ├── routing.service.ts
+│ │ │ ├── vrp-genetic.ts # Giải thuật VRP
+│ │ │ └── routing.module.ts
+│ │ └── assign/
+│ │ ├── assign.service.ts
+│ │ └── assign.module.ts
+│
+│ ├── delivery.service.ts # Orchestrator chạy từng bước
+│ ├── delivery.controller.ts # API endpoint
+│ └── delivery.module.ts
+│
+├── flow/ # Phục vụ visualize flow (real-time UI)
+│ ├── flow-state.service.ts # Quản lý trạng thái từng bước
+│ ├── flow-gateway.ts # WebSocket đẩy event tới UI
+│ └── flow.module.ts
+│
+├── shared/ # Chia sẻ logic / types dùng chung
+│ ├── utils/
+│ ├── constants/
+│ └── types/

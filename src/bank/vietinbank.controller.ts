@@ -11,11 +11,9 @@ export class VietinbankController {
   @ApiOperation({ summary: 'Get Transactions' })
   @ApiResponseProperty({ type: String })
   transactions() {
-    return [];
+    return this.vietinbankService.getTransaction();
   }
 
   @Get('enc')
-  enc() {
-    return this.vietinbankService.enc();
-  }
+  enc() {}
 }

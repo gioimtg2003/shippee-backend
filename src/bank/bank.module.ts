@@ -2,8 +2,8 @@ import { CryptoModule } from '@features/crypto';
 import { RedisModule } from '@features/redis';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { VietinbankController } from './vietinbank.controller';
 import { VietinbankService } from './Vietinbank.service';
+import { VietinbankController } from './vietinbank.controller';
 
 @Module({
   imports: [HttpModule, RedisModule, CryptoModule],

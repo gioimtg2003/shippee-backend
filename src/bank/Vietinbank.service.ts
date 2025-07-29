@@ -330,3 +330,255 @@ export class VietinbankService {
     return { username, paw, number };
   }
 }
+
+// @Injectable()
+// export class VietinbankService {
+//   private readonly logger = new Logger(VietinbankService.name);
+//   private readonly BROWSER_INFO = 'Chrome-98.04758102';
+//   private readonly LANG = 'vi';
+//   private readonly CLIENT_INFO = '127.0.0.1;MacOSProMax';
+//   private captcha_id: string | null = null;
+//   private captcha_code: string | null = null;
+//   private sessionId: string | null = null;
+//   private isLoggedIn: boolean = false;
+
+//   private readonly CACHE_KEY = {
+//     LOGIN: 'vtb_login',
+//     SESSION: 'vtb_session',
+//   };
+
+//   private readonly url = {
+//     captcha: 'https://api-ipay.vietinbank.vn/api/get-captcha/',
+//     login: 'https://api-ipay.vietinbank.vn/ipay/wa/signIn',
+//     getCustomerDetails:
+//       'https://api-ipay.vietinbank.vn/ipay/wa/getCustomerDetails',
+//     getEntitiesAndAccounts:
+//       'https://api-ipay.vietinbank.vn/ipay/wa/getEntitiesAndAccounts',
+//     getCmsData: 'https://api-ipay.vietinbank.vn/ipay/wa/getCmsData',
+//     getBillPayees: 'https://api-ipay.vietinbank.vn/ipay/wa/getBillPayees',
+//     creditAccountList:
+//       'https://api-ipay.vietinbank.vn/ipay/wa/creditAccountList',
+//     getAvgAccountBal: 'https://api-ipay.vietinbank.vn/ipay/wa/getAvgAccountBal',
+//     getHistTransactions:
+//       'https://api-ipay.vietinbank.vn/ipay/wa/getHistTransactions',
+//     getAccountDetails:
+//       'https://api-ipay.vietinbank.vn/ipay/wa/getAccountDetails',
+//     getCodeMapping: 'https://api-ipay.vietinbank.vn/ipay/wa/getCodeMapping',
+//     napasTransfer: 'https://api-ipay.vietinbank.vn/ipay/wa/napasTransfer',
+//     makeInternalTransfer:
+//       'https://api-ipay.vietinbank.vn/ipay/wa/makeInternalTransfer',
+//     getPayees: 'https://api-ipay.vietinbank.vn/ipay/wa/getPayees',
+//     authenSoftOtp: 'https://api-ipay.vietinbank.vn/ipay/wa/authenSoftOtp',
+//   };
+
+//   constructor(
+//     private readonly httpService: HttpService,
+//     private readonly cacheService: RedisCacheService,
+//     private readonly cryptoService: CryptoService,
+//     private readonly icbService: ICBService,
+//   ) {}
+
+//   async getTransactions({
+//     search,
+//     endDate,
+//     limit,
+//     startDate,
+//     initHeader,
+//     initPayload,
+//   }: {
+//     search?: string;
+//     startDate?: string;
+//     endDate?: string;
+//     limit?: number;
+//     initHeader?: any;
+//     initPayload?: any;
+//   }) {
+//     let isLogin = this.isLoggedIn;
+
+//     if (this.cacheService) {
+//       isLogin = (await this.cacheService.get(this.CACHE_KEY.LOGIN)) === 'true';
+//       this.sessionId = await this.cacheService.get(this.CACHE_KEY.SESSION);
+//     }
+
+//     if (!isLogin) {
+//       await this.login('0367093723', 'Gioimtg3723@!');
+//       this.sessionId = !this.cacheService
+//         ? this.sessionId
+//         : await this.cacheService.get(this.CACHE_KEY.SESSION);
+//     }
+//     const requestId = this.generateRequestId();
+//     const dateNow = dayjs().format('YYYY-MM-DD');
+//     const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+
+//     const params = {
+//       accountNumber: `0367093723`,
+//       endDate: endDate || dateNow,
+//       startDate: startDate || yesterday,
+//       maxResult: String(limit || 10),
+//       pageNumber: 0,
+//       requestId: requestId,
+//       tranType: '',
+//       lang: 'vi',
+//       searchFromAmt: '',
+//       searchKey: search || '',
+//       searchToAmt: '',
+//     };
+
+//     const headers = initHeader ?? (await this.createHeaderNull());
+//     const body = initPayload ?? (await this.handleBodyRequest(params));
+
+//     const response = await firstValueFrom(
+//       this.httpService
+//         .post(
+//           this.url.getHistTransactions,
+//           { ...body },
+//           { headers, timeout: 10000 },
+//         )
+//         .pipe(
+//           catchError((error: any) => {
+//             throw error;
+//           }),
+//         ),
+//     );
+//     return response.data;
+//   }
+
+//   async login(username: string, password: string) {
+//     const requestId = this.generateRequestId();
+//     const captcha_code = await this.getCaptcha();
+
+//     const params = {
+//       accessCode: password,
+//       browserInfo: this.BROWSER_INFO,
+//       captchaCode: captcha_code,
+//       captchaId: this.captcha_id,
+//       clientInfo: this.CLIENT_INFO,
+//       lang: 'vi',
+//       requestId: requestId,
+//       userName: username,
+//       screenResolution: '1201x344',
+//     };
+
+//     const headers = await this.createHeaderNull();
+//     const body = await this.handleBodyRequest(params);
+
+//     const { data } = await firstValueFrom(
+//       this.httpService
+//         .post(`${this.url.login}`, { ...body }, { headers, timeout: 10000 })
+//         .pipe(
+//           catchError(async (error: any) => {
+//             if (this.cacheService) {
+//               await this.cacheService.del(this.CACHE_KEY.LOGIN);
+//             } else {
+//               this.isLoggedIn = false;
+//               this.sessionId = null;
+//             }
+//             throw error;
+//           }),
+//         ),
+//     );
+//     console.log('data', data);
+//     this.sessionId = data.sessionId;
+//     this.isLoggedIn = true;
+
+//     return data;
+//   }
+
+//   private async handleBodyRequest(param: {
+//     [key: string]: string | number | null;
+//   }) {
+//     let session: string | null = null;
+//     if (this.cacheService) {
+//       const isLogin = await this.cacheService.get(this.CACHE_KEY.LOGIN);
+//       if (isLogin === 'true') {
+//         session = await this.cacheService.get(this.CACHE_KEY.SESSION);
+//       }
+//     } else if (this.isLoggedIn) {
+//       session = this.sessionId;
+//     }
+
+//     if (session) {
+//       param['sessionId'] = session;
+//     }
+//     return this.encryptData(param);
+//   }
+
+//   private encryptData(data: { [key: string]: string | number | null }) {
+//     data['signature'] = this.cryptoService
+//       .md5(
+//         qs.stringify(data, {
+//           arrayFormat: 'repeat',
+//           sort: (a, b) => a.localeCompare(b),
+//         }),
+//       )
+//       .toString();
+
+//     const payload = JSON.stringify(data);
+//     const encrypt = this.cryptoService.encryptRsa(
+//       payload,
+//       process.env.VIETINBANK_PUBLIC_KEY,
+//     );
+
+//     return {
+//       encrypted: encrypt,
+//     };
+//   }
+//   async getCaptcha() {
+//     this.captcha_id = this.generateCaptchaId();
+//     const headers = await this.createHeaderNull();
+
+//     const { data } = await firstValueFrom(
+//       this.httpService.get(`${this.url.captcha}${this.captcha_id}`, {
+//         headers,
+//         timeout: 10000,
+//       }),
+//     );
+//     this.captcha_code = String(bypassCaptcha(data));
+//     return this.captcha_code;
+//   }
+
+//   private generateRequestId(): string {
+//     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+//     let requestId = '';
+
+//     for (let i = 0; i < 12; i++) {
+//       const randomIndex = Math.floor(Math.random() * characters.length);
+//       requestId += characters[randomIndex];
+//     }
+
+//     return `${requestId}|${Date.now()}`;
+//   }
+
+//   private generateCaptchaId(): string {
+//     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+//     const captchaId = Array.from({ length: 9 }, () =>
+//       characters.charAt(Math.floor(Math.random() * characters.length)),
+//     ).join('');
+//     return captchaId;
+//   }
+
+//   private async createHeaderNull() {
+//     const headers = {
+//       'Accept-Encoding': 'gzip',
+//       'Accept-Language': 'vi-VN',
+//       Accept: 'application/json',
+//       'Cache-Control': 'no-store, no-cache',
+//       'User-Agent': 'okhttp/3.11.0',
+//     };
+
+//     let session: string | null = null;
+//     if (this.cacheService) {
+//       const isLogin = await this.cacheService.get(this.CACHE_KEY.LOGIN);
+//       if (isLogin === 'true') {
+//         session = await this.cacheService.get(this.CACHE_KEY.SESSION);
+//       }
+//     } else if (this.isLoggedIn) {
+//       session = this.sessionId;
+//     }
+
+//     if (session) {
+//       headers['sessionId'] = session;
+//     }
+//     return headers;
+//   }
+// }

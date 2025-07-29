@@ -216,7 +216,7 @@ export class OrderAssignmentService implements OnModuleInit {
             potentialDrivers.push({
               id: found.id,
               acceptanceRate: found.acceptanceRate,
-              distance: Number(distance),
+              distance: Number(distance), // improve here
               orderAssigned: countOrderAssigned,
             });
           }
